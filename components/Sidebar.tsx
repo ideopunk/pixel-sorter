@@ -37,7 +37,7 @@ type IntervalStyle = typeof arrayOfIntervalStyles[number];
 type SortingStyle = typeof arrayOfSortingStyles[number];
 type Direction = typeof arrayOfDirections[number];
 
-export default function Sidebar() {
+export default function Sidebar({ updateFile }: { updateFile: (f: File) => void }) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("none");
@@ -48,6 +48,11 @@ export default function Sidebar() {
 	function handleDirection(newDir: string) {
 		if (arrayOfDirections.includes(newDir as Direction)) setDirection(newDir as Direction);
 	}
+
+	function handleReset() {
+		console.log("reset!");
+	}
+
 	return (
 		<div className="h-screen border-r-2 p-4 w-96">
 			{/* DIRECTION */}
@@ -129,8 +134,20 @@ export default function Sidebar() {
 				{theme === "light" ? <SunSvg /> : <MoonSvg />}
 			</button>
 
-			<input type="file" className="mt-10" />
+			<input
+				id="fileinput"
+				name="fileinput"
+				type="file"
+				accept=".jpg, .png"
+				onChange={(e) => {
+					if (e.target.files) {
+						updateFile(e.target.files[0]);
+					}
+				}}
+				className="file:border-0 file:bg-black file:text-white dark:file:bg-white dark:file:text-black  file:rounded-full hover:file:underline file:p-3 file:font-bold file:opacity-90 hover:file:opacity-100 transition-opacity file:w-full file:cursor-pointer mb-4"
+			/>
 
+			<button onClick={handleReset}>Reset to Original Image</button>
 			<div className="flex lg:flex-col items-center lg:h-20 justify-between ">
 				<Link href="/about">
 					<a className="w-8 h-8  hover:scale-125 transition-transform">
