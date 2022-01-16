@@ -40,8 +40,8 @@ type Direction = typeof arrayOfDirections[number];
 export default function Sidebar({ updateFile }: { updateFile: (f: File) => void }) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
-	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("none");
-	const [threshold, setThreshold] = useState<[number, number]>([0.25, 0.8]);
+	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
+	const [threshold, setThreshold] = useState<[number, number]>([25, 8]);
 
 	const { theme, setTheme } = useTheme();
 
@@ -112,27 +112,41 @@ export default function Sidebar({ updateFile }: { updateFile: (f: File) => void 
 			{/* THRESHOLD */}
 			{intervalStyle === "threshold" && (
 				<label className="relative pt-12">
-					Thresholds
+					Thresholds. <span>Min: {threshold[0] / 100}</span>{" "}
+					<span>Max: {threshold[1] / 100}</span>
 					<Slider.Root
-						defaultValue={[25, 75]}
+						className="relative flex items-center w-full h-6 select-none"
+						value={threshold}
+						onValueChange={([min, max]) => setThreshold([min, max])}
 						minStepsBetweenThumbs={1}
-						className="w-[200px] relative h-5 flex items-center "
+					>
+						<Slider.Track className="relative flex-grow h-1 bg-gray-900 rounded-full outline-none">
+							<Slider.Range className="absolute h-full bg-indigo-500 rounded-full outline-none" />
+						</Slider.Track>
+						<Slider.Thumb
+							className="z-50 block w-4 h-4 font-bold bg-indigo-500 rounded-full shadow-xl outline-none ring-indigo-400 focus:ring-4 "
+							data-tip="1.0"
+						/>
+						<Slider.Thumb
+							className="z-50 block w-4 h-4 font-bold bg-indigo-500 rounded-full shadow-xl outline-none ring-indigo-400 focus:ring-4 "
+							data-tip="1.0"
+						/>
+					</Slider.Root>
+					{/* <Slider.Root
+						defaultValue={[25, 75]}
+						value={threshold}
+						onValueChange={([min, max]) => setThreshold([min, max])}
+						minStepsBetweenThumbs={1}
+						className="w-[200px] relative h-5 flex items-center border-2 select-none touch-none "
 					>
 						<Slider.Track className="relative w-20 rounded-full bg-black h-1">
-							<Slider.Range className="h-full absolute bg-white rounded-full" />
+							<Slider.Range className="h-full bg-blue-400 rounded-full" />
 						</Slider.Track>
-						<Slider.Thumb className="w-5 h-5 bg-white shadow-md" />
-						<Slider.Thumb className="w-5 h-5 bg-white shadow-md" />
-					</Slider.Root>
+						<Slider.Thumb className="w-5 h-5 bg-white shadow-md block" />
+						<Slider.Thumb className="w-5 h-5 bg-white shadow-md block" />
+					</Slider.Root> */}
 				</label>
 			)}
-			<button
-				title="Toggle theme"
-				onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-				className="w-8 h-8 hover:scale-125 transition-transform mx-10 lg:mx-0"
-			>
-				{theme === "light" ? <SunSvg /> : <MoonSvg />}
-			</button>
 
 			<input
 				id="fileinput"
@@ -148,7 +162,14 @@ export default function Sidebar({ updateFile }: { updateFile: (f: File) => void 
 			/>
 
 			<button onClick={handleReset}>Reset to Original Image</button>
-			<div className="flex lg:flex-col items-center lg:h-20 justify-between ">
+			<div className="flex  items-center lg:h-20 justify-evenly ">
+				<button
+					title="Toggle theme"
+					onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+					className="w-8 h-8 hover:scale-125 transition-transform mx-10 lg:mx-0"
+				>
+					{theme === "light" ? <SunSvg /> : <MoonSvg />}
+				</button>
 				<Link href="/about">
 					<a className="w-8 h-8  hover:scale-125 transition-transform">
 						<QuestionMark />
