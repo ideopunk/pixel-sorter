@@ -5,37 +5,8 @@ import SunSvg from "./SunSvg";
 import MoonSvg from "./MoonSVG";
 import QuestionMark from "./QuestionMarkSvg";
 import Link from "next/link";
+import { arrayOfDirections, arrayOfIntervalStyles, arrayOfSortingStyles, Direction, IntervalStyle, SortingStyle } from "../library/types";
 
-const arrayOfDirections = [
-	"up",
-	"down",
-	"left",
-	"right",
-	"up-to-left",
-	"down-to-left",
-	"up-to-right",
-	"down-to-right",
-	"left-to-up",
-	"left-to-down",
-	"right-to-up",
-	"right-to-down",
-] as const;
-
-const arrayOfSortingStyles = [
-	"lightness",
-	"hue",
-	"saturation",
-	"intensity",
-	"red",
-	"green",
-	"blue",
-] as const;
-
-const arrayOfIntervalStyles = ["threshold", "random", "none"] as const;
-
-type IntervalStyle = typeof arrayOfIntervalStyles[number];
-type SortingStyle = typeof arrayOfSortingStyles[number];
-type Direction = typeof arrayOfDirections[number];
 
 export default function Sidebar({ updateFile }: { updateFile: (f: File) => void }) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
