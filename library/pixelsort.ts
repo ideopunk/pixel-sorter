@@ -18,30 +18,14 @@ export default function pixelsort(
 	height: number,
 	options?: Options
 ): void {
-	// write our original image to a canvas so we can manipulate it
 	ctx?.drawImage(original, 0, 0);
 
-	// const { width, height } = canvas;
 	const imageData = ctx?.getImageData(0, 0, width, height);
 
 	if (!imageData) throw Error("uh");
 
-	let newCanvas = new HTMLCanvasElement();
-	let rows: Uint8ClampedArray[] = [];
-	for (let i = 0; i < height; i++) {
-		rows.push(imageData?.data.slice(i, width * i + width));
-	}
-
-	// let fakeData = [];
-	// for (let i = 0; i < rows.length; i++) {
-	// 	fakeData.push(rows[i]);
-	// }
-	// let fakeClamp = new Uint8ClampedArray(fakeData);
-	// let fake = new ImageData(fakeData, width, height);
-
-	let x = 0;
-	for (let row of rows) {
-		ctx?.putImageData({ data: row, height, width }, 0, x);
-		x++;
-	}
+	// lil row experiment
+	const reversed = imageData.data.reverse();
+	const newData = new ImageData(reversed, width, height);
+	ctx?.putImageData(newData, 0, 0); // experiment
 }
