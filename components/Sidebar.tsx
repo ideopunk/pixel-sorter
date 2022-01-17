@@ -17,17 +17,7 @@ import pixelsort from "../library/pixelsort";
 
 type Dimensions = { width: number; height: number };
 
-export default function Sidebar({
-	updateFile,
-	dimensions,
-	originalImage,
-	sortFunction,
-}: {
-	updateFile: (f: File) => void;
-	dimensions: Dimensions
-	originalImage: string;
-	sortFunction: (u: URL) => void;
-}) {
+export default function Sidebar({ updateFile }: { updateFile: (f: File) => void }) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
@@ -41,12 +31,6 @@ export default function Sidebar({
 
 	function handleReset() {
 		console.log("reset!");
-	}
-
-	function handleSort() {
-		const img = new Image();
-		img.src = originalImage.toString();
-		pixelsort({ original: img });
 	}
 
 	return (

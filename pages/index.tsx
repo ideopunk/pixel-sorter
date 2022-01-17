@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import Sidebar from "../components/Sidebar";
 
 type Dimensions = { width: number; height: number };
 
@@ -114,17 +115,19 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			{/* <Sidebar
-				originalImage={imageUrl}
+			<Sidebar
+				// originalImage={imageUrl}
 				updateFile={updateFile}
-				dimensions={imageDimensions}
-			/> */}
+				// dimensions={imageDimensions}
+			/>
 			<main className="z-10 w-full h-full flex justify-center items-center flex-col">
-				<div className="w-3/4 h-3/4 relative flex items-center justify-center ">
+				<div className="w-4/5 h-4/5 relative flex items-center justify-center ">
 					<img ref={imageRef} alt="test-image" src="" className="object-cover" />
 					<canvas ref={canvasRef} className=" absolute" />
 				</div>
-				<button onClick={draw}>DRAW?!?!?</button>
+				<button className="absolute bottom-0 left-0" onClick={draw}>
+					DRAW?!?!?
+				</button>
 			</main>
 		</div>
 	);

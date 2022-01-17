@@ -29,5 +29,6 @@ export type IntervalStyle = typeof arrayOfIntervalStyles[number];
 export type SortingStyle = typeof arrayOfSortingStyles[number];
 export type Direction = typeof arrayOfDirections[number];
 
-export type PixelSorterData = { data: Uint8ClampedArray; width: number; height: number }
+export type PixelSorterData = { data: Uint8ClampedArray; width: number; height: number };
 
+export type Pixel = { r: number; g: number; b: number; a: number };

@@ -1,5 +1,4 @@
 import { workersort } from "./pixelsort";
-import { PixelSorterData } from "./types";
 
 export const ctx: Worker = self as any;
 
