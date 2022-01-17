@@ -28,3 +28,6 @@ export const arrayOfIntervalStyles = ["threshold", "random", "none"] as const;
 export type IntervalStyle = typeof arrayOfIntervalStyles[number];
 export type SortingStyle = typeof arrayOfSortingStyles[number];
 export type Direction = typeof arrayOfDirections[number];
+
+export type PixelSorterData = { data: Uint8ClampedArray; width: number; height: number }
+

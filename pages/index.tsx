@@ -1,9 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import pixelsort from "../library/pixelsort";
-import testPic from "../public/testimage.jpg";
 
 type Dimensions = { width: number; height: number };
 
@@ -11,13 +8,41 @@ export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 	const [imageUrl, setImageUrl] = useState("./testimage.jpg");
 
-	// const canvasRef = useRef<HTMLCanvasElement>(null);
+	const workerRef = useRef<Worker>();
+	useEffect(() => {
+		workerRef.current = new Worker(new URL("../library/test.worker.ts", import.meta.url));
+		workerRef.current.addEventListener("message", (e: MessageEvent<ImageData>) => {
+			const ctx = canvasRef.current?.getContext("2d");
+			if (ctx) ctx.putImageData(e.data, 0, 0);
+		});
+	}, []);
 
 	const draw = useCallback(() => {
-		const ctx = canvasRef.current?.getContext("2d");
-		if (imageRef.current && ctx) {
-			pixelsort(imageRef.current, ctx, imageDimensions.width, imageDimensions.height);
+		if (workerRef.current && imageRef.current) {
+			console.log("uh");
+			// workerRef.current.postMessage("HI FROM INDEX");
+			const ctx = canvasRef.current?.getContext("2d");
+			ctx?.drawImage(imageRef.current, 0, 0);
+			const imageData = ctx?.getImageData(
+				0,
+				0,
+				imageDimensions.width,
+				imageDimensions.height
+			);
+
+			console.log(imageData?.data);
+			if (imageData?.data) {
+				workerRef.current.postMessage({
+					data: imageData.data,
+					width: imageDimensions.width,
+					height: imageDimensions.height,
+				});
+			}
 		}
+		// const ctx = canvasRef.current?.getContext("2d");
+		// if (imageRef.current && ctx) {
+		// 	pixelsort(imageRef.current, ctx, imageDimensions.width, imageDimensions.height);
+		// }
 	}, [imageDimensions]);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -89,11 +114,11 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<Sidebar
+			{/* <Sidebar
 				originalImage={imageUrl}
 				updateFile={updateFile}
 				dimensions={imageDimensions}
-			/>
+			/> */}
 			<main className="z-10 w-full h-full flex justify-center items-center flex-col">
 				<div className="w-3/4 h-3/4 relative flex items-center justify-center ">
 					<img ref={imageRef} alt="test-image" src="" className="object-cover" />
