@@ -5,10 +5,29 @@ import SunSvg from "./SunSvg";
 import MoonSvg from "./MoonSVG";
 import QuestionMark from "./QuestionMarkSvg";
 import Link from "next/link";
-import { arrayOfDirections, arrayOfIntervalStyles, arrayOfSortingStyles, Direction, IntervalStyle, SortingStyle } from "../library/types";
+import {
+	arrayOfDirections,
+	arrayOfIntervalStyles,
+	arrayOfSortingStyles,
+	Direction,
+	IntervalStyle,
+	SortingStyle,
+} from "../library/types";
+import pixelsort from "../library/pixelsort";
 
+type Dimensions = { width: number; height: number };
 
-export default function Sidebar({ updateFile }: { updateFile: (f: File) => void }) {
+export default function Sidebar({
+	updateFile,
+	dimensions,
+	originalImage,
+	sortFunction,
+}: {
+	updateFile: (f: File) => void;
+	dimensions: Dimensions
+	originalImage: string;
+	sortFunction: (u: URL) => void;
+}) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
@@ -22,6 +41,12 @@ export default function Sidebar({ updateFile }: { updateFile: (f: File) => void 
 
 	function handleReset() {
 		console.log("reset!");
+	}
+
+	function handleSort() {
+		const img = new Image();
+		img.src = originalImage.toString();
+		pixelsort({ original: img });
 	}
 
 	return (
