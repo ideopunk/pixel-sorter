@@ -1,6 +1,6 @@
 import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel } from "./types";
 import * as sorting from "./sortingFunctions";
-import * as pixel from "./pixelUtils";
+import { hslConversion, rgbConversion } from "./pixelUtils";
 
 interface Options {
 	direction?: Direction;
@@ -17,55 +17,33 @@ export const workersort = (
 	options: Options
 ): ImageData => {
 	// HSL??
-	if (["hue", "saturation", "light"].includes(options.sortingStyle)) {
-		let hslPixels: HSLPixel[] = [];
-
-		for (let i = 0; i < data.length; i += 4) {
-			hslPixels.push(pixel.toHSLPixels(data[i], data[i + 1], data[i + 2]));
-		}
-
-		let rows = [];
-
-		for (let i = 0; i < height; i++) {
-			rows.push(hslPixels.slice(i * width, (i + 1) * width));
-		}
-
-		let newArray: HSLPixel[][] = [];
-		for (let row of rows) {
-			newArray.push(row.sort(sorting.bySaturationAscending));
-		}
-
-		let flattenedArray = newArray.flat();
-
-		const clampedArr = Uint8ClampedArray.from(pixel.HSLtoClampArray(flattenedArray));
-		const newData = new ImageData(clampedArr, width, height);
-
-		return newData;
-	} else {
-		// RGB??
-
-		let pixels: Pixel[] = [];
-
-		for (let i = 0; i < data.length; i += 4) {
-			pixels.push(pixel.toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
-		}
-
-		let rows = [];
-
-		for (let i = 0; i < height; i++) {
-			rows.push(pixels.slice(i * width, (i + 1) * width));
-		}
-
-		let newArray: Pixel[][] = [];
-		for (let row of rows) {
-			newArray.push(row.sort(sorting.byRGBAscending));
-		}
-
-		let flattenedArray = newArray.flat();
-
-		const clampedArr = Uint8ClampedArray.from(pixel.RGBtoClampArray(flattenedArray));
-		const newData = new ImageData(clampedArr, width, height);
-
-		return newData;
+	if (options.sortingStyle === "hue") {
+		return hslConversion(data, width, height, sorting.byHueAscending);
 	}
+
+	if (options.sortingStyle === "saturation") {
+		return hslConversion(data, width, height, sorting.bySaturationAscending);
+	}
+
+	if (options.sortingStyle === "lightness") {
+		return hslConversion(data, width, height, sorting.byLightAscending);
+	}
+
+	if (options.sortingStyle === "red") {
+		return rgbConversion(data, width, height, sorting.byRedAscending);
+	}
+
+	if (options.sortingStyle === "green") {
+		return rgbConversion(data, width, height, sorting.byGreenAscending);
+	}
+
+	if (options.sortingStyle === "blue") {
+		return rgbConversion(data, width, height, sorting.byBlueAscending);
+	}
+
+	if (options.sortingStyle === "intensity") {
+		return rgbConversion(data, width, height, sorting.byRGBAscending);
+	}
+
+	throw Error("uhhh unreachable");
 };

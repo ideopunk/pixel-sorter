@@ -75,3 +75,65 @@ export const toHSLPixels = (r: number, g: number, b: number): HSLPixel => {
 		l: (100 * (2 * l - s)) / 2,
 	};
 };
+
+export function hslConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	sortingFunction: (a: HSLPixel, b: HSLPixel) => number
+): ImageData {
+	let hslPixels: HSLPixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+	}
+
+	let rows = [];
+
+	for (let i = 0; i < height; i++) {
+		rows.push(hslPixels.slice(i * width, (i + 1) * width));
+	}
+
+	let newArray: HSLPixel[][] = [];
+	for (let row of rows) {
+		newArray.push(row.sort(sortingFunction));
+	}
+
+	let flattenedArray = newArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+
+	return newData;
+}
+
+export function rgbConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	sortingFunction: (a: Pixel, b: Pixel) => number
+) {
+	let pixels: Pixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
+	}
+
+	let rows = [];
+
+	for (let i = 0; i < height; i++) {
+		rows.push(pixels.slice(i * width, (i + 1) * width));
+	}
+
+	let newArray: Pixel[][] = [];
+	for (let row of rows) {
+		newArray.push(row.sort(sortingFunction));
+	}
+
+	let flattenedArray = newArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+
+	return newData;
+}
