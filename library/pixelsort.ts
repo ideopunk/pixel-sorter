@@ -1,5 +1,6 @@
 import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel } from "./types";
 import * as sorting from "./sortingFunctions";
+import * as interval from "./intervalFunctions";
 import {
 	hslNoThresholdConversion,
 	rgbNoThresholdConversion,
@@ -43,7 +44,8 @@ export const workersort = (
 				width,
 				height,
 				options.threshold[0],
-				options.threshold[1]
+				options.threshold[1],
+				interval.byRedAscendingIntervals
 			);
 		}
 	}

@@ -144,8 +144,8 @@ export function rgbThresholdConversion(
 	width: number,
 	height: number,
 	min: number,
-	max: number
-	// sortingFunction: (a: Pixel, b: Pixel) => number
+	max: number,
+	intervalFunction: (row: Pixel[], min: number, max: number) => Pixel[]
 ) {
 	let pixels: Pixel[] = [];
 
@@ -161,7 +161,7 @@ export function rgbThresholdConversion(
 
 	let newArray: Pixel[][] = [];
 	for (let row of rows) {
-		newArray.push(byRedAscendingIntervals(row, min, max));
+		newArray.push(intervalFunction(row, min, max));
 	}
 
 	let flattenedArray = newArray.flat();
@@ -172,60 +172,3 @@ export function rgbThresholdConversion(
 	return newData;
 }
 
-export function redWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
-	return pixel.r > min && pixel.r < max;
-}
-
-export function createIntervalsRed(row: Pixel[], min: number, max: number): Pixel[][] {
-	let arrOfArrs: Pixel[][] = [[]];
-
-	// avoid if-check inside for loop.
-	arrOfArrs[0].push(row[0]);
-
-	let latestIntervalIsWithinThreshold = redWithinThresholdCheck(
-		arrOfArrs.at(-1)?.at(-1) as Pixel,
-		min,
-		max
-	);
-
-	for (let i = 1; i < row.length; i++) {
-		const latestPixelWithin = redWithinThresholdCheck(row[i], min, max);
-		if (latestPixelWithin === latestIntervalIsWithinThreshold) {
-			// add to current interval
-			arrOfArrs.at(-1)?.push(row[i]);
-		} else {
-			// start a new interval
-			latestIntervalIsWithinThreshold = latestPixelWithin;
-			arrOfArrs.push([row[i]]);
-		}
-	}
-
-	return arrOfArrs;
-}
-
-// flip back and forth
-function sortIntervalsRed(rowOfIntervals: Pixel[][], startsWithinThreshold: boolean): Pixel[] {
-	let sortedButNotFlattenedRow: Pixel[][] = [];
-
-	let withinThreshold = startsWithinThreshold;
-
-	for (let interval of rowOfIntervals) {
-		if (withinThreshold) {
-			sortedButNotFlattenedRow.push(interval.sort(sort.byRedAscending));
-		} else {
-			sortedButNotFlattenedRow.push(interval);
-		}
-
-		// flip
-		withinThreshold = !withinThreshold;
-	}
-
-	const sortedRow = sortedButNotFlattenedRow.flat();
-	return sortedRow;
-}
-
-export function byRedAscendingIntervals(row: Pixel[], min: number, max: number): Pixel[] {
-	const intervalRow = createIntervalsRed(row, min, max);
-	const startsWithinThreshold = redWithinThresholdCheck(intervalRow[0][0], min, max);
-	return sortIntervalsRed(intervalRow, startsWithinThreshold);
-}
