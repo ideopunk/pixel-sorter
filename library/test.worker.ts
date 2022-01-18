@@ -5,11 +5,11 @@ export const ctx: Worker = self as any;
 ctx.addEventListener(
 	"message",
 	function (e: MessageEvent<ImageData>) {
-		const neww = workersort(e.data.data, e.data.width, e.data.height, {
+		const alteredImage = workersort(e.data.data, e.data.width, e.data.height, {
 			sortingStyle: "red",
-			threshold: [66, 244],
+			threshold: [20, 150],
 		});
-		self.postMessage(neww);
+		self.postMessage(alteredImage);
 	},
 	false
 );

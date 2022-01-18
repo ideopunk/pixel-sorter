@@ -10,6 +10,7 @@ export default function Home() {
 	const [imageUrl, setImageUrl] = useState("./testimage.jpg");
 
 	const workerRef = useRef<Worker>();
+
 	useEffect(() => {
 		workerRef.current = new Worker(new URL("../library/test.worker.ts", import.meta.url));
 		workerRef.current.addEventListener("message", (e: MessageEvent<ImageData>) => {
@@ -32,13 +33,13 @@ export default function Home() {
 			);
 
 			console.log(imageData?.data);
-			if (imageData?.data) {
-				workerRef.current.postMessage({
-					data: imageData.data,
-					width: imageDimensions.width,
-					height: imageDimensions.height,
-				});
-			}
+			// if (imageData?.data) {
+			// 	workerRef.current.postMessage({
+			// 		data: imageData.data,
+			// 		width: imageDimensions.width,
+			// 		height: imageDimensions.height,
+			// 	});
+			// }
 		}
 		// const ctx = canvasRef.current?.getContext("2d");
 		// if (imageRef.current && ctx) {
@@ -67,8 +68,8 @@ export default function Home() {
 				console.log("loaded");
 				if (imageRef.current?.height && imageRef.current.width) {
 					setImageDimensions({
-						height: imageRef.current.height,
-						width: imageRef.current.width,
+						height: imageRef.current.naturalHeight || imageRef.current.height,
+						width: imageRef.current.naturalWidth || imageRef.current.width,
 					});
 				}
 			};
