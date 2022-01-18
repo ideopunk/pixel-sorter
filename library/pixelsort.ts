@@ -1,6 +1,10 @@
 import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel } from "./types";
 import * as sorting from "./sortingFunctions";
-import { hslConversion, rgbConversion } from "./pixelUtils";
+import {
+	hslNoThresholdConversion,
+	rgbNoThresholdConversion,
+	rgbThresholdConversion,
+} from "./pixelUtils";
 
 interface Options {
 	direction?: Direction;
@@ -16,33 +20,44 @@ export const workersort = (
 	height: number,
 	options: Options
 ): ImageData => {
-	// HSL??
+	// HSL
 	if (options.sortingStyle === "hue") {
-		return hslConversion(data, width, height, sorting.byHueAscending);
+		return hslNoThresholdConversion(data, width, height, sorting.byHueAscending);
 	}
 
 	if (options.sortingStyle === "saturation") {
-		return hslConversion(data, width, height, sorting.bySaturationAscending);
+		return hslNoThresholdConversion(data, width, height, sorting.bySaturationAscending);
 	}
 
 	if (options.sortingStyle === "lightness") {
-		return hslConversion(data, width, height, sorting.byLightAscending);
+		return hslNoThresholdConversion(data, width, height, sorting.byLightAscending);
 	}
 
+	// RGB
 	if (options.sortingStyle === "red") {
-		return rgbConversion(data, width, height, sorting.byRedAscending);
+		if (!options.threshold) {
+			return rgbNoThresholdConversion(data, width, height, sorting.byRedAscending);
+		} else {
+			return rgbThresholdConversion(
+				data,
+				width,
+				height,
+				options.threshold[0],
+				options.threshold[1]
+			);
+		}
 	}
 
 	if (options.sortingStyle === "green") {
-		return rgbConversion(data, width, height, sorting.byGreenAscending);
+		return rgbNoThresholdConversion(data, width, height, sorting.byGreenAscending);
 	}
 
 	if (options.sortingStyle === "blue") {
-		return rgbConversion(data, width, height, sorting.byBlueAscending);
+		return rgbNoThresholdConversion(data, width, height, sorting.byBlueAscending);
 	}
 
 	if (options.sortingStyle === "intensity") {
-		return rgbConversion(data, width, height, sorting.byRGBAscending);
+		return rgbNoThresholdConversion(data, width, height, sorting.byRGBAscending);
 	}
 
 	throw Error("uhhh unreachable");

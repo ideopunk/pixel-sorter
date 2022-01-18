@@ -1,4 +1,5 @@
 import { HSLPixel, Pixel } from "./types";
+import * as sort from "./sortingFunctions";
 
 export function RGBtoClampArray(pixels: Pixel[]) {
 	let spreadArray = pixels.map((pixel) => [pixel.r, pixel.g, pixel.b, pixel.a]);
@@ -76,7 +77,7 @@ export const toHSLPixels = (r: number, g: number, b: number): HSLPixel => {
 	};
 };
 
-export function hslConversion(
+export function hslNoThresholdConversion(
 	data: Uint8ClampedArray,
 	width: number,
 	height: number,
@@ -107,7 +108,7 @@ export function hslConversion(
 	return newData;
 }
 
-export function rgbConversion(
+export function rgbNoThresholdConversion(
 	data: Uint8ClampedArray,
 	width: number,
 	height: number,
@@ -136,4 +137,95 @@ export function rgbConversion(
 	const newData = new ImageData(clampedArr, width, height);
 
 	return newData;
+}
+
+export function rgbThresholdConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	min: number,
+	max: number
+	// sortingFunction: (a: Pixel, b: Pixel) => number
+) {
+	let pixels: Pixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
+	}
+
+	let rows = [];
+
+	for (let i = 0; i < height; i++) {
+		rows.push(pixels.slice(i * width, (i + 1) * width));
+	}
+
+	let newArray: Pixel[][] = [];
+	for (let row of rows) {
+		newArray.push(byRedAscendingIntervals(row, min, max));
+	}
+
+	let flattenedArray = newArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+
+	return newData;
+}
+
+export function redWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
+	return pixel.r > min && pixel.r < max;
+}
+
+export function createIntervalsRed(row: Pixel[], min: number, max: number): Pixel[][] {
+	let arrOfArrs: Pixel[][] = [[]];
+
+	// avoid if-check inside for loop.
+	arrOfArrs[0].push(row[0]);
+
+	let latestIntervalIsWithinThreshold = redWithinThresholdCheck(
+		arrOfArrs.at(-1)?.at(-1) as Pixel,
+		min,
+		max
+	);
+
+	for (let i = 1; i < row.length; i++) {
+		const latestPixelWithin = redWithinThresholdCheck(row[i], min, max);
+		if (latestPixelWithin === latestIntervalIsWithinThreshold) {
+			// add to current interval
+			arrOfArrs.at(-1)?.push(row[i]);
+		} else {
+			// start a new interval
+			latestIntervalIsWithinThreshold = latestPixelWithin;
+			arrOfArrs.push([row[i]]);
+		}
+	}
+
+	return arrOfArrs;
+}
+
+// flip back and forth
+function sortIntervalsRed(rowOfIntervals: Pixel[][], startsWithinThreshold: boolean): Pixel[] {
+	let sortedButNotFlattenedRow: Pixel[][] = [];
+
+	let withinThreshold = startsWithinThreshold;
+
+	for (let interval of rowOfIntervals) {
+		if (withinThreshold) {
+			sortedButNotFlattenedRow.push(interval.sort(sort.byRedAscending));
+		} else {
+			sortedButNotFlattenedRow.push(interval);
+		}
+
+		// flip
+		withinThreshold = !withinThreshold;
+	}
+
+	const sortedRow = sortedButNotFlattenedRow.flat();
+	return sortedRow;
+}
+
+export function byRedAscendingIntervals(row: Pixel[], min: number, max: number): Pixel[] {
+	const intervalRow = createIntervalsRed(row, min, max);
+	const startsWithinThreshold = redWithinThresholdCheck(intervalRow[0][0], min, max);
+	return sortIntervalsRed(intervalRow, startsWithinThreshold);
 }
