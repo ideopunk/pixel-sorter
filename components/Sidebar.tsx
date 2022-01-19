@@ -11,12 +11,19 @@ import {
 	arrayOfSortingStyles,
 	Direction,
 	IntervalStyle,
+	Options,
 	SortingStyle,
 } from "../library/types";
 
 type Dimensions = { width: number; height: number };
 
-export default function Sidebar({ updateFile }: { updateFile: (f: File) => void }) {
+export default function Sidebar({
+	draw,
+	updateFile,
+}: {
+	draw: (options: Options) => void;
+	updateFile: (f: File) => void;
+}) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
@@ -30,6 +37,10 @@ export default function Sidebar({ updateFile }: { updateFile: (f: File) => void 
 
 	function handleReset() {
 		console.log("reset!");
+	}
+
+	function sendDraw() {
+		draw({ direction, sortingStyle, intervalStyle, threshold });
 	}
 
 	return (
@@ -139,6 +150,13 @@ export default function Sidebar({ updateFile }: { updateFile: (f: File) => void 
 				}}
 				className="file:border-0 file:bg-black file:text-white dark:file:bg-white dark:file:text-black  file:rounded-full hover:file:underline file:p-3 file:font-bold file:opacity-90 hover:file:opacity-100 transition-opacity file:w-full file:cursor-pointer mb-4"
 			/>
+
+			<button
+				className="border-0 bg-black text-white dark:bg-white dark:text-black rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4"
+				onClick={sendDraw}
+			>
+				DRAW
+			</button>
 
 			<button onClick={handleReset}>Reset to Original Image</button>
 			<div className="flex  items-center lg:h-20 justify-evenly ">

@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { Direction, IntervalStyle, Options, SortingStyle } from "../library/types";
 
 type Dimensions = { width: number; height: number };
 
@@ -19,33 +20,31 @@ export default function Home() {
 		});
 	}, []);
 
-	const draw = useCallback(() => {
-		if (workerRef.current && imageRef.current) {
-			console.log("uh");
-			// workerRef.current.postMessage("HI FROM INDEX");
-			const ctx = canvasRef.current?.getContext("2d");
-			ctx?.drawImage(imageRef.current, 0, 0);
-			const imageData = ctx?.getImageData(
-				0,
-				0,
-				imageDimensions.width,
-				imageDimensions.height
-			);
+	const draw = useCallback(
+		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
+			if (workerRef.current && imageRef.current) {
+				// workerRef.current.postMessage("HI FROM INDEX");
+				const ctx = canvasRef.current?.getContext("2d");
+				ctx?.drawImage(imageRef.current, 0, 0);
+				const imageData = ctx?.getImageData(
+					0,
+					0,
+					imageDimensions.width,
+					imageDimensions.height
+				);
 
-			console.log(imageData?.data);
-			if (imageData?.data) {
-				workerRef.current.postMessage({
-					data: imageData.data,
-					width: imageDimensions.width,
-					height: imageDimensions.height,
-				});
+				if (imageData?.data) {
+					workerRef.current.postMessage({
+						data: imageData.data,
+						width: imageDimensions.width,
+						height: imageDimensions.height,
+						options: { direction, sortingStyle, intervalStyle, threshold },
+					});
+				}
 			}
-		}
-		// const ctx = canvasRef.current?.getContext("2d");
-		// if (imageRef.current && ctx) {
-		// 	pixelsort(imageRef.current, ctx, imageDimensions.width, imageDimensions.height);
-		// }
-	}, [imageDimensions]);
+		},
+		[imageDimensions]
+	);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
@@ -120,6 +119,7 @@ export default function Home() {
 			</Head>
 
 			<Sidebar
+				draw={draw}
 				// originalImage={imageUrl}
 				updateFile={updateFile}
 				// dimensions={imageDimensions}
@@ -132,9 +132,9 @@ export default function Home() {
 						className="w-[700px] h-[700px] absolute object-contain"
 					/>
 				</div>
-				<button className="absolute bottom-0 left-0" onClick={draw}>
+				{/* <button className="absolute bottom-0 left-0" onClick={draw}>
 					DRAW?!?!?
-				</button>
+				</button> */}
 			</main>
 		</div>
 	);

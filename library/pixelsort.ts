@@ -1,4 +1,4 @@
-import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel } from "./types";
+import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from "./types";
 import * as sorting from "./sortingFunctions";
 import * as interval from "./intervalFunctions";
 import {
@@ -6,14 +6,6 @@ import {
 	rgbNoThresholdConversion,
 	rgbThresholdConversion,
 } from "./pixelUtils";
-
-interface Options {
-	direction?: Direction;
-	sortingStyle: SortingStyle;
-	intervalStyle?: IntervalStyle;
-	threshold?: [number, number];
-	mask?: { left: number; right: number; top: number; bottom: number };
-}
 
 export const pixelsort = (
 	data: Uint8ClampedArray,
