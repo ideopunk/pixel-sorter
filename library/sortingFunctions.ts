@@ -37,35 +37,35 @@ export function byLightAscending(a: HSLPixel, b: HSLPixel) {
 
 // DESCENDING
 export function byRedDescending(a: Pixel, b: Pixel) {
-	return a.r + b.r;
+	return b.r - a.r;
 }
 
 export function byGreenDescending(a: Pixel, b: Pixel) {
-	return a.g + b.g;
+	return b.g - a.g;
 }
 
 export function byBlueDescending(a: Pixel, b: Pixel) {
-	return a.b + b.b;
+	return b.b - a.b;
 }
 
 export function byAlphaDescending(a: Pixel, b: Pixel) {
-	return a.a + b.a;
+	return b.a - a.a;
 }
 
 export function byRGBDescending(a: Pixel, b: Pixel) {
 	const sumA = a.r + a.g + a.b;
 	const sumB = b.r + b.g + b.b;
-	return sumA + sumB;
+	return sumB - sumA;
 }
 
 export function byHueDescending(a: HSLPixel, b: HSLPixel) {
-	return a.h + b.h;
+	return b.h - a.h;
 }
 
 export function bySaturationDescending(a: HSLPixel, b: HSLPixel) {
-	return a.s + b.s;
+	return b.s - a.s;
 }
 
 export function byLightDescending(a: HSLPixel, b: HSLPixel) {
-	return a.l + b.l;
+	return b.l - a.l;
 }

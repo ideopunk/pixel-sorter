@@ -23,7 +23,6 @@ export default function Home() {
 	const draw = useCallback(
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
 			if (workerRef.current && imageRef.current) {
-				// workerRef.current.postMessage("HI FROM INDEX");
 				const ctx = canvasRef.current?.getContext("2d");
 				ctx?.drawImage(imageRef.current, 0, 0);
 				const imageData = ctx?.getImageData(

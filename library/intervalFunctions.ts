@@ -2,6 +2,14 @@ import { HSLPixel, Pixel } from "./types";
 import * as threshold from "./thresholdFunctions";
 import * as sort from "./sortingFunctions";
 
+/**
+ * Split a row into a row of intervals
+ * @param row 
+ * @param min 
+ * @param max 
+ * @param thresholdCheck 
+ * @returns 
+ */
 export function intervalizeRow(
 	row: Pixel[],
 	min: number,
@@ -34,6 +42,9 @@ export function intervalizeRow(
 	return arrOfArrs;
 }
 
+
+
+
 // flip back and forth
 function sortIntervalizedRow(
 	intervalizedRow: Pixel[][],
@@ -60,7 +71,7 @@ function sortIntervalizedRow(
 }
 
 export function byRedAscendingIntervals(row: Pixel[], min: number, max: number): Pixel[] {
-	const intervalRow = threshold.createIntervalsRed(row, min, max);
+	const intervalRow = intervalizeRow(row, min, max, threshold.redWithinThresholdCheck);
 	const startsWithinThreshold = threshold.redWithinThresholdCheck(intervalRow[0][0], min, max);
 	return sortIntervalizedRow(intervalRow, startsWithinThreshold, sort.byRedAscending);
 }
