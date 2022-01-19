@@ -15,7 +15,7 @@ interface Options {
 	mask?: { left: number; right: number; top: number; bottom: number };
 }
 
-export const workersort = (
+export const pixelsort = (
 	data: Uint8ClampedArray,
 	width: number,
 	height: number,

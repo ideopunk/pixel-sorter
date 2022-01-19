@@ -7,7 +7,7 @@ type Dimensions = { width: number; height: number };
 
 export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
-	const [imageUrl, setImageUrl] = useState("./testimage.jpg");
+	const [imageUrl, setImageUrl] = useState("./testimage2.jpg");
 
 	const workerRef = useRef<Worker>();
 
@@ -33,13 +33,13 @@ export default function Home() {
 			);
 
 			console.log(imageData?.data);
-			// if (imageData?.data) {
-			// 	workerRef.current.postMessage({
-			// 		data: imageData.data,
-			// 		width: imageDimensions.width,
-			// 		height: imageDimensions.height,
-			// 	});
-			// }
+			if (imageData?.data) {
+				workerRef.current.postMessage({
+					data: imageData.data,
+					width: imageDimensions.width,
+					height: imageDimensions.height,
+				});
+			}
 		}
 		// const ctx = canvasRef.current?.getContext("2d");
 		// if (imageRef.current && ctx) {
@@ -67,7 +67,10 @@ export default function Home() {
 			imageRef.current.onload = () => {
 				console.log("loaded");
 				if (imageRef.current?.height && imageRef.current.width) {
+					console.log(imageRef.current.height, imageRef.current.width);
 					setImageDimensions({
+						// height: imageRef.current.clientHeight,
+						// width: imageRef.current.clientWidth,
 						height: imageRef.current.naturalHeight || imageRef.current.height,
 						width: imageRef.current.naturalWidth || imageRef.current.width,
 					});
@@ -122,9 +125,12 @@ export default function Home() {
 				// dimensions={imageDimensions}
 			/>
 			<main className="z-10 w-full h-full flex justify-center items-center flex-col">
-				<div className="w-4/5 h-4/5 relative flex items-center justify-center ">
-					<img ref={imageRef} alt="test-image" src="" className="object-cover" />
-					<canvas ref={canvasRef} className=" absolute" />
+				<div className="w-[700px] h-[700px] relative flex items-center justify-center ">
+					<img ref={imageRef} alt="test-image" src="" className="object-contain" />
+					<canvas
+						ref={canvasRef}
+						className="w-[700px] h-[700px] absolute object-contain"
+					/>
 				</div>
 				<button className="absolute bottom-0 left-0" onClick={draw}>
 					DRAW?!?!?

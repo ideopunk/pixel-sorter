@@ -13,7 +13,6 @@ import {
 	IntervalStyle,
 	SortingStyle,
 } from "../library/types";
-import pixelsort from "../library/pixelsort";
 
 type Dimensions = { width: number; height: number };
 
@@ -132,7 +131,7 @@ export default function Sidebar({ updateFile }: { updateFile: (f: File) => void 
 				id="fileinput"
 				name="fileinput"
 				type="file"
-				accept=".jpg, .png"
+				accept=".jpg, .jpeg, .png"
 				onChange={(e) => {
 					if (e.target.files) {
 						updateFile(e.target.files[0]);
