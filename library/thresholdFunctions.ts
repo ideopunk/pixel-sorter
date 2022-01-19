@@ -1,33 +1,31 @@
-import { Pixel } from "./types";
+import { HSLPixel, Pixel } from "./types";
 
+// RGB
 export function redWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
 	return pixel.r > min && pixel.r < max;
 }
 
-// export function createIntervalsRed(row: Pixel[], min: number, max: number): Pixel[][] {
-// 	let arrOfArrs: Pixel[][] = [[]];
+export function greenWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
+	return pixel.g > min && pixel.g < max;
+}
+export function blueWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
+	return pixel.b > min && pixel.b < max;
+}
+export function alphaWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
+	return pixel.a > min && pixel.a < max;
+}
+export function intensityWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
+	const sum = (pixel.r + pixel.g + pixel.b) / 3;
+	return sum > min && sum < max;
+}
 
-// 	// avoid if-check inside for loop.
-// 	arrOfArrs[0].push(row[0]);
-
-// 	let latestIntervalIsWithinThreshold = redWithinThresholdCheck(
-// 		arrOfArrs.at(-1)?.at(-1) as Pixel,
-// 		min,
-// 		max
-// 	);
-
-// 	for (let i = 1; i < row.length; i++) {
-// 		const latestPixelWithin = redWithinThresholdCheck(row[i], min, max);
-// 		if (latestPixelWithin === latestIntervalIsWithinThreshold) {
-// 			// add to current interval
-// 			arrOfArrs.at(-1)?.push(row[i]);
-// 		} else {
-// 			// start a new interval
-// 			latestIntervalIsWithinThreshold = latestPixelWithin;
-// 			arrOfArrs.push([row[i]]);
-// 		}
-// 	}
-
-// 	return arrOfArrs;
-// }
-
+// HSL
+export function hueWithinThresholdCheck(pixel: HSLPixel, min: number, max: number) {
+	return pixel.h > min && pixel.h < max;
+}
+export function saturationWithinThresholdCheck(pixel: HSLPixel, min: number, max: number) {
+	return pixel.s > min && pixel.s < max;
+}
+export function lightnessWithinThresholdCheck(pixel: HSLPixel, min: number, max: number) {
+	return pixel.l > min && pixel.l < max;
+}

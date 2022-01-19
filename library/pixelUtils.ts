@@ -1,5 +1,6 @@
 import { HSLPixel, Pixel } from "./types";
 import * as sort from "./sortingFunctions";
+import { sortHSLRowWithThreshold, sortRGBRowWithThreshold } from "./intervalFunctions";
 
 export function RGBtoClampArray(pixels: Pixel[]) {
 	let spreadArray = pixels.map((pixel) => [pixel.r, pixel.g, pixel.b, pixel.a]);
@@ -108,6 +109,41 @@ export function hslNoThresholdConversion(
 	return newData;
 }
 
+export function hslThresholdConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	min: number,
+	max: number,
+	thresholdCheck: (pixel: HSLPixel, min: number, max: number) => boolean,
+	sorter: (a: HSLPixel, b: HSLPixel) => number
+) {
+	let pixels: HSLPixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+	}
+
+	let rows = [];
+
+	for (let i = 0; i < height; i++) {
+		rows.push(pixels.slice(i * width, (i + 1) * width));
+	}
+
+	let newArray: HSLPixel[][] = [];
+	for (let row of rows) {
+		newArray.push(sortHSLRowWithThreshold(row, min, max, thresholdCheck, sorter));
+		// newArray.push(sortRowWithThreshold(row, min, max));
+	}
+
+	let flattenedArray = newArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+
+	return newData;
+}
+
 export function rgbNoThresholdConversion(
 	data: Uint8ClampedArray,
 	width: number,
@@ -145,7 +181,8 @@ export function rgbThresholdConversion(
 	height: number,
 	min: number,
 	max: number,
-	intervalFunction: (row: Pixel[], min: number, max: number) => Pixel[]
+	thresholdCheck: (pixel: Pixel, min: number, max: number) => boolean,
+	sorter: (a: Pixel, b: Pixel) => number
 ) {
 	let pixels: Pixel[] = [];
 
@@ -161,7 +198,8 @@ export function rgbThresholdConversion(
 
 	let newArray: Pixel[][] = [];
 	for (let row of rows) {
-		newArray.push(intervalFunction(row, min, max));
+		newArray.push(sortRGBRowWithThreshold(row, min, max, thresholdCheck, sorter));
+		// newArray.push(sortRowWithThreshold(row, min, max));
 	}
 
 	let flattenedArray = newArray.flat();
@@ -171,4 +209,3 @@ export function rgbThresholdConversion(
 
 	return newData;
 }
-

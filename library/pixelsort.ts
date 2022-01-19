@@ -1,8 +1,10 @@
 import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from "./types";
 import * as sorting from "./sortingFunctions";
 import * as interval from "./intervalFunctions";
+import * as threshold from "./thresholdFunctions";
 import {
 	hslNoThresholdConversion,
+	hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbThresholdConversion,
 } from "./pixelUtils";
@@ -13,17 +15,55 @@ export const pixelsort = (
 	height: number,
 	options: Options
 ): ImageData => {
+	const min = !!options?.threshold ? options.threshold[0] : 0;
+	const max = !!options?.threshold ? options.threshold[1] : 0;
 	// HSL
 	if (options.sortingStyle === "hue") {
-		return hslNoThresholdConversion(data, width, height, sorting.byHueAscending);
+		if (!options.threshold) {
+			return hslNoThresholdConversion(data, width, height, sorting.byHueAscending);
+		} else {
+			return hslThresholdConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
+				threshold.hueWithinThresholdCheck,
+				sorting.byHueAscending
+			);
+		}
 	}
 
 	if (options.sortingStyle === "saturation") {
-		return hslNoThresholdConversion(data, width, height, sorting.bySaturationAscending);
+		if (!options.threshold) {
+			return hslNoThresholdConversion(data, width, height, sorting.bySaturationAscending);
+		} else {
+			return hslThresholdConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
+				threshold.saturationWithinThresholdCheck,
+				sorting.bySaturationAscending
+			);
+		}
 	}
 
 	if (options.sortingStyle === "lightness") {
-		return hslNoThresholdConversion(data, width, height, sorting.byLightAscending);
+		if (!options.threshold) {
+			return hslNoThresholdConversion(data, width, height, sorting.byLightAscending);
+		} else {
+			return hslThresholdConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
+				threshold.lightnessWithinThresholdCheck,
+				sorting.byLightAscending
+			);
+		}
 	}
 
 	// RGB
@@ -35,23 +75,60 @@ export const pixelsort = (
 				data,
 				width,
 				height,
-				options.threshold[0],
-				options.threshold[1],
-				interval.byRedAscendingIntervals
+				min,
+				max,
+				threshold.redWithinThresholdCheck,
+				sorting.byRedAscending
 			);
 		}
 	}
 
 	if (options.sortingStyle === "green") {
-		return rgbNoThresholdConversion(data, width, height, sorting.byGreenAscending);
+		if (!options.threshold) {
+			return rgbNoThresholdConversion(data, width, height, sorting.byGreenAscending);
+		} else {
+			return rgbThresholdConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
+				threshold.greenWithinThresholdCheck,
+				sorting.byGreenAscending
+			);
+		}
 	}
 
 	if (options.sortingStyle === "blue") {
-		return rgbNoThresholdConversion(data, width, height, sorting.byBlueAscending);
+		if (!options.threshold) {
+			return rgbNoThresholdConversion(data, width, height, sorting.byBlueAscending);
+		} else {
+			return rgbThresholdConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
+				threshold.blueWithinThresholdCheck,
+				sorting.byBlueAscending
+			);
+		}
 	}
 
 	if (options.sortingStyle === "intensity") {
-		return rgbNoThresholdConversion(data, width, height, sorting.byRGBAscending);
+		if (!options.threshold) {
+			return rgbNoThresholdConversion(data, width, height, sorting.byRGBAscending);
+		} else {
+			return rgbThresholdConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
+				threshold.intensityWithinThresholdCheck,
+				sorting.byRGBAscending
+			);
+		}
 	}
 
 	throw Error("uhhh unreachable");
