@@ -48,3 +48,11 @@ body::-webkit-scrollbar-button {
 		stroke-dashoffset: -100;
 	}
 }
+
+li {
+	list-style-type: disc
+}
+
+ul {
+	margin-left: 3rem;
+}

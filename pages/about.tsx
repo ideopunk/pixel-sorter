@@ -3,26 +3,26 @@ import Link from "next/link";
 export default function About() {
 	return (
 		<div className="p-4">
-			<h1> Pixle Sorter</h1>
+			<h1> Pixel Sorter</h1>
 
 			<p>This is an interface for pixel sorting to create glitch art.</p>
 			<ul>
 				<li>
-					interval functions:
+					Interval functions:
 					<ul>
-						<li>threshold with min and max.</li>
-						<li>random</li>
-						<li>none</li>
+						<li>Threshold with min and max</li>
+						<li>Random</li>
+						<li>None</li>
 					</ul>
 				</li>
 				<li>
-					- sorting functions:
+					Sorting functions:
 					<ul>
-						<li>- - lightness (hsv)</li>
-						<li>- - hue (hsv)</li>
-						<li>- - saturation (hsv)</li>
-						<li>- - intensity (sum of rgb)</li>
-						<li>- - color (individual rgb)</li>
+						<li>Hue</li>
+						<li>Saturation</li>
+						<li>Lightness</li>
+						<li>Color (individual RGB)</li>
+						<li>Intensity (sum of RGB)</li>
 					</ul>
 				</li>
 				<li>
@@ -40,6 +40,10 @@ export default function About() {
 			<p>
 				Shout outs to Satyarth for their great explanation
 				http://satyarth.me/articles/pixel-sorting/
+			</p>
+			<p>
+				Web worker usage inspired by Butter.js
+				https://github.com/brandly/butter.js/blob/master/src/butter-worker.js
 			</p>
 			<p>Project assigned by Peter Sanfilippo</p>
 			<p>
