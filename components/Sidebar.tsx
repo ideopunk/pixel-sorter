@@ -19,9 +19,11 @@ type Dimensions = { width: number; height: number };
 
 export default function Sidebar({
 	draw,
+	reset,
 	updateFile,
 }: {
 	draw: (options: Options) => void;
+	reset: () => void;
 	updateFile: (f: File) => void;
 }) {
 	const [direction, setDirection] = useState<Direction>("down-to-left");
@@ -33,10 +35,6 @@ export default function Sidebar({
 
 	function handleDirection(newDir: string) {
 		if (arrayOfDirections.includes(newDir as Direction)) setDirection(newDir as Direction);
-	}
-
-	function handleReset() {
-		console.log("reset!");
 	}
 
 	function sendDraw() {
@@ -110,7 +108,7 @@ export default function Sidebar({
 
 			{/* THRESHOLD */}
 			{intervalStyle === "threshold" && (
-				<label className="relative pt-12">
+				<label className="relative pt-12 ">
 					Thresholds. <span>Min: {threshold[0]}</span> <span>Max: {threshold[1]}</span>
 					<Slider.Root
 						className="relative flex items-center w-full h-6 select-none"
@@ -166,17 +164,23 @@ export default function Sidebar({
 						updateFile(e.target.files[0]);
 					}
 				}}
-				className="file:border-0 file:bg-black file:text-white dark:file:bg-white dark:file:text-black  file:rounded-full hover:file:underline file:p-3 file:font-bold file:opacity-90 hover:file:opacity-100 transition-opacity file:w-full file:cursor-pointer mb-4"
+				className="file:border-0 file:bg-black file:text-white dark:file:bg-white dark:file:text-black  file:rounded-full hover:file:underline file:p-3  file:opacity-90 hover:file:opacity-100 transition-opacity file:w-full file:cursor-pointer mb-4 pt-8"
 			/>
 
 			<button
-				className="border-0 bg-black text-white dark:bg-white dark:text-black rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4"
+				className="border-0 bg-black text-white dark:bg-white dark:text-black rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4 "
 				onClick={sendDraw}
 			>
 				DRAW
 			</button>
 
-			<button onClick={handleReset}>Reset to Original Image</button>
+			<button
+				className=" bg-white text-black dark:bg-black dark:text-white border-2 dark:border-white rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4"
+				onClick={reset}
+			>
+				Reset to Original Image
+			</button>
+
 			<div className="flex  items-center lg:h-20 justify-evenly ">
 				<button
 					title="Toggle theme"

@@ -24,7 +24,7 @@ export default function Home() {
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
 			if (workerRef.current && imageRef.current) {
 				const ctx = canvasRef.current?.getContext("2d");
-				ctx?.drawImage(imageRef.current, 0, 0);
+				ctx?.drawImage(imageRef.current, 0, 0); // use this if nothing else!
 				const imageData = ctx?.getImageData(
 					0,
 					0,
@@ -64,7 +64,12 @@ export default function Home() {
 
 			imageRef.current.onload = () => {
 				console.log("loaded");
-				if (imageRef.current?.height && imageRef.current.width) {
+				if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
+					const ctx = canvasRef.current?.getContext("2d");
+					canvasRef.current.width = imageDimensions.width;
+					canvasRef.current.height = imageDimensions.height;
+					console.log("HELLOOOOO");
+					ctx?.drawImage(imageRef.current, 0, 0);
 					console.log(imageRef.current.height, imageRef.current.width);
 					setImageDimensions({
 						// height: imageRef.current.clientHeight,
@@ -103,6 +108,14 @@ export default function Home() {
 		});
 		reader.readAsDataURL(newFile);
 	}
+
+	function handleReset() {
+		if (imageRef.current) {
+			const ctx = canvasRef.current?.getContext("2d");
+			ctx?.drawImage(imageRef.current, 0, 0);
+		}
+	}
+
 	return (
 		<div className="w-screen h-screen dark:bg-black flex justify-center items-center">
 			<Head>
@@ -119,6 +132,7 @@ export default function Home() {
 
 			<Sidebar
 				draw={draw}
+				reset={handleReset}
 				// originalImage={imageUrl}
 				updateFile={updateFile}
 				// dimensions={imageDimensions}
