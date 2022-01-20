@@ -9,6 +9,7 @@ type Dimensions = { width: number; height: number };
 export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 	const [imageUrl, setImageUrl] = useState("./testimage2.jpg");
+	const [newImage, setNewImage] = useState(true);
 
 	const workerRef = useRef<Worker>();
 
@@ -24,7 +25,11 @@ export default function Home() {
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
 			if (workerRef.current && imageRef.current) {
 				const ctx = canvasRef.current?.getContext("2d");
-				ctx?.drawImage(imageRef.current, 0, 0); // use this if nothing else!
+
+				if (newImage) {
+					ctx?.drawImage(imageRef.current, 0, 0); // use this if nothing else!
+					setNewImage(false);
+				}
 				const imageData = ctx?.getImageData(
 					0,
 					0,
@@ -42,7 +47,7 @@ export default function Home() {
 				}
 			}
 		},
-		[imageDimensions]
+		[imageDimensions, newImage]
 	);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -57,7 +62,7 @@ export default function Home() {
 
 	// get dimensions of new file
 	const convertUrlToImage = useCallback((url: string) => {
-		console.log({ url });
+		setNewImage(true);
 		if (imageRef.current) {
 			imageRef.current.src = url;
 			// new Image({ src: url });
