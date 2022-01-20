@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { useTheme } from "next-themes";
 import SunSvg from "./SunSvg";
@@ -27,7 +27,7 @@ export default function Sidebar({
 	const [direction, setDirection] = useState<Direction>("down-to-left");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
-	const [threshold, setThreshold] = useState<[number, number]>([25, 8]);
+	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);
 
 	const { theme, setTheme } = useTheme();
 
@@ -43,6 +43,15 @@ export default function Sidebar({
 		draw({ direction, sortingStyle, intervalStyle, threshold });
 	}
 
+	useEffect(() => {
+		if (sortingStyle === "red" || sortingStyle === "green" || sortingStyle === "blue") {
+			setThreshold([100, 200]);
+		} else if (sortingStyle === "hue") {
+			setThreshold([150, 250]);
+		} else {
+			setThreshold([25, 80]);
+		}
+	}, [sortingStyle]);
 	return (
 		<div className="h-screen border-r-2 p-4 w-96">
 			{/* DIRECTION */}
@@ -102,10 +111,19 @@ export default function Sidebar({
 			{/* THRESHOLD */}
 			{intervalStyle === "threshold" && (
 				<label className="relative pt-12">
-					Thresholds. <span>Min: {threshold[0] / 100}</span>{" "}
-					<span>Max: {threshold[1] / 100}</span>
+					Thresholds. <span>Min: {threshold[0]}</span> <span>Max: {threshold[1]}</span>
 					<Slider.Root
 						className="relative flex items-center w-full h-6 select-none"
+						min={0}
+						max={
+							sortingStyle === "red" ||
+							sortingStyle === "green" ||
+							sortingStyle === "blue"
+								? 255
+								: sortingStyle === "hue"
+								? 360
+								: 100
+						}
 						value={threshold}
 						onValueChange={([min, max]) => setThreshold([min, max])}
 						minStepsBetweenThumbs={1}

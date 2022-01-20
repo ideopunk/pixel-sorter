@@ -14,13 +14,13 @@ export const arrayOfDirections = [
 ] as const;
 
 export const arrayOfSortingStyles = [
-	"lightness",
 	"hue",
 	"saturation",
-	"intensity",
+	"lightness",
 	"red",
 	"green",
 	"blue",
+	"intensity",
 ] as const;
 
 export const arrayOfIntervalStyles = ["threshold", "random", "none"] as const;
