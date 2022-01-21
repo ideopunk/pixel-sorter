@@ -1,6 +1,11 @@
 import { HSLPixel, Pixel } from "./types";
 import * as sort from "./sortingFunctions";
-import { sortHSLRowWithThreshold, sortRGBRowWithThreshold } from "./intervalFunctions";
+import {
+	sortHSLRowWithThreshold,
+	sortRGBRowWithThreshold,
+	sortHSLRowRandomly,
+	sortRGBRowRandomly,
+} from "./intervalFunctions";
 
 export function RGBtoClampArray(pixels: Pixel[]) {
 	let spreadArray = pixels.map((pixel) => [pixel.r, pixel.g, pixel.b, pixel.a]);
@@ -205,6 +210,92 @@ export function rgbThresholdConversion(
 	let flattenedArray = newArray.flat();
 
 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+
+	return newData;
+}
+
+/**
+ *
+ * @param data
+ * @param width
+ * @param height
+ * @param min The minimum acceptable random value for an interval range
+ * @param max The maximum (exclusive) acceptable random value for an interval range
+ * @param sorter
+ * @returns
+ */
+export function rgbRandomConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	min: number,
+	max: number,
+	sorter: (a: Pixel, b: Pixel) => number
+) {
+	let pixels: Pixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
+	}
+
+	let rows = [];
+
+	for (let i = 0; i < height; i++) {
+		rows.push(pixels.slice(i * width, (i + 1) * width));
+	}
+
+	let newArray: Pixel[][] = [];
+	for (let row of rows) {
+		newArray.push(sortRGBRowRandomly(row, min, max, sorter));
+	}
+
+	let flattenedArray = newArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+	// throw new Error(JSON.stringify({ height: newData.height, width: newData.height }));
+	return newData;
+}
+
+/**
+ *
+ * @param data
+ * @param width
+ * @param height
+ * @param min The minimum acceptable random value for an interval range
+ * @param max The maximum (exclusive) acceptable random value for an interval range
+ * @param sorter
+ * @returns
+ */
+export function hslRandomConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	min: number,
+	max: number,
+	sorter: (a: HSLPixel, b: HSLPixel) => number
+) {
+	let pixels: HSLPixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+	}
+
+	let rows = [];
+
+	for (let i = 0; i < height; i++) {
+		rows.push(pixels.slice(i * width, (i + 1) * width));
+	}
+
+	let newArray: HSLPixel[][] = [];
+	for (let row of rows) {
+		newArray.push(sortHSLRowRandomly(row, min, max, sorter));
+	}
+
+	let flattenedArray = newArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
 
 	return newData;

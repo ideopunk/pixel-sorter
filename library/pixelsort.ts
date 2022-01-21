@@ -4,8 +4,10 @@ import * as interval from "./intervalFunctions";
 import * as threshold from "./thresholdFunctions";
 import {
 	hslNoThresholdConversion,
+	hslRandomConversion,
 	hslThresholdConversion,
 	rgbNoThresholdConversion,
+	rgbRandomConversion,
 	rgbThresholdConversion,
 } from "./pixelUtils";
 
@@ -15,6 +17,7 @@ export const pixelsort = (
 	height: number,
 	options: Options
 ): ImageData => {
+	// ASSIGN THINGS
 	const [min, max] = options.threshold || [0, 0];
 
 	let sortingFunction: ((a: HSLPixel, b: HSLPixel) => number) | ((a: Pixel, b: Pixel) => number);
@@ -61,13 +64,24 @@ export const pixelsort = (
 			throw new Error("unreachable");
 	}
 
+	// DO THINGS
+
 	// HSL
 	if (schema === "hsl") {
-		if (!options.threshold) {
+		if (options.intervalStyle === "none") {
 			return hslNoThresholdConversion(
 				data,
 				width,
 				height,
+				sortingFunction as (a: HSLPixel, b: HSLPixel) => number
+			);
+		} else if (options.intervalStyle === "random") {
+			return hslRandomConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number
 			);
 		} else {
@@ -84,11 +98,20 @@ export const pixelsort = (
 	}
 
 	if (schema === "rgb") {
-		if (!options.threshold) {
+		if (options.intervalStyle === "none") {
 			return rgbNoThresholdConversion(
 				data,
 				width,
 				height,
+				sortingFunction as (a: Pixel, b: Pixel) => number
+			);
+		} else if (options.intervalStyle === "random") {
+			return rgbRandomConversion(
+				data,
+				width,
+				height,
+				min,
+				max,
 				sortingFunction as (a: Pixel, b: Pixel) => number
 			);
 		} else {

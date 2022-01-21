@@ -1,6 +1,7 @@
 import { HSLPixel, Pixel } from "./types";
 import * as threshold from "./thresholdFunctions";
 import * as sort from "./sortingFunctions";
+import { getRandomInt } from "./genericUtils";
 
 /**
  * Split an RGB row into a row of intervals
@@ -82,6 +83,35 @@ export function intervalizeHSLRow(
 	return arrOfArrs;
 }
 
+/**
+ * Split a row into a row of intervals randomly.
+ * @param row
+ * @param min
+ * @param max
+ * @returns
+ */
+export function randomlyIntervalizeRow<T>(row: T[], min: number, max: number): T[][] {
+	let arrOfArrs: T[][] = [[]];
+
+	let count = getRandomInt(min, max);
+	let matchcount = 0;
+	arrOfArrs[0].push(row[0]);
+
+	for (let i = 1; i < row.length; i++) {
+		matchcount++;
+		if (matchcount !== count) {
+			matchcount = 0;
+			count = getRandomInt(min, max);
+			// add to current interval
+			arrOfArrs.at(-1)?.push(row[i]);
+		} else {
+			arrOfArrs.push([row[i]]);
+		}
+	}
+
+	return arrOfArrs;
+}
+
 // flip back and forth
 function sortIntervalizedRGBRow(
 	intervalizedRow: Pixel[][],
@@ -153,5 +183,31 @@ export function sortHSLRowWithThreshold(
 ): HSLPixel[] {
 	const intervalRow = intervalizeHSLRow(row, min, max, thresholdCheck);
 	const startsWithinThreshold = thresholdCheck(intervalRow[0][0], min, max);
+	return sortIntervalizedHSLRow(intervalRow, startsWithinThreshold, sorter);
+}
+
+export function sortRGBRowRandomly(
+	row: Pixel[],
+	min: number,
+	max: number,
+	sorter: (a: Pixel, b: Pixel) => number
+): Pixel[] {
+	const intervalRow = randomlyIntervalizeRow(row, min, max);
+
+	// randomly decide which to start on
+	const startsWithinThreshold = Boolean(getRandomInt(0, 2));
+	return sortIntervalizedRGBRow(intervalRow, startsWithinThreshold, sorter);
+}
+
+export function sortHSLRowRandomly(
+	row: HSLPixel[],
+	min: number,
+	max: number,
+	sorter: (a: HSLPixel, b: HSLPixel) => number
+): HSLPixel[] {
+	const intervalRow = randomlyIntervalizeRow(row, min, max);
+
+	// randomly decide which to start on
+	const startsWithinThreshold = Boolean(getRandomInt(0, 2));
 	return sortIntervalizedHSLRow(intervalRow, startsWithinThreshold, sorter);
 }

@@ -107,7 +107,7 @@ export default function Sidebar({
 			</label>
 
 			{/* THRESHOLD */}
-			{intervalStyle === "threshold" && (
+			{(intervalStyle === "threshold" || intervalStyle === "random") && (
 				<label className="relative pt-12 ">
 					Thresholds. <span>Min: {threshold[0]}</span> <span>Max: {threshold[1]}</span>
 					<Slider.Root

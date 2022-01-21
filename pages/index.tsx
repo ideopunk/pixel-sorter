@@ -14,11 +14,23 @@ export default function Home() {
 	const workerRef = useRef<Worker>();
 
 	useEffect(() => {
-		workerRef.current = new Worker(new URL("../library/test.worker.ts", import.meta.url));
-		workerRef.current.addEventListener("message", (e: MessageEvent<ImageData>) => {
-			const ctx = canvasRef.current?.getContext("2d");
-			if (ctx) ctx.putImageData(e.data, 0, 0);
-		});
+		workerRef.current = new Worker(new URL("../library/pixel.worker.ts", import.meta.url));
+		workerRef.current.addEventListener(
+			"message",
+			(e: MessageEvent<ImageData>) => {
+				const ctx = canvasRef.current?.getContext("2d");
+				if (ctx) ctx.putImageData(e.data, 0, 0);
+			},
+			false
+		);
+
+		workerRef.current.addEventListener(
+			"error",
+			(err) => {
+				console.log(err);
+			},
+			false
+		);
 	}, []);
 
 	const draw = useCallback(
@@ -68,12 +80,10 @@ export default function Home() {
 			// new Image({ src: url });
 
 			imageRef.current.onload = () => {
-				console.log("loaded");
 				if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
 					const ctx = canvasRef.current?.getContext("2d");
 					canvasRef.current.width = imageDimensions.width;
 					canvasRef.current.height = imageDimensions.height;
-					console.log("HELLOOOOO");
 					ctx?.drawImage(imageRef.current, 0, 0);
 					console.log(imageRef.current.height, imageRef.current.width);
 					setImageDimensions({
@@ -85,7 +95,6 @@ export default function Home() {
 				}
 			};
 			imageRef.current.onerror = (err: any) => {
-				console.log("img error");
 				console.error(err);
 				if (typeof err === "object" && "message" in err) console.log(err.message);
 			};
