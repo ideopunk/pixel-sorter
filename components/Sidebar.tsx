@@ -171,11 +171,11 @@ export default function Sidebar({
 				className="border-0 bg-black text-white dark:bg-white dark:text-black rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4 "
 				onClick={sendDraw}
 			>
-				DRAW
+				GLITCH
 			</button>
 
 			<button
-				className=" bg-white text-black dark:bg-black dark:text-white border-2 dark:border-white rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4"
+				className=" bg-white text-black dark:bg-black dark:text-white border-2 border-black dark:border-white rounded-full hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full cursor-pointer mb-4"
 				onClick={reset}
 			>
 				Reset to Original Image
