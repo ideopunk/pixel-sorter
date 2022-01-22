@@ -27,39 +27,41 @@ export const pixelsort = (
 		| ((pixel: Pixel, min: number, max: number) => boolean);
 
 	let schema: "rgb" | "hsl" = "rgb";
-	// let direction: "downright" | "upleft" = (options.direction === "down" || options.direction) === "right" ? "downright" : "upleft";
-
+	let downOrRight: boolean = options.direction === "down" || options.direction === "right";
+	let columns: boolean = options.direction === "up" || options.direction === "down";
 	switch (options.sortingStyle) {
 		case "hue":
 			schema = "hsl";
 			thresholdCheck = threshold.hueWithinThresholdCheck;
-			sortingFunction = sorting.byHueAscending;
+			sortingFunction = downOrRight ? sorting.byHueAscending : sorting.byHueDescending;
 			break;
 		case "lightness":
 			schema = "hsl";
 			thresholdCheck = threshold.lightnessWithinThresholdCheck;
-			sortingFunction = sorting.byLightAscending;
+			sortingFunction = downOrRight ? sorting.byLightAscending : sorting.byLightDescending;
 			break;
 		case "saturation":
 			schema = "hsl";
 			thresholdCheck = threshold.saturationWithinThresholdCheck;
-			sortingFunction = sorting.bySaturationAscending;
+			sortingFunction = downOrRight
+				? sorting.bySaturationAscending
+				: sorting.bySaturationDescending;
 			break;
 		case "red":
 			thresholdCheck = threshold.redWithinThresholdCheck;
-			sortingFunction = sorting.byRedAscending;
+			sortingFunction = downOrRight ? sorting.byRedAscending : sorting.byRedDescending;
 			break;
 		case "green":
 			thresholdCheck = threshold.greenWithinThresholdCheck;
-			sortingFunction = sorting.byGreenAscending;
+			sortingFunction = downOrRight ? sorting.byGreenAscending : sorting.byGreenDescending;
 			break;
 		case "blue":
 			thresholdCheck = threshold.blueWithinThresholdCheck;
-			sortingFunction = sorting.byBlueAscending;
+			sortingFunction = downOrRight ? sorting.byBlueAscending : sorting.byBlueDescending;
 			break;
 		case "intensity":
 			thresholdCheck = threshold.intensityWithinThresholdCheck;
-			sortingFunction = sorting.byRGBAscending;
+			sortingFunction = downOrRight ? sorting.byRGBAscending : sorting.byRGBDescending;
 			break;
 		default:
 			const exhaustiveCheck: never = options.sortingStyle;
@@ -75,7 +77,7 @@ export const pixelsort = (
 				width,
 				height,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				options.direction === "down" || options.direction === "up"
+				columns
 			);
 			// return hslNoThresholdConversion(
 			// 	data,
@@ -91,7 +93,7 @@ export const pixelsort = (
 				min,
 				max,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				options.direction === "down" || options.direction === "up"
+				columns
 			);
 		} else {
 			return hslThresholdConversion(
@@ -102,7 +104,7 @@ export const pixelsort = (
 				max,
 				thresholdCheck as (pixel: HSLPixel, min: number, max: number) => boolean,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				options.direction === "down" || options.direction === "up"
+				columns
 			);
 		}
 	}
@@ -114,7 +116,7 @@ export const pixelsort = (
 				width,
 				height,
 				sortingFunction as (a: Pixel, b: Pixel) => number,
-				options.direction === "down" || options.direction === "up"
+				columns
 			);
 		} else if (options.intervalStyle === "random") {
 			return rgbRandomConversion(
@@ -124,7 +126,7 @@ export const pixelsort = (
 				min,
 				max,
 				sortingFunction as (a: Pixel, b: Pixel) => number,
-				options.direction === "down" || options.direction === "up"
+				columns
 			);
 		} else {
 			return rgbThresholdConversion(
@@ -135,7 +137,7 @@ export const pixelsort = (
 				max,
 				thresholdCheck as (pixel: Pixel, min: number, max: number) => boolean,
 				sortingFunction as (a: Pixel, b: Pixel) => number,
-				options.direction === "down" || options.direction === "up"
+				columns
 			);
 		}
 	}

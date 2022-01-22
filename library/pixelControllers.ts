@@ -80,7 +80,8 @@ export function hslThresholdConversion(
 	min: number,
 	max: number,
 	thresholdCheck: (pixel: HSLPixel, min: number, max: number) => boolean,
-	sorter: (a: HSLPixel, b: HSLPixel) => number
+	sorter: (a: HSLPixel, b: HSLPixel) => number,
+	columns: boolean
 ) {
 	let pixels: HSLPixel[] = [];
 
@@ -88,19 +89,80 @@ export function hslThresholdConversion(
 		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
 	}
 
-	let rows = [];
+	let nestedData: HSLPixel[][] = [];
 
-	for (let i = 0; i < height; i++) {
-		rows.push(pixels.slice(i * width, (i + 1) * width));
+	if (columns) {
+		nestedData = toColumns(pixels, width, height);
+	} else {
+		for (let i = 0; i < height; i++) {
+			nestedData.push(pixels.slice(i * width, (i + 1) * width));
+		}
 	}
 
-	let newArray: HSLPixel[][] = [];
-	for (let row of rows) {
-		newArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
-		// newArray.push(sortRowWithThreshold(row, min, max));
+	let convertedArray: HSLPixel[][] = [];
+	for (let row of nestedData) {
+		convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
 	}
 
-	let flattenedArray = newArray.flat();
+	let flattenedArray: HSLPixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
+	const newData = new ImageData(clampedArr, width, height);
+
+	return newData;
+}
+
+/**
+ *
+ * @param data
+ * @param width
+ * @param height
+ * @param min The minimum acceptable random value for an interval range
+ * @param max The maximum (exclusive) acceptable random value for an interval range
+ * @param sorter
+ * @returns
+ */
+export function hslRandomConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	min: number,
+	max: number,
+	sorter: (a: HSLPixel, b: HSLPixel) => number,
+	columns: boolean
+) {
+	let pixels: HSLPixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+	}
+
+	let nestedData: HSLPixel[][] = [];
+
+	if (columns) {
+		nestedData = toColumns(pixels, width, height);
+	} else {
+		for (let i = 0; i < height; i++) {
+			nestedData.push(pixels.slice(i * width, (i + 1) * width));
+		}
+	}
+
+	let convertedArray: HSLPixel[][] = [];
+	for (let row of nestedData) {
+		convertedArray.push(sortRandomRow(row, min, max, sorter));
+	}
+
+	let flattenedArray: HSLPixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
 
 	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
@@ -112,7 +174,8 @@ export function rgbNoThresholdConversion(
 	data: Uint8ClampedArray,
 	width: number,
 	height: number,
-	sortingFunction: (a: Pixel, b: Pixel) => number
+	sortingFunction: (a: Pixel, b: Pixel) => number,
+	columns: boolean
 ) {
 	let pixels: Pixel[] = [];
 
@@ -120,18 +183,27 @@ export function rgbNoThresholdConversion(
 		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
 	}
 
-	let rows: Pixel[][] = [];
+	let nestedData: Pixel[][] = [];
 
-	for (let i = 0; i < height; i++) {
-		rows.push(pixels.slice(i * width, (i + 1) * width));
+	if (columns) {
+		nestedData = toColumns(pixels, width, height);
+	} else {
+		for (let i = 0; i < height; i++) {
+			nestedData.push(pixels.slice(i * width, (i + 1) * width));
+		}
 	}
 
-	let newArray: Pixel[][] = [];
-	for (let row of rows) {
-		newArray.push(row.sort(sortingFunction));
+	let convertedArray: Pixel[][] = [];
+	for (let row of nestedData) {
+		convertedArray.push(row.sort(sortingFunction));
 	}
 
-	let flattenedArray = newArray.flat();
+	let flattenedArray: Pixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
 
 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
@@ -146,7 +218,8 @@ export function rgbThresholdConversion(
 	min: number,
 	max: number,
 	thresholdCheck: (pixel: Pixel, min: number, max: number) => boolean,
-	sorter: (a: Pixel, b: Pixel) => number
+	sorter: (a: Pixel, b: Pixel) => number,
+	columns: boolean
 ) {
 	let pixels: Pixel[] = [];
 
@@ -154,19 +227,28 @@ export function rgbThresholdConversion(
 		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
 	}
 
-	let rows = [];
+	let nestedData: Pixel[][] = [];
 
-	for (let i = 0; i < height; i++) {
-		rows.push(pixels.slice(i * width, (i + 1) * width));
+	if (columns) {
+		nestedData = toColumns(pixels, width, height);
+	} else {
+		for (let i = 0; i < height; i++) {
+			nestedData.push(pixels.slice(i * width, (i + 1) * width));
+		}
 	}
 
-	let newArray: Pixel[][] = [];
-	for (let row of rows) {
-		newArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
+	let convertedArray: Pixel[][] = [];
+	for (let row of nestedData) {
+		convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
 		// newArray.push(sortRowWithThreshold(row, min, max));
 	}
 
-	let flattenedArray = newArray.flat();
+	let flattenedArray: Pixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
 
 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
@@ -190,7 +272,8 @@ export function rgbRandomConversion(
 	height: number,
 	min: number,
 	max: number,
-	sorter: (a: Pixel, b: Pixel) => number
+	sorter: (a: Pixel, b: Pixel) => number,
+	columns: boolean
 ) {
 	let pixels: Pixel[] = [];
 
@@ -198,64 +281,29 @@ export function rgbRandomConversion(
 		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
 	}
 
-	let rows = [];
+	let nestedData: Pixel[][] = [];
 
-	for (let i = 0; i < height; i++) {
-		rows.push(pixels.slice(i * width, (i + 1) * width));
+	if (columns) {
+		nestedData = toColumns(pixels, width, height);
+	} else {
+		for (let i = 0; i < height; i++) {
+			nestedData.push(pixels.slice(i * width, (i + 1) * width));
+		}
 	}
 
-	let newArray: Pixel[][] = [];
-	for (let row of rows) {
-		newArray.push(sortRandomRow(row, min, max, sorter));
+	let convertedArray: Pixel[][] = [];
+	for (let row of nestedData) {
+		convertedArray.push(sortRandomRow(row, min, max, sorter));
 	}
 
-	let flattenedArray = newArray.flat();
-
+	let flattenedArray: Pixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
 	// throw new Error(JSON.stringify({ height: newData.height, width: newData.height }));
-	return newData;
-}
-
-/**
- *
- * @param data
- * @param width
- * @param height
- * @param min The minimum acceptable random value for an interval range
- * @param max The maximum (exclusive) acceptable random value for an interval range
- * @param sorter
- * @returns
- */
-export function hslRandomConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	min: number,
-	max: number,
-	sorter: (a: HSLPixel, b: HSLPixel) => number
-) {
-	let pixels: HSLPixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
-
-	let rows = [];
-
-	for (let i = 0; i < height; i++) {
-		rows.push(pixels.slice(i * width, (i + 1) * width));
-	}
-
-	let newArray: HSLPixel[][] = [];
-	for (let row of rows) {
-		newArray.push(sortRandomRow(row, min, max, sorter));
-	}
-
-	let flattenedArray = newArray.flat();
-
-	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-
 	return newData;
 }
