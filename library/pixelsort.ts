@@ -3,14 +3,14 @@ import * as sorting from "./sortingFunctions";
 import * as interval from "./intervalFunctions";
 import * as threshold from "./thresholdFunctions";
 import {
+	columnTest,
 	hslNoThresholdConversion,
 	hslRandomConversion,
 	hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbRandomConversion,
 	rgbThresholdConversion,
-	transpose,
-} from "./pixelUtils";
+} from "./pixelControllers";
 
 export const pixelsort = (
 	data: Uint8ClampedArray,
@@ -66,16 +66,21 @@ export const pixelsort = (
 	}
 
 	// DO THINGS
-
 	// HSL
 	if (schema === "hsl") {
 		if (options.intervalStyle === "none") {
-			return hslNoThresholdConversion(
+			return columnTest(
 				data,
 				width,
 				height,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number
 			);
+			// return hslNoThresholdConversion(
+			// 	data,
+			// 	width,
+			// 	height,
+			// 	sortingFunction as (a: HSLPixel, b: HSLPixel) => number
+			// );
 		} else if (options.intervalStyle === "random") {
 			return hslRandomConversion(
 				data,

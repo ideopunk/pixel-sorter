@@ -59,7 +59,7 @@ export default function Sidebar({
 		<div className="h-screen border-r-2  w-96">
 			<div className="border-b border-gray-400 p-4 pb-6">
 				{/* DIRECTION */}
-				<label className="pb-12 block">
+				<label className="pb-12 block font-bold">
 					Direction
 					<select
 						value={direction}
@@ -77,7 +77,7 @@ export default function Sidebar({
 				</label>
 
 				{/* SORTING STYLE */}
-				<label className="pb-12 block">
+				<label className="pb-12 block font-bold">
 					Sorting Style
 					<select
 						value={sortingStyle}
@@ -95,7 +95,7 @@ export default function Sidebar({
 				</label>
 
 				{/* INTERVAL STYLE */}
-				<label className="pb-12 block">
+				<label className="pb-12 block font-bold">
 					Interval Style
 					<select
 						value={intervalStyle}
