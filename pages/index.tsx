@@ -8,7 +8,7 @@ type Dimensions = { width: number; height: number };
 
 export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
-	const [imageUrl, setImageUrl] = useState("./testimage2.jpg");
+	const [imageUrl, setImageUrl] = useState("./testimage.jpg");
 	const [newImage, setNewImage] = useState(true);
 
 	const workerRef = useRef<Worker>();

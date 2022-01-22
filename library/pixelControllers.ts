@@ -10,8 +10,8 @@ import { HSLPixel, Pixel } from "./types";
 export function columnTest(
 	data: Uint8ClampedArray,
 	width: number,
-	height: number,
-	sortingFunction: (a: HSLPixel, b: HSLPixel) => number
+	height: number
+	// sortingFunction: (a: HSLPixel, b: HSLPixel) => number
 ): ImageData {
 	let hslPixels: HSLPixel[] = [];
 
@@ -23,26 +23,25 @@ export function columnTest(
 	for (let i = 0; i < width; i++) {
 		columns.push([]);
 		for (let j = 0; j < height; j++) {
-			columns[i].push(hslPixels[j * width + i]);
+			columns[i].push(hslPixels[j * width + (width - i) - 1]);
 		}
 	}
 
-	// let tempNewArray: HSLPixel[][] = [];
-	// for (let column of columns) {
-	// 	tempNewArray.push(column.sort(sortingFunction));
-	// }
+	let convertedArray: HSLPixel[][] = [];
+	for (let column of columns) {
+		convertedArray.push(column);
+		// convertedArray.push(column.sort(sortingFunction));
+	}
 
-	// let tempRows: HSLPixel[][] = [];
-	// for (let i = 0; i < width; i++) {
-	// 	tempRows.push([]);
-	// 	for (let j = 0; j < height; j++) {
-	// 		tempRows[i].push(hslPixels[j * width + i]);
-	// 	}
-	// }
+	let flatArray: HSLPixel[] = [];
+	for (let i = 0; i < convertedArray[0].length; i++) {
+		for (let j = 0; j < convertedArray.length; j++) {
+			flatArray.push(convertedArray[convertedArray.length - j - 1][i]);
+		}
+	}
 
-	const tempFlattenedArray = columns.flat();
-	const tempArr = Uint8ClampedArray.from(HSLtoClampArray(tempFlattenedArray));
-	return new ImageData(tempArr, height, width);
+	const clampedArray = Uint8ClampedArray.from(HSLtoClampArray(flatArray));
+	return new ImageData(clampedArray, width, height);
 }
 
 export function hslNoThresholdConversion(

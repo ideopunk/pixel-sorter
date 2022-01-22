@@ -73,7 +73,7 @@ export const pixelsort = (
 				data,
 				width,
 				height,
-				sortingFunction as (a: HSLPixel, b: HSLPixel) => number
+				// sortingFunction as (a: HSLPixel, b: HSLPixel) => number
 			);
 			// return hslNoThresholdConversion(
 			// 	data,
