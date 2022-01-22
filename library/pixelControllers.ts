@@ -1,9 +1,4 @@
-import {
-	sortHSLRowRandomly,
-	sortHSLRowWithThreshold,
-	sortRGBRowRandomly,
-	sortRGBRowWithThreshold,
-} from "./intervalFunctions";
+import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
 import {
 	columnsToFlatArray,
 	HSLtoClampArray,
@@ -101,7 +96,7 @@ export function hslThresholdConversion(
 
 	let newArray: HSLPixel[][] = [];
 	for (let row of rows) {
-		newArray.push(sortHSLRowWithThreshold(row, min, max, thresholdCheck, sorter));
+		newArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
 		// newArray.push(sortRowWithThreshold(row, min, max));
 	}
 
@@ -167,7 +162,7 @@ export function rgbThresholdConversion(
 
 	let newArray: Pixel[][] = [];
 	for (let row of rows) {
-		newArray.push(sortRGBRowWithThreshold(row, min, max, thresholdCheck, sorter));
+		newArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
 		// newArray.push(sortRowWithThreshold(row, min, max));
 	}
 
@@ -211,7 +206,7 @@ export function rgbRandomConversion(
 
 	let newArray: Pixel[][] = [];
 	for (let row of rows) {
-		newArray.push(sortRGBRowRandomly(row, min, max, sorter));
+		newArray.push(sortRandomRow(row, min, max, sorter));
 	}
 
 	let flattenedArray = newArray.flat();
@@ -254,7 +249,7 @@ export function hslRandomConversion(
 
 	let newArray: HSLPixel[][] = [];
 	for (let row of rows) {
-		newArray.push(sortHSLRowRandomly(row, min, max, sorter));
+		newArray.push(sortRandomRow(row, min, max, sorter));
 	}
 
 	let flattenedArray = newArray.flat();

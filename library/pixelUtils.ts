@@ -11,7 +11,7 @@ export function transpose(original: any[][], width: number, height: number): any
 	return newMatrix;
 }
 
-export function toColumns<T>(
+export function toColumns<T extends object>(
 	data: T[],
 	originalWidth: number,
 	originalHeight: number
@@ -27,7 +27,7 @@ export function toColumns<T>(
 	return columns;
 }
 
-export function columnsToFlatArray<T>(columns: T[][]): T[] {
+export function columnsToFlatArray<T extends object>(columns: T[][]): T[] {
 	let flatArray: T[] = [];
 	for (let i = 0; i < columns[0].length; i++) {
 		for (let j = 0; j < columns.length; j++) {
