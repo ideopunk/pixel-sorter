@@ -9,6 +9,7 @@ import {
 	rgbNoThresholdConversion,
 	rgbRandomConversion,
 	rgbThresholdConversion,
+	transpose,
 } from "./pixelUtils";
 
 export const pixelsort = (

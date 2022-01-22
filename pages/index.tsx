@@ -19,7 +19,9 @@ export default function Home() {
 			"message",
 			(e: MessageEvent<ImageData>) => {
 				const ctx = canvasRef.current?.getContext("2d");
-				if (ctx) ctx.putImageData(e.data, 0, 0);
+				if (ctx) {
+					ctx.putImageData(e.data, 0, 0);
+				}
 			},
 			false
 		);
@@ -42,6 +44,7 @@ export default function Home() {
 					ctx?.drawImage(imageRef.current, 0, 0); // use this if nothing else!
 					setNewImage(false);
 				}
+
 				const imageData = ctx?.getImageData(
 					0,
 					0,

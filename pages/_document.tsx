@@ -24,6 +24,11 @@ class MyDocument extends Document {
 					<meta property="og:image:alt" content="Image description" />
 					<meta property="og:image:width" content="2604" />
 					<meta property="og:image:height" content="2380" />
+					<link rel="preconnect" href="https://fonts.googleapis.com" />
+					<link
+						href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap"
+						rel="stylesheet"
+					/>
 				</Head>
 				<body>
 					<Main />

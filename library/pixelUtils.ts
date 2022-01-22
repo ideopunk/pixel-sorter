@@ -1,5 +1,4 @@
 import { HSLPixel, Pixel } from "./types";
-import * as sort from "./sortingFunctions";
 import {
 	sortHSLRowWithThreshold,
 	sortRGBRowWithThreshold,
@@ -7,6 +6,16 @@ import {
 	sortRGBRowRandomly,
 } from "./intervalFunctions";
 
+export function transpose(original: any[][], width: number, height: number): any[][] {
+	let newMatrix: any[][] = [];
+	for (let i = 0; i < height; i++) {
+		newMatrix[i] = [];
+		for (let j = 0; j < width; j++) {
+			newMatrix[i][j] = original[j][i];
+		}
+	}
+	return newMatrix;
+}
 export function RGBtoClampArray(pixels: Pixel[]) {
 	let spreadArray = pixels.map((pixel) => [pixel.r, pixel.g, pixel.b, pixel.a]);
 	let flatArray = spreadArray.flat();
@@ -95,8 +104,32 @@ export function hslNoThresholdConversion(
 		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
 	}
 
-	let rows = [];
+	let columns: HSLPixel[][] = [];
+	for (let i = 0; i < width; i++) {
+		columns.push([]);
+		for (let j = 0; j < height; j++) {
+			columns[i].push(hslPixels[j * width + i]);
+		}
+	}
 
+	let tempNewArray: HSLPixel[][] = [];
+	for (let column of columns) {
+		tempNewArray.push(column.sort(sortingFunction));
+	}
+
+	let tempRows: HSLPixel[][] = [];
+	// xxfor (let i = 0; i < width; i++) {
+	// 	tempRows.push([]);
+	// 	for (let j = 0; j < height; j++) {
+	// 		tempRows[i].push(hslPixels[j * width + i]);
+	// 	}
+	// }
+
+	const tempFlattenedArray = tempRows.flat();
+	const tempArr = Uint8ClampedArray.from(HSLtoClampArray(tempFlattenedArray));
+	return new ImageData(tempArr, height, width);
+
+	let rows: HSLPixel[][] = [];
 	for (let i = 0; i < height; i++) {
 		rows.push(hslPixels.slice(i * width, (i + 1) * width));
 	}
@@ -105,6 +138,13 @@ export function hslNoThresholdConversion(
 	for (let row of rows) {
 		newArray.push(row.sort(sortingFunction));
 	}
+
+	// for (let column of columns) {
+	// 	newArray.push(column.sort(sortingFunction));
+	// }
+
+	// let rows: HSLPixel[][] = transpose(newArray, width, height);
+	// let flattenedArray = rows.flat();
 
 	let flattenedArray = newArray.flat();
 
