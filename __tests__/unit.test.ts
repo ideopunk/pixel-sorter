@@ -1,4 +1,4 @@
-import { columnTest } from "../library/pixelControllers";
+import { hslColumnTest } from "../library/pixelControllers";
 
 test("ping", () => expect("pong").toBe("pong"));
 
@@ -15,7 +15,7 @@ describe("convert to columns", () => {
 		const originalWidth = 4;
 		const originalHeight = 3;
 
-		const newData = columnTest(originalData, originalWidth, originalHeight);
+		const newData = hslColumnTest(originalData, originalWidth, originalHeight, (a, b) => 0);
 		console.log(newData.data);
 		expect(newData.width).toBe(4);
 		expect(newData.height).toBe(3);

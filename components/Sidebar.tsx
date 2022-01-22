@@ -27,7 +27,7 @@ export default function Sidebar({
 	reset: () => void;
 	updateFile: (f: File) => void;
 }) {
-	const [direction, setDirection] = useState<Direction>("down-to-left");
+	const [direction, setDirection] = useState<Direction>("down");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
 	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);

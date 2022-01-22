@@ -10,6 +10,34 @@ export function transpose(original: any[][], width: number, height: number): any
 	}
 	return newMatrix;
 }
+
+export function toColumns<T>(
+	data: T[],
+	originalWidth: number,
+	originalHeight: number
+): T[][] {
+	let columns: T[][] = [];
+	for (let i = 0; i < originalWidth; i++) {
+		columns.push([]);
+		for (let j = 0; j < originalHeight; j++) {
+			columns[i].push(data[j * originalWidth + (originalWidth - i) - 1]);
+		}
+	}
+
+	return columns;
+}
+
+export function columnsToFlatArray<T>(columns: T[][]): T[] {
+	let flatArray: T[] = [];
+	for (let i = 0; i < columns[0].length; i++) {
+		for (let j = 0; j < columns.length; j++) {
+			flatArray.push(columns[columns.length - j - 1][i]);
+		}
+	}
+
+	return flatArray;
+}
+
 export function RGBtoClampArray(pixels: Pixel[]) {
 	let spreadArray = pixels.map((pixel) => [pixel.r, pixel.g, pixel.b, pixel.a]);
 	let flatArray = spreadArray.flat();

@@ -4,47 +4,17 @@ import {
 	sortRGBRowRandomly,
 	sortRGBRowWithThreshold,
 } from "./intervalFunctions";
-import { HSLtoClampArray, RGBtoClampArray, toHSLPixels, toPixels } from "./pixelUtils";
+import {
+	columnsToFlatArray,
+	HSLtoClampArray,
+	RGBtoClampArray,
+	toColumns,
+	toHSLPixels,
+	toPixels,
+} from "./pixelUtils";
 import { HSLPixel, Pixel } from "./types";
 
-export function columnTest(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number
-	// sortingFunction: (a: HSLPixel, b: HSLPixel) => number
-): ImageData {
-	let hslPixels: HSLPixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
-
-	let columns: HSLPixel[][] = [];
-	for (let i = 0; i < width; i++) {
-		columns.push([]);
-		for (let j = 0; j < height; j++) {
-			columns[i].push(hslPixels[j * width + (width - i) - 1]);
-		}
-	}
-
-	let convertedArray: HSLPixel[][] = [];
-	for (let column of columns) {
-		convertedArray.push(column);
-		// convertedArray.push(column.sort(sortingFunction));
-	}
-
-	let flatArray: HSLPixel[] = [];
-	for (let i = 0; i < convertedArray[0].length; i++) {
-		for (let j = 0; j < convertedArray.length; j++) {
-			flatArray.push(convertedArray[convertedArray.length - j - 1][i]);
-		}
-	}
-
-	const clampedArray = Uint8ClampedArray.from(HSLtoClampArray(flatArray));
-	return new ImageData(clampedArray, width, height);
-}
-
-export function hslNoThresholdConversion(
+export function hslColumnTest(
 	data: Uint8ClampedArray,
 	width: number,
 	height: number,
@@ -56,22 +26,56 @@ export function hslNoThresholdConversion(
 		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
 	}
 
-	let rows: HSLPixel[][] = [];
-	for (let i = 0; i < height; i++) {
-		rows.push(hslPixels.slice(i * width, (i + 1) * width));
+	let columns = toColumns(hslPixels, width, height);
+
+	let convertedArray: HSLPixel[][] = [];
+	for (let column of columns) {
+		convertedArray.push(column.sort(sortingFunction));
 	}
 
-	let newArray: HSLPixel[][] = [];
-	for (let row of rows) {
-		newArray.push(row.sort(sortingFunction));
+	const flatArray = columnsToFlatArray(convertedArray);
+
+	const clampedArray = Uint8ClampedArray.from(HSLtoClampArray(flatArray));
+	return new ImageData(clampedArray, width, height);
+}
+
+export function hslNoThresholdConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	sortingFunction: (a: HSLPixel, b: HSLPixel) => number,
+	columns: boolean
+): ImageData {
+	let hslPixels: HSLPixel[] = [];
+
+	for (let i = 0; i < data.length; i += 4) {
+		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
 	}
 
-	let flattenedArray = newArray.flat();
+	let nestedData: HSLPixel[][] = [];
+
+	if (columns) {
+		nestedData = toColumns(hslPixels, width, height);
+	} else {
+		for (let i = 0; i < height; i++) {
+			nestedData.push(hslPixels.slice(i * width, (i + 1) * width));
+		}
+	}
+
+	let convertedArray: HSLPixel[][] = [];
+	for (let row of nestedData) {
+		convertedArray.push(row.sort(sortingFunction));
+	}
+
+	let flattenedArray: HSLPixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
 
 	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-
-	return newData;
+	return new ImageData(clampedArr, width, height);
 }
 
 export function hslThresholdConversion(

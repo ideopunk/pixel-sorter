@@ -3,7 +3,7 @@ import * as sorting from "./sortingFunctions";
 import * as interval from "./intervalFunctions";
 import * as threshold from "./thresholdFunctions";
 import {
-	columnTest,
+	hslColumnTest,
 	hslNoThresholdConversion,
 	hslRandomConversion,
 	hslThresholdConversion,
@@ -27,6 +27,7 @@ export const pixelsort = (
 		| ((pixel: Pixel, min: number, max: number) => boolean);
 
 	let schema: "rgb" | "hsl" = "rgb";
+	// let direction: "downright" | "upleft" = (options.direction === "down" || options.direction) === "right" ? "downright" : "upleft";
 
 	switch (options.sortingStyle) {
 		case "hue":
@@ -69,11 +70,12 @@ export const pixelsort = (
 	// HSL
 	if (schema === "hsl") {
 		if (options.intervalStyle === "none") {
-			return columnTest(
+			return hslNoThresholdConversion(
 				data,
 				width,
 				height,
-				// sortingFunction as (a: HSLPixel, b: HSLPixel) => number
+				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+				options.direction === "down" || options.direction === "up"
 			);
 			// return hslNoThresholdConversion(
 			// 	data,
@@ -88,7 +90,8 @@ export const pixelsort = (
 				height,
 				min,
 				max,
-				sortingFunction as (a: HSLPixel, b: HSLPixel) => number
+				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+				options.direction === "down" || options.direction === "up"
 			);
 		} else {
 			return hslThresholdConversion(
@@ -98,7 +101,8 @@ export const pixelsort = (
 				min,
 				max,
 				thresholdCheck as (pixel: HSLPixel, min: number, max: number) => boolean,
-				sortingFunction as (a: HSLPixel, b: HSLPixel) => number
+				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+				options.direction === "down" || options.direction === "up"
 			);
 		}
 	}
@@ -109,7 +113,8 @@ export const pixelsort = (
 				data,
 				width,
 				height,
-				sortingFunction as (a: Pixel, b: Pixel) => number
+				sortingFunction as (a: Pixel, b: Pixel) => number,
+				options.direction === "down" || options.direction === "up"
 			);
 		} else if (options.intervalStyle === "random") {
 			return rgbRandomConversion(
@@ -118,7 +123,8 @@ export const pixelsort = (
 				height,
 				min,
 				max,
-				sortingFunction as (a: Pixel, b: Pixel) => number
+				sortingFunction as (a: Pixel, b: Pixel) => number,
+				options.direction === "down" || options.direction === "up"
 			);
 		} else {
 			return rgbThresholdConversion(
@@ -128,7 +134,8 @@ export const pixelsort = (
 				min,
 				max,
 				thresholdCheck as (pixel: Pixel, min: number, max: number) => boolean,
-				sortingFunction as (a: Pixel, b: Pixel) => number
+				sortingFunction as (a: Pixel, b: Pixel) => number,
+				options.direction === "down" || options.direction === "up"
 			);
 		}
 	}
