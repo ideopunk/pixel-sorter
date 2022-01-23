@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Direction, IntervalStyle, Options, SortingStyle } from "../library/types";
+import { NextSeo } from "next-seo";
 
 type Dimensions = { width: number; height: number };
 
@@ -68,7 +69,6 @@ export default function Home() {
 		},
 		[imageDimensions, newImage]
 	);
-
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
@@ -142,18 +142,16 @@ export default function Home() {
 
 	return (
 		<div className="w-screen h-screen dark:bg-black flex justify-center items-center">
-			<Head>
-				<title>Pixel Sorter</title>
-				<meta name="description" content="Create glitch art" />
-				<meta property="og:title" content="Pixel sorter" />
-				<meta property="og:description" content="Create glitch art" />
-
-				{/* <meta property="og:url" content="???" /> */}
-				{/* <link rel="canonical" href="???" /> */}
-
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-
+			<NextSeo
+				title="Pixel Sorter"
+				canonical="https://pixel-sorter.com"
+				description="Create glitch art"
+				openGraph={{
+					title: "Pixel Sorter",
+					description: "Create glitch art",
+					url: "https://pixel-sorter.com",
+				}}
+			/>
 			<Sidebar
 				draw={draw}
 				reset={handleReset}

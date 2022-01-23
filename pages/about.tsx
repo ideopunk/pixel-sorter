@@ -1,3 +1,4 @@
+import { NextSeo } from "next-seo";
 import Link from "next/link";
 import { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes } from "react";
 import Links from "../components/Links";
@@ -18,6 +19,16 @@ function Lank(
 export default function About() {
 	return (
 		<div className="w-full flex flex-col items-center">
+			<NextSeo
+				title="About Pixel Sorter"
+				description="Pixel Sorter features and credits"
+				canonical="https://pixel-sorter.com/about"
+				openGraph={{
+					title: "About Pixel Sorter",
+					description: "Features and credits",
+					url: "https://pixel-sorter.com/about",
+				}}
+			/>
 			<div className="p-4 prose prose-lg max-w-[30ch] dark:text-white">
 				<h1 className="text-white"> Pixel Sorter</h1>
 
@@ -48,9 +59,8 @@ export default function About() {
 							<li> Up / Down</li>
 						</ul>
 					</li>
-
-					<li>Masking (coming soon!)</li>
 				</ul>
+				<p>A mobile version and a masking feature are coming soon.</p>
 				<p>
 					<Lank href="https://github.com/kimasendorf/ASDFPixelSort">Original script</Lank>{" "}
 					by Kim Asendorf.

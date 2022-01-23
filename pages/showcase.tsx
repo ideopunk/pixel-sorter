@@ -1,9 +1,9 @@
 import Image from "next/image";
+import { NextSeo } from "next-seo";
 import { ReactNode } from "react";
 import Links from "../components/Links";
 import botns from "../public/showcase/botns.png";
 import starrynight from "../public/showcase/starrynight.png";
-// 1199, 950
 
 function Figure({ children, title }: { children: ReactNode; title: string }) {
 	return (
@@ -14,9 +14,19 @@ function Figure({ children, title }: { children: ReactNode; title: string }) {
 	);
 }
 
-export default function ShowcaseR() {
+export default function Showcase() {
 	return (
 		<div className="flex flex-col w-full items-center">
+			<NextSeo
+				title="Pixel Sorter Showcase"
+				description="Art made with Pixel Sorter"
+				canonical="https://pixel-sorter.com/showcase"
+				openGraph={{
+					title: "Pixel Sorter Showcase",
+					description: "Art made with Pixel Sorter",
+					url: "https://pixel-sorter.com/showcase",
+				}}
+			/>
 			<div className="w-1/2 max-w-xl py-10">
 				<div className="pb-12">
 					<h1 className="font-bold text-3xl text-center">Pixel Sorter Showcase</h1>
