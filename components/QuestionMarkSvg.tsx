@@ -1,7 +1,7 @@
 export default function QuestionMark() {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-			<title>Help Circle</title>
+			<title>About</title>
 			<path
 				d="M256 80a176 176 0 10176 176A176 176 0 00256 80z"
 				fill="none"

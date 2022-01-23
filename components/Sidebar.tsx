@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
-import { useTheme } from "next-themes";
-import SunSvg from "./SunSvg";
-import MoonSvg from "./MoonSVG";
-import QuestionMark from "./QuestionMarkSvg";
-import Link from "next/link";
+
 import {
 	arrayOfDirections,
 	arrayOfIntervalStyles,
@@ -16,6 +12,8 @@ import {
 } from "../library/types";
 import toTitleCase from "../library/toTitleCase";
 import rangeBackgrounds from "../library/rangeBackgrounds";
+import FrameSVG from "./FrameSVG";
+import Links from "./Links";
 
 type Dimensions = { width: number; height: number };
 
@@ -35,7 +33,6 @@ export default function Sidebar({
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
 	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);
 
-	const { theme, setTheme } = useTheme();
 
 	function handleDirection(newDir: string) {
 		if (arrayOfDirections.includes(newDir as Direction)) setDirection(newDir as Direction);
@@ -199,20 +196,7 @@ export default function Sidebar({
 				>
 					{waiting ? "Glitching..." : "Glitch!"}
 				</button>
-				<div className="flex  items-center lg:h-20 justify-evenly ">
-					<button
-						title="Toggle theme"
-						onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-						className="w-8 h-8 hover:scale-125 transition-transform mx-10 lg:mx-0"
-					>
-						{theme === "dark" ? <SunSvg /> : <MoonSvg />}
-					</button>
-					<Link href="/about">
-						<a className="w-8 h-8  hover:scale-125 transition-transform">
-							<QuestionMark />
-						</a>
-					</Link>
-				</div>
+				<Links />
 			</div>
 		</div>
 	);
