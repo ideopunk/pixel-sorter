@@ -141,7 +141,7 @@ export default function Home() {
 	}
 
 	return (
-		<div className="w-screen h-screen dark:bg-black flex justify-center items-center">
+		<div className="w-screen lg:h-screen dark:bg-black flex flex-col lg:flex-row justify-center items-center">
 			<NextSeo
 				title="Pixel Sorter"
 				canonical="https://pixel-sorter.com"
@@ -160,12 +160,12 @@ export default function Home() {
 				updateFile={updateFile}
 				// dimensions={imageDimensions}
 			/>
-			<main className="z-10 w-full h-full flex justify-center items-center flex-col">
-				<div className="w-[700px] h-[700px] relative flex items-center justify-center ">
+			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4">
+				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px] max-w-full  relative flex items-center justify-center ">
 					<img ref={imageRef} alt="test-image" src="" className="object-contain" />
 					<canvas
 						ref={canvasRef}
-						className="w-[700px] h-[700px] absolute object-contain"
+						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[700px] lg:h-[700px] max-w-full absolute object-contain"
 					/>
 				</div>
 				{/* <button className="absolute bottom-0 left-0" onClick={draw}>

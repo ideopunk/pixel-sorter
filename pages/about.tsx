@@ -30,7 +30,7 @@ export default function About() {
 					url: "https://pixel-sorter.com/about",
 				}}
 			/>
-			<div className="p-4 prose prose-lg max-w-[30ch] dark:text-white">
+			<div className="p-4 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
 				<h1 className="text-white"> Pixel Sorter</h1>
 
 				<p>This is an interface to create glitch art with pixel sorting.</p>
@@ -90,8 +90,12 @@ export default function About() {
 					</Link>
 					{"!"}
 				</p>
-				<div id="donate-button-container" className="flex justify-between">
-					<p className="inline">If you enjoy Pixel Sorter, you can leave a tip here: </p>
+				<div id="donate-button-container" className="flex flex-col items-center">
+					<p className="inline">
+						Pixel Sorter will always be free. All code is executed in your browser, so
+						there are no server costs to pay. If you enjoy Pixel Sorter, you can leave a
+						tip here:{" "}
+					</p>
 					<div id="donate-button" />
 					<Script
 						id="paypal"

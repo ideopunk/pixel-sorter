@@ -11,11 +11,11 @@ export default function Links() {
 	const { theme, setTheme } = useTheme();
 	const router = useRouter();
 	return (
-		<div className="flex  items-center lg:h-20 justify-evenly ">
+		<div className="flex items-center h-20 justify-evenly">
 			<button
 				title="Toggle theme"
 				onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-				className="w-8 h-8 hover:scale-125 transition-transform mx-10 lg:mx-0"
+				className="w-8 h-8 hover:scale-125 transition-transform "
 			>
 				{theme === "dark" ? <SunSvg /> : <MoonSvg />}
 			</button>

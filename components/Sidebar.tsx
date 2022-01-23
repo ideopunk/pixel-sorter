@@ -38,6 +38,7 @@ export default function Sidebar({
 	}
 
 	function sendDraw() {
+		window.scrollTo({ top: 1000, behavior: "smooth" });
 		draw({ direction, sortingStyle, intervalStyle, threshold });
 	}
 
@@ -57,7 +58,7 @@ export default function Sidebar({
 		}
 	}, [sortingStyle, intervalStyle]);
 	return (
-		<div className="h-screen border-r-2  w-96">
+		<div className="lg:h-screen border-r-2 w-full lg:w-96">
 			<div className="border-b border-gray-400 p-4 pb-6">
 				{/* DIRECTION */}
 				<label className="pb-12 block font-bold">
