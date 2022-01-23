@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Direction, IntervalStyle, Options, SortingStyle } from "../library/types";
 import { NextSeo } from "next-seo";
+// import Draggable from "draggable";
 
 type Dimensions = { width: number; height: number };
 
@@ -12,6 +13,24 @@ export default function Home() {
 	const [imageUrl, setImageUrl] = useState("./defaultimage.png");
 	const [newImage, setNewImage] = useState(true);
 	const [waiting, setWaiting] = useState(false);
+	const [mask, setMask] = useState(false);
+
+	const draggableRef = useRef<HTMLDivElement>(null);
+	const handleRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		async function fn() {
+			if (mask) {
+				const Draggable = (await import("draggable")).default;
+
+				new Draggable(draggableRef.current, {
+					handle: handleRef.current,
+					limit: { x: [1, imageDimensions.width], y: [1, imageDimensions.height] },
+				});
+			}
+		}
+
+		fn();
+	}, [mask, imageDimensions.width, imageDimensions.height]);
 
 	const workerRef = useRef<Worker>();
 
@@ -161,12 +180,20 @@ export default function Home() {
 				// dimensions={imageDimensions}
 			/>
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4">
-				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px] max-w-full  relative flex items-center justify-center ">
+				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center ">
 					<img ref={imageRef} alt="test-image" src="" className="object-contain" />
 					<canvas
 						ref={canvasRef}
-						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[700px] lg:h-[700px] max-w-full absolute object-contain"
+						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[800px] lg:h-[700px] max-w-full absolute object-contain"
 					/>
+					<div
+						ref={draggableRef}
+						className={`absolute block w-40 overflow-auto bg-black bg-opacity-30 z-20 h-40 resize border-2 left-0 top-8 max-w-full max-h-full ${
+							!mask && "hidden"
+						}`}
+					>
+						<div ref={handleRef} className="w-11/12 h-full cursor-pointer" />
+					</div>
 				</div>
 				{/* <button className="absolute bottom-0 left-0" onClick={draw}>
 					DRAW?!?!?
