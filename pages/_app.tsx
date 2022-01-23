@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 					site_name: "Pixel Sorter",
 					images: [
 						{
-							url: "https://pixel-sorter.com/showcase/starrynightglitched.png",
+							url: "https://pixel-sorter.com/showcase/starrynight.png",
 							width: 1199,
 							height: 950,
 							alt: "Pixel Sorter Showcase",
