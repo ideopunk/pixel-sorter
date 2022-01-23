@@ -21,18 +21,19 @@ export default function Sidebar({
 	waiting,
 	draw,
 	reset,
+	copy,
 	updateFile,
 }: {
 	waiting: boolean;
 	draw: (options: Options) => void;
 	reset: () => void;
+	copy: () => void;
 	updateFile: (f: File) => void;
 }) {
 	const [direction, setDirection] = useState<Direction>("down");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
 	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);
-
 
 	function handleDirection(newDir: string) {
 		if (arrayOfDirections.includes(newDir as Direction)) setDirection(newDir as Direction);
@@ -198,6 +199,10 @@ export default function Sidebar({
 				</button>
 				<Links />
 			</div>
+
+			{/* <button className="border-2" onClick={copy}>
+				COPY
+			</button> */}
 		</div>
 	);
 }

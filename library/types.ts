@@ -3,14 +3,14 @@ export const arrayOfDirections = [
 	"down",
 	"left",
 	"right",
-	"up-to-left",
-	"down-to-left",
-	"up-to-right",
-	"down-to-right",
-	"left-to-up",
-	"left-to-down",
-	"right-to-up",
-	"right-to-down",
+	// "up-to-left",
+	// "down-to-left",
+	// "up-to-right",
+	// "down-to-right",
+	// "left-to-up",
+	// "left-to-down",
+	// "right-to-up",
+	// "right-to-down",
 ] as const;
 
 export const arrayOfSortingStyles = [
