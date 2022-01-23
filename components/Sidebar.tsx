@@ -15,6 +15,7 @@ import {
 	SortingStyle,
 } from "../library/types";
 import toTitleCase from "../library/toTitleCase";
+import rangeBackgrounds from "../library/rangeBackgrounds";
 
 type Dimensions = { width: number; height: number };
 
@@ -41,6 +42,8 @@ export default function Sidebar({
 	function sendDraw() {
 		draw({ direction, sortingStyle, intervalStyle, threshold });
 	}
+
+	const [trackBG, leftBG, rightBG] = rangeBackgrounds(sortingStyle, threshold[0], threshold[1]);
 
 	useEffect(() => {
 		if (intervalStyle === "threshold")
@@ -135,15 +138,20 @@ export default function Sidebar({
 							onValueChange={([min, max]) => setThreshold([min, max])}
 							minStepsBetweenThumbs={1}
 						>
-							<Slider.Track className="relative flex-grow h-1 bg-gray-200 dark:bg-gray-900 rounded-full outline-none">
-								<Slider.Range className="absolute h-full bg-black dark:bg-white rounded-full outline-none" />
+							<Slider.Track className="relative flex-grow h-1 bg-gray-200 dark:bg-gray-800 rounded-full outline-none">
+								<Slider.Range
+									style={{ backgroundColor: trackBG }}
+									className="absolute h-full bg-black dark:bg-white rounded-full outline-none"
+								/>
 							</Slider.Track>
 							<Slider.Thumb
-								className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 "
+								style={{ backgroundColor: leftBG }}
+								className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border"
 								data-tip="1.0"
 							/>
 							<Slider.Thumb
-								className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 "
+								style={{ backgroundColor: rightBG }}
+								className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border "
 								data-tip="1.0"
 							/>
 						</Slider.Root>
