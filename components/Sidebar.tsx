@@ -21,13 +21,11 @@ export default function Sidebar({
 	waiting,
 	draw,
 	reset,
-	copy,
 	updateFile,
 }: {
 	waiting: boolean;
 	draw: (options: Options) => void;
 	reset: () => void;
-	copy: () => void;
 	updateFile: (f: File) => void;
 }) {
 	const [direction, setDirection] = useState<Direction>("down");
@@ -199,10 +197,6 @@ export default function Sidebar({
 				</button>
 				<Links />
 			</div>
-
-			{/* <button className="border-2" onClick={copy}>
-				COPY
-			</button> */}
 		</div>
 	);
 }

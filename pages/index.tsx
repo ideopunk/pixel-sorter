@@ -69,23 +69,6 @@ export default function Home() {
 		[imageDimensions, newImage]
 	);
 
-	async function copy() {
-		if (!canvasRef.current) return;
-
-		canvasRef.current.toBlob(function (blob) {
-			if (!blob) return;
-			let data = [new ClipboardItem({ [blob.type]: blob })];
-
-			navigator.clipboard.write(data).then(
-				() => {
-					console.log("nice!");
-				},
-				(err: any) => {
-					console.log(err);
-				}
-			);
-		});
-	}
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
@@ -175,7 +158,6 @@ export default function Home() {
 				draw={draw}
 				reset={handleReset}
 				waiting={waiting}
-				copy={copy}
 				// originalImage={imageUrl}
 				updateFile={updateFile}
 				// dimensions={imageDimensions}
