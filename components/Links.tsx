@@ -21,21 +21,21 @@ export default function Links() {
 			</button>
 			{router.pathname !== "/" && (
 				<Link href="/">
-					<a className="w-8 h-8  hover:scale-125 transition-transform">
+					<a className="w-8 h-8 dark:text-white hover:scale-125 transition-transform">
 						<FlashSVG />
 					</a>
 				</Link>
 			)}
 			{router.pathname !== "/about" && (
 				<Link href="/about">
-					<a className="w-8 h-8  hover:scale-125 transition-transform">
+					<a className="w-8 h-8   hover:scale-125 transition-transform">
 						<QuestionMark />
 					</a>
 				</Link>
 			)}
 			{router.pathname !== "/showcase" && (
 				<Link href="/showcase">
-					<a className="w-8 h-8  hover:scale-125 transition-transform">
+					<a className="w-8 h-8  hover:scale-125 dark:text-white transition-transform">
 						<FrameSVG />
 					</a>
 				</Link>
