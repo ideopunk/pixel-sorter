@@ -194,6 +194,7 @@ export default function Sidebar({
 					className={`border-0 hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-black text-white dark:bg-white  dark:text-black ${
 						waiting && "animate-pulse"
 					}`}
+					disabled={waiting}
 					onClick={sendDraw}
 				>
 					{waiting ? "Glitching..." : "Glitch!"}

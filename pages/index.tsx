@@ -23,6 +23,7 @@ export default function Home() {
 				if (ctx) {
 					ctx.putImageData(e.data, 0, 0);
 				}
+				setWaiting(false);
 			},
 			false
 		);
@@ -30,6 +31,7 @@ export default function Home() {
 		workerRef.current.addEventListener(
 			"error",
 			(err) => {
+				setWaiting(false);
 				console.log(err);
 			},
 			false
@@ -39,6 +41,7 @@ export default function Home() {
 	const draw = useCallback(
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
 			if (workerRef.current && imageRef.current) {
+				setWaiting(true);
 				const ctx = canvasRef.current?.getContext("2d");
 
 				if (newImage) {
@@ -77,33 +80,35 @@ export default function Home() {
 	}, [imageDimensions]);
 
 	// get dimensions of new file
-	const convertUrlToImage = useCallback((url: string) => {
-		setNewImage(true);
-		if (imageRef.current) {
-			imageRef.current.src = url;
-			// new Image({ src: url });
+	const convertUrlToImage = useCallback(
+		(url: string) => {
+			setNewImage(true);
+			if (imageRef.current) {
+				imageRef.current.src = url;
 
-			imageRef.current.onload = () => {
-				if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
-					const ctx = canvasRef.current?.getContext("2d");
-					canvasRef.current.width = imageDimensions.width;
-					canvasRef.current.height = imageDimensions.height;
-					ctx?.drawImage(imageRef.current, 0, 0);
-					console.log(imageRef.current.height, imageRef.current.width);
-					setImageDimensions({
-						// height: imageRef.current.clientHeight,
-						// width: imageRef.current.clientWidth,
-						height: imageRef.current.naturalHeight || imageRef.current.height,
-						width: imageRef.current.naturalWidth || imageRef.current.width,
-					});
-				}
-			};
-			imageRef.current.onerror = (err: any) => {
-				console.error(err);
-				if (typeof err === "object" && "message" in err) console.log(err.message);
-			};
-		}
-	}, []);
+				imageRef.current.onload = () => {
+					if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
+						const ctx = canvasRef.current?.getContext("2d");
+						canvasRef.current.width = imageDimensions.width;
+						canvasRef.current.height = imageDimensions.height;
+						ctx?.drawImage(imageRef.current, 0, 0);
+						console.log(imageRef.current.height, imageRef.current.width);
+						setImageDimensions({
+							// height: imageRef.current.clientHeight,
+							// width: imageRef.current.clientWidth,
+							height: imageRef.current.naturalHeight || imageRef.current.height,
+							width: imageRef.current.naturalWidth || imageRef.current.width,
+						});
+					}
+				};
+				imageRef.current.onerror = (err: any) => {
+					console.error(err);
+					if (typeof err === "object" && "message" in err) console.log(err.message);
+				};
+			}
+		},
+		[imageDimensions.height, imageDimensions.width]
+	);
 
 	useEffect(() => {
 		convertUrlToImage(imageUrl);
