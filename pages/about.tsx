@@ -6,7 +6,10 @@ function Lank(
 	props: DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>
 ) {
 	return (
-		<a {...props} className="text-purple-700 dark:text-purple-300 hover:underline ">
+		<a
+			{...props}
+			className="text-purple-700 dark:text-purple-300 no-underline hover:underline "
+		>
 			{props.children}
 		</a>
 	);
@@ -15,7 +18,7 @@ function Lank(
 export default function About() {
 	return (
 		<div className="w-full flex flex-col items-center">
-			<div className="p-4 prose dark:text-white">
+			<div className="p-4 prose prose-lg max-w-[30ch] dark:text-white">
 				<h1 className="text-white"> Pixel Sorter</h1>
 
 				<p>This is an interface to create glitch art with pixel sorting.</p>
@@ -43,11 +46,10 @@ export default function About() {
 						<ul>
 							<li>Left / Right</li>
 							<li> Up / Down</li>
-							<li>Combined</li>
 						</ul>
 					</li>
 
-					<li>Masking</li>
+					<li>Masking (coming soon!)</li>
 				</ul>
 				<p>
 					<Lank href="https://github.com/kimasendorf/ASDFPixelSort">Original script</Lank>{" "}
@@ -67,9 +69,11 @@ export default function About() {
 					<Lank href="https://twitter.com/petesanf">Peter Sanfilippo</Lank>.
 				</p>
 				<p>
-					{
-						"If you've created great art with Pixel Sorter, message me and I'll link it in the"
-					}{" "}
+					{"If you've created great art with Pixel Sorter, "}
+					<Lank href="mailto:conorbarnes93@gmail.com" target="_blank" rel="noreferrer">
+						message me
+					</Lank>
+					{" and I'll link it in the "}
 					<Link href="/showcase" passHref>
 						<Lank>showcase</Lank>
 					</Link>
