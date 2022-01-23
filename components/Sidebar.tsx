@@ -20,10 +20,12 @@ import rangeBackgrounds from "../library/rangeBackgrounds";
 type Dimensions = { width: number; height: number };
 
 export default function Sidebar({
+	waiting,
 	draw,
 	reset,
 	updateFile,
 }: {
+	waiting: boolean;
 	draw: (options: Options) => void;
 	reset: () => void;
 	updateFile: (f: File) => void;
@@ -189,10 +191,12 @@ export default function Sidebar({
 				</div>
 
 				<button
-					className="border-0 hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-black text-white dark:bg-white  dark:text-black "
+					className={`border-0 hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-black text-white dark:bg-white  dark:text-black ${
+						waiting && "animate-pulse"
+					}`}
 					onClick={sendDraw}
 				>
-					Glitch!
+					{waiting ? "Glitching..." : "Glitch!"}
 				</button>
 				<div className="flex  items-center lg:h-20 justify-evenly ">
 					<button

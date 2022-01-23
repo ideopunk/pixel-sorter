@@ -10,6 +10,7 @@ export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 	const [imageUrl, setImageUrl] = useState("./testimage.jpg");
 	const [newImage, setNewImage] = useState(true);
+	const [waiting, setWaiting] = useState(false);
 
 	const workerRef = useRef<Worker>();
 
@@ -150,6 +151,7 @@ export default function Home() {
 			<Sidebar
 				draw={draw}
 				reset={handleReset}
+				waiting={waiting}
 				// originalImage={imageUrl}
 				updateFile={updateFile}
 				// dimensions={imageDimensions}
