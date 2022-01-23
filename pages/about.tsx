@@ -2,6 +2,7 @@ import { NextSeo } from "next-seo";
 import Link from "next/link";
 import { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes } from "react";
 import Links from "../components/Links";
+import Script from "next/script";
 
 function Lank(
 	props: DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>
@@ -89,6 +90,27 @@ export default function About() {
 					</Link>
 					{"!"}
 				</p>
+				<div id="donate-button-container" className="flex justify-between">
+					<p className="inline">If you enjoy Pixel Sorter, you can leave a tip here: </p>
+					<div id="donate-button" />
+					<Script
+						id="paypal"
+						src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
+						charSet="UTF-8"
+						onLoad={() => {
+							// @ts-ignore
+							PayPal.Donation.Button({
+								env: "production",
+								hosted_button_id: "ZMA9AS9F39HLE",
+								image: {
+									src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif",
+									alt: "Donate with PayPal button",
+									title: "PayPal - The safer, easier way to pay online!",
+								},
+							}).render("#donate-button");
+						}}
+					/>
+				</div>
 				<Links />
 			</div>
 		</div>
