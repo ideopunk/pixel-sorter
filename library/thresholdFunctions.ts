@@ -29,3 +29,9 @@ export function saturationWithinThresholdCheck(pixel: HSLPixel, min: number, max
 export function lightnessWithinThresholdCheck(pixel: HSLPixel, min: number, max: number) {
 	return pixel.l > min && pixel.l < max;
 }
+
+
+function maskArray(matrix: HSLPixel, mask: {left: number, top: number, width: number, height: number}) {
+	
+}
+

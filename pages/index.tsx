@@ -68,6 +68,7 @@ export default function Home() {
 			(err) => {
 				setWaiting(false);
 				console.log(err);
+				alert(err.message);
 			},
 			false
 		);

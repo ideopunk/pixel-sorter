@@ -1,9 +1,7 @@
 import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from "./types";
 import * as sorting from "./sortingFunctions";
-import * as interval from "./intervalFunctions";
 import * as threshold from "./thresholdFunctions";
 import {
-	hslColumnTest,
 	hslNoThresholdConversion,
 	hslRandomConversion,
 	hslThresholdConversion,
@@ -69,6 +67,7 @@ export const pixelsort = (
 	}
 
 	// DO THINGS
+
 	// HSL
 	if (schema === "hsl") {
 		if (options.intervalStyle === "none") {
@@ -79,12 +78,6 @@ export const pixelsort = (
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
 				columns
 			);
-			// return hslNoThresholdConversion(
-			// 	data,
-			// 	width,
-			// 	height,
-			// 	sortingFunction as (a: HSLPixel, b: HSLPixel) => number
-			// );
 		} else if (options.intervalStyle === "random") {
 			return hslRandomConversion(
 				data,
@@ -142,5 +135,6 @@ export const pixelsort = (
 		}
 	}
 
+	const exhaustiveCheckFinal: never = schema;
 	throw Error("uhhh unreachable");
 };

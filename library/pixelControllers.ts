@@ -9,31 +9,6 @@ import {
 } from "./pixelUtils";
 import { HSLPixel, Pixel } from "./types";
 
-export function hslColumnTest(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	sortingFunction: (a: HSLPixel, b: HSLPixel) => number
-): ImageData {
-	let hslPixels: HSLPixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
-
-	let columns = toColumns(hslPixels, width, height);
-
-	let convertedArray: HSLPixel[][] = [];
-	for (let column of columns) {
-		convertedArray.push(column.sort(sortingFunction));
-	}
-
-	const flatArray = columnsToFlatArray(convertedArray);
-
-	const clampedArray = Uint8ClampedArray.from(HSLtoClampArray(flatArray));
-	return new ImageData(clampedArray, width, height);
-}
-
 export function hslNoThresholdConversion(
 	data: Uint8ClampedArray,
 	width: number,

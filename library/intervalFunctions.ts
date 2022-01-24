@@ -22,13 +22,13 @@ export function intervalizeRowWithThresholds<T extends object>(
 	// avoid if-check inside for loop.
 	arrOfArrs[0].push(row[0]);
 
-	let latestIntervalIsWithinThreshold = thresholdCheck(arrOfArrs.at(-1)?.at(-1) as T, min, max);
+	let latestIntervalIsWithinThreshold = thresholdCheck(row[0] as T, min, max);
 
 	for (let i = 1; i < row.length; i++) {
 		const latestPixelWithin = thresholdCheck(row[i], min, max);
 		if (latestPixelWithin === latestIntervalIsWithinThreshold) {
 			// add to current interval
-			arrOfArrs.at(-1)?.push(row[i]);
+			arrOfArrs[arrOfArrs.length - 1].push(row[i]);
 		} else {
 			// start a new interval
 			latestIntervalIsWithinThreshold = latestPixelWithin;
@@ -63,7 +63,7 @@ export function intervalizeRowWithRandomness<T extends object>(
 			matchcount = 0;
 			count = getRandomInt(min, max);
 			// add to current interval
-			arrOfArrs.at(-1)?.push(row[i]);
+			arrOfArrs[arrOfArrs.length - 1].push(row[i]);
 		} else {
 			arrOfArrs.push([row[i]]);
 		}
