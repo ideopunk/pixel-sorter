@@ -19,11 +19,15 @@ type Dimensions = { width: number; height: number };
 
 export default function Sidebar({
 	waiting,
+	mask,
+	setMask,
 	draw,
 	reset,
 	updateFile,
 }: {
 	waiting: boolean;
+	mask: boolean;
+	setMask: (b: boolean) => void;
 	draw: (options: Options) => void;
 	reset: () => void;
 	updateFile: (f: File) => void;
@@ -32,6 +36,7 @@ export default function Sidebar({
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
 	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);
+	const [masking, setMasking] = useState(false);
 
 	function handleDirection(newDir: string) {
 		if (arrayOfDirections.includes(newDir as Direction)) setDirection(newDir as Direction);
@@ -68,7 +73,7 @@ export default function Sidebar({
 						onChange={(e) => {
 							handleDirection(e.target.value);
 						}}
-						className="block p-1 w-3/5"
+						className="block p-1 w-3/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfDirections.map((dir) => (
 							<option key={dir} value={dir}>
@@ -86,7 +91,7 @@ export default function Sidebar({
 						onChange={(e) => {
 							setSortingStyle(e.target.value as SortingStyle);
 						}}
-						className="block p-1 w-3/5"
+						className="block p-1 w-3/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfSortingStyles.map((sortstyle) => (
 							<option key={sortstyle} value={sortstyle}>
@@ -104,7 +109,7 @@ export default function Sidebar({
 						onChange={(e) => {
 							setIntervalStyle(e.target.value as IntervalStyle);
 						}}
-						className="block p-1 w-3/5"
+						className="block p-1 w-3/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfIntervalStyles.map((intervalstyle) => (
 							<option key={intervalstyle} value={intervalstyle}>
@@ -116,9 +121,8 @@ export default function Sidebar({
 
 				{/* THRESHOLD */}
 				{(intervalStyle === "threshold" || intervalStyle === "random") && (
-					<label className="relative pt-12 ">
-						Thresholds. <span>Min: {threshold[0]}</span>{" "}
-						<span>Max: {threshold[1]}</span>
+					<label className="relative font-bold pt-12 ">
+						Thresholds
 						<Slider.Root
 							className="relative flex items-center w-full h-6 select-none"
 							min={0}
@@ -154,8 +158,19 @@ export default function Sidebar({
 								data-tip="1.0"
 							/>
 						</Slider.Root>
+						<span>Min: {threshold[0]}</span> / <span>Max: {threshold[1]}</span>
 					</label>
 				)}
+
+				<label className="font-bold pt-12 flex items-baseline">
+					Masking{" "}
+					<input
+						className="ml-4 appearance-none w-4 h-4 rounded-md border-2 border-black dark:border-white checked:bg-gray-900 dark:checked:bg-gray-200 relative top-0.5"
+						checked={mask}
+						type="checkbox"
+						onChange={(e) => setMask(e.target.checked)}
+					/>
+				</label>
 			</div>
 
 			{/* BUTTONS */}

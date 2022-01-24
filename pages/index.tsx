@@ -13,18 +13,33 @@ export default function Home() {
 	const [imageUrl, setImageUrl] = useState("./defaultimage.png");
 	const [newImage, setNewImage] = useState(true);
 	const [waiting, setWaiting] = useState(false);
+
+	// mask stuff
 	const [mask, setMask] = useState(false);
+	const [maskPosition, setMaskPosition] = useState({});
 
 	const draggableRef = useRef<HTMLDivElement>(null);
 	const handleRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		async function fn() {
 			if (mask) {
+				// @ts-ignore
 				const Draggable = (await import("draggable")).default;
 
 				new Draggable(draggableRef.current, {
 					handle: handleRef.current,
-					limit: { x: [1, imageDimensions.width], y: [1, imageDimensions.height] },
+					limit: imageRef.current,
+					// limit: {
+					// 	x: [bounds[0], bounds[0] + imageDimensions.width],
+					// 	y: [bounds[1], bounds[1] + imageDimensions.height],
+					// 	// y: [(700 - imageDimensions.height) / 2, imageDimensions.height],
+					// },
+					onDragEnd: (el: HTMLElement, x: number, y: number, event: any) => {
+						console.log(x, y, event);
+						const rect = el.getBoundingClientRect();
+						console.log(rect);
+						setMaskPosition({ x, y, width: rect.width, height: rect.height });
+					},
 				});
 			}
 		}
@@ -112,7 +127,6 @@ export default function Home() {
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
 						ctx?.drawImage(imageRef.current, 0, 0);
-						console.log(imageRef.current.height, imageRef.current.width);
 						setImageDimensions({
 							// height: imageRef.current.clientHeight,
 							// width: imageRef.current.clientWidth,
@@ -175,28 +189,33 @@ export default function Home() {
 				draw={draw}
 				reset={handleReset}
 				waiting={waiting}
-				// originalImage={imageUrl}
 				updateFile={updateFile}
-				// dimensions={imageDimensions}
+				mask={mask}
+				setMask={setMask}
 			/>
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4">
-				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center ">
-					<img ref={imageRef} alt="test-image" src="" className="object-contain" />
+				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center">
+					<div className="relative">
+						<img ref={imageRef} alt="test-image" src="" className="object-contain" />
+
+						<div
+							ref={draggableRef}
+							draggable
+							className={`absolute w-40 overflow-auto bg-black bg-opacity-30 z-20 h-40 resize border-2 top-0 left-0 max-w-full max-h-full ${
+								mask ? "visible" : "invisible"
+							}`}
+						>
+							<div ref={handleRef} className="w-11/12 h-full cursor-pointer" />
+						</div>
+					</div>
 					<canvas
 						ref={canvasRef}
-						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[800px] lg:h-[700px] max-w-full absolute object-contain"
+						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[800px] lg:h-[700px] max-w-full top-0 left-0 absolute object-contain"
 					/>
-					<div
-						ref={draggableRef}
-						className={`absolute block w-40 overflow-auto bg-black bg-opacity-30 z-20 h-40 resize border-2 left-0 top-8 max-w-full max-h-full ${
-							!mask && "hidden"
-						}`}
-					>
-						<div ref={handleRef} className="w-11/12 h-full cursor-pointer" />
-					</div>
 				</div>
-				{/* <button className="absolute bottom-0 left-0" onClick={draw}>
-					DRAW?!?!?
+				{/* <button className="absolute bottom-0 left-0">
+					{!!mask &&
+						`Client top ${draggableRef.current?.clientTop}, client lieft ${draggableRef.current?.clientLeft}, client height ${draggableRef.current?.clientHeight}, client width ${draggableRef.current?.clientWidth}`}
 				</button> */}
 			</main>
 		</div>
