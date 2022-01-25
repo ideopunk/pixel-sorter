@@ -74,6 +74,26 @@ export default function Home() {
 		);
 	}, []);
 
+	async function handleShare() {
+		const dataUrl = canvasRef.current?.toDataURL();
+		if (!dataUrl) throw new Error("no data url found");
+		const blob = await (await fetch(dataUrl)).blob();
+		const filesArray = [
+			new File([blob], "animation.png", {
+				type: blob.type,
+				lastModified: new Date().getTime(),
+			}),
+		];
+		const shareData = { files: filesArray };
+
+		if (!!navigator.share) {
+			await navigator.share(shareData);
+			alert("shared!");
+		} else {
+			alert("cannot share!");
+		}
+	}
+
 	const draw = useCallback(
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
 			if (workerRef.current && imageRef.current) {
@@ -210,6 +230,7 @@ export default function Home() {
 						</div>
 					</div>
 					<canvas
+						onClick={handleShare}
 						ref={canvasRef}
 						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[800px] lg:h-[700px] max-w-full top-0 left-0 absolute object-contain"
 					/>
