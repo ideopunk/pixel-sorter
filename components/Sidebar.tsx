@@ -20,17 +20,21 @@ type Dimensions = { width: number; height: number };
 export default function Sidebar({
 	waiting,
 	mask,
+	newImage,
 	setMask,
 	draw,
 	reset,
 	updateFile,
+	handleShare,
 }: {
 	waiting: boolean;
 	mask: boolean;
+	newImage: boolean;
 	setMask: (b: boolean) => void;
 	draw: (options: Options) => void;
 	reset: () => void;
 	updateFile: (f: File) => void;
+	handleShare: () => void;
 }) {
 	const [direction, setDirection] = useState<Direction>("down");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
@@ -66,14 +70,14 @@ export default function Sidebar({
 		<div className="lg:h-screen border-r-2 w-full lg:w-96">
 			<div className="border-b border-gray-400 p-4 pb-6">
 				{/* DIRECTION */}
-				<label className="pb-12 block font-bold">
+				<label className="pb-8 block font-bold">
 					Direction
 					<select
 						value={direction}
 						onChange={(e) => {
 							handleDirection(e.target.value);
 						}}
-						className="block p-1 w-3/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+						className="block p-1 w-full lg:w-4/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfDirections.map((dir) => (
 							<option key={dir} value={dir}>
@@ -84,14 +88,14 @@ export default function Sidebar({
 				</label>
 
 				{/* SORTING STYLE */}
-				<label className="pb-12 block font-bold">
+				<label className="pb-8 block font-bold">
 					Sorting Style
 					<select
 						value={sortingStyle}
 						onChange={(e) => {
 							setSortingStyle(e.target.value as SortingStyle);
 						}}
-						className="block p-1 w-3/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+						className="block p-1 w-full lg:w-4/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfSortingStyles.map((sortstyle) => (
 							<option key={sortstyle} value={sortstyle}>
@@ -102,14 +106,14 @@ export default function Sidebar({
 				</label>
 
 				{/* INTERVAL STYLE */}
-				<label className="pb-12 block font-bold">
+				<label className="pb-8 block font-bold">
 					Interval Style
 					<select
 						value={intervalStyle}
 						onChange={(e) => {
 							setIntervalStyle(e.target.value as IntervalStyle);
 						}}
-						className="block p-1 w-3/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+						className="block p-1 w-full lg:w-4/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfIntervalStyles.map((intervalstyle) => (
 							<option key={intervalstyle} value={intervalstyle}>
@@ -120,49 +124,51 @@ export default function Sidebar({
 				</label>
 
 				{/* THRESHOLD */}
-				{(intervalStyle === "threshold" || intervalStyle === "random") && (
-					<label className="relative font-bold pt-12 ">
-						Thresholds
-						<Slider.Root
-							className="relative flex items-center w-full h-6 select-none"
-							min={0}
-							max={
-								intervalStyle === "random"
-									? 200
-									: sortingStyle === "red" ||
-									  sortingStyle === "green" ||
-									  sortingStyle === "blue"
-									? 255
-									: sortingStyle === "hue"
-									? 360
-									: 100
-							}
-							value={threshold}
-							onValueChange={([min, max]) => setThreshold([min, max])}
-							minStepsBetweenThumbs={1}
-						>
-							<Slider.Track className="relative flex-grow h-1 bg-gray-200 dark:bg-gray-800 rounded-full outline-none">
-								<Slider.Range
-									style={{ backgroundColor: trackBG }}
-									className="absolute h-full bg-black dark:bg-white rounded-full outline-none"
+				<div className="h-20 ">
+					{(intervalStyle === "threshold" || intervalStyle === "random") && (
+						<label className="relative font-bold ">
+							Thresholds
+							<Slider.Root
+								className="relative flex items-center w-full h-6 select-none"
+								min={0}
+								max={
+									intervalStyle === "random"
+										? 200
+										: sortingStyle === "red" ||
+										  sortingStyle === "green" ||
+										  sortingStyle === "blue"
+										? 255
+										: sortingStyle === "hue"
+										? 360
+										: 100
+								}
+								value={threshold}
+								onValueChange={([min, max]) => setThreshold([min, max])}
+								minStepsBetweenThumbs={1}
+							>
+								<Slider.Track className="relative flex-grow h-1 bg-gray-200 dark:bg-gray-800 rounded-full outline-none">
+									<Slider.Range
+										style={{ backgroundColor: trackBG }}
+										className="absolute h-full bg-black dark:bg-white rounded-full outline-none"
+									/>
+								</Slider.Track>
+								<Slider.Thumb
+									style={{ backgroundColor: leftBG }}
+									className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border"
+									data-tip="1.0"
 								/>
-							</Slider.Track>
-							<Slider.Thumb
-								style={{ backgroundColor: leftBG }}
-								className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border"
-								data-tip="1.0"
-							/>
-							<Slider.Thumb
-								style={{ backgroundColor: rightBG }}
-								className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border "
-								data-tip="1.0"
-							/>
-						</Slider.Root>
-						<span>Min: {threshold[0]}</span> / <span>Max: {threshold[1]}</span>
-					</label>
-				)}
+								<Slider.Thumb
+									style={{ backgroundColor: rightBG }}
+									className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border "
+									data-tip="1.0"
+								/>
+							</Slider.Root>
+							<span>Min: {threshold[0]}</span> / <span>Max: {threshold[1]}</span>
+						</label>
+					)}
+				</div>
 
-				<label className="font-bold pt-12 flex items-baseline">
+				{/* <label className="font-bold pt-6 flex items-baseline">
 					Masking{" "}
 					<input
 						className="ml-4 appearance-none w-4 h-4 rounded-md border-2 border-black dark:border-white checked:bg-gray-900 dark:checked:bg-gray-200 relative top-0.5"
@@ -170,7 +176,7 @@ export default function Sidebar({
 						type="checkbox"
 						onChange={(e) => setMask(e.target.checked)}
 					/>
-				</label>
+				</label> */}
 			</div>
 
 			{/* BUTTONS */}
@@ -211,6 +217,17 @@ export default function Sidebar({
 				>
 					{waiting ? "Glitching..." : "Glitch!"}
 				</button>
+				<div className="h-20 flex items-center justify-center">
+					{!newImage && !waiting && (
+						<button
+							className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer  bg-black text-white dark:bg-white  dark:text-black"
+							onClick={handleShare}
+						>
+							Share
+						</button>
+					)}
+				</div>
+
 				<Links />
 			</div>
 		</div>

@@ -12,7 +12,10 @@ export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 	const [imageUrl, setImageUrl] = useState("./defaultimage.png");
 	const [newImage, setNewImage] = useState(true);
+
+	// ui stuff
 	const [waiting, setWaiting] = useState(false);
+	const [toast, setToast] = useState(false);
 
 	// mask stuff
 	const [mask, setMask] = useState(false);
@@ -74,32 +77,6 @@ export default function Home() {
 		);
 	}, []);
 
-	async function handleShare() {
-		if (window.isSecureContext) {
-			const dataUrl = canvasRef.current?.toDataURL();
-			if (!dataUrl) throw new Error("no data url found");
-			const blob = await (await fetch(dataUrl)).blob();
-			const filesArray = [
-				new File([blob], "animation.png", {
-					type: blob.type,
-					lastModified: new Date().getTime(),
-				}),
-			];
-
-			if (!!navigator.share) {
-				await navigator.share({ files: filesArray, title: "Pixel Sorted!" });
-				alert("shared!");
-			} else {
-				navigator.clipboard.write([
-					new ClipboardItem({
-						"image/png": blob,
-					}),
-				]);
-				alert("Copied to clipboard!");
-			}
-		}
-	}
-
 	const draw = useCallback(
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
 			if (workerRef.current && imageRef.current) {
@@ -131,6 +108,38 @@ export default function Home() {
 		[imageDimensions, newImage]
 	);
 
+	async function handleShare() {
+		if (window.isSecureContext) {
+			const dataUrl = canvasRef.current?.toDataURL();
+			if (!dataUrl) throw new Error("no data url found");
+			const blob = await (await fetch(dataUrl)).blob();
+			const filesArray = [
+				new File([blob], "animation.png", {
+					type: blob.type,
+					lastModified: new Date().getTime(),
+				}),
+			];
+
+			if (!!navigator.share) {
+				await navigator.share({ files: filesArray, title: "Pixel Sorted!" });
+			} else {
+				navigator.clipboard.write([
+					new ClipboardItem({
+						"image/png": blob,
+					}),
+				]);
+				setToast(true);
+			}
+		}
+	}
+
+	useEffect(() => {
+		if (toast) {
+			setTimeout(() => {
+				setToast(false);
+			}, 1000);
+		}
+	}, [toast]);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
 
@@ -153,7 +162,9 @@ export default function Home() {
 						const ctx = canvasRef.current?.getContext("2d");
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
-						ctx?.drawImage(imageRef.current, 0, 0);
+
+						// ctx?.drawImage(imageRef.current, 0, 0);
+
 						setImageDimensions({
 							// height: imageRef.current.clientHeight,
 							// width: imageRef.current.clientWidth,
@@ -219,6 +230,8 @@ export default function Home() {
 				updateFile={updateFile}
 				mask={mask}
 				setMask={setMask}
+				newImage={newImage}
+				handleShare={handleShare}
 			/>
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4">
 				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center">
@@ -245,6 +258,16 @@ export default function Home() {
 					{!!mask &&
 						`Client top ${draggableRef.current?.clientTop}, client lieft ${draggableRef.current?.clientLeft}, client height ${draggableRef.current?.clientHeight}, client width ${draggableRef.current?.clientWidth}`}
 				</button> */}
+
+				<div className="absolute bottom-4 w-full left-0 flex justify-center">
+					<div
+						className={`${
+							!toast ? "opacity-0" : "opacity-100"
+						} transition-opacity duration-700 w-24 bg-black dark:bg-white text-white dark:text-black text-center`}
+					>
+						<p className="font-sans font-bold tracking-wide text-lg">COPIED</p>
+					</div>
+				</div>
 			</main>
 		</div>
 	);
