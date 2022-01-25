@@ -112,22 +112,23 @@ export default function Home() {
 		if (window.isSecureContext) {
 			const dataUrl = canvasRef.current?.toDataURL();
 			if (!dataUrl) throw new Error("no data url found");
-			const blob = await (await fetch(dataUrl)).blob();
-			const filesArray = [
-				new File([blob], "animation.png", {
-					type: blob.type,
-					lastModified: new Date().getTime(),
-				}),
-			];
+			const res = await fetch(dataUrl);
+
+			const blob = await res.blob();
 
 			if (!!navigator.share) {
+				const filesArray = [
+					new File([blob], "animation.png", {
+						type: blob.type,
+						lastModified: new Date().getTime(),
+					}),
+				];
+
 				await navigator.share({ files: filesArray, title: "Pixel Sorted!" });
 			} else {
-				navigator.clipboard.write([
-					new ClipboardItem({
-						"image/png": blob,
-					}),
-				]);
+				const clipboardItem = new ClipboardItem({ [blob.type]: blob });
+
+				await navigator.clipboard.write([clipboardItem]);
 				setToast(true);
 			}
 		}
@@ -140,6 +141,7 @@ export default function Home() {
 			}, 1000);
 		}
 	}, [toast]);
+
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
 
@@ -263,9 +265,9 @@ export default function Home() {
 					<div
 						className={`${
 							!toast ? "opacity-0" : "opacity-100"
-						} transition-opacity duration-700 w-24 bg-black dark:bg-white text-white dark:text-black text-center`}
+						} transition-opacity duration-700 w-24 bg-black dark:bg-white text-white dark:text-black text-center rounded-sm`}
 					>
-						<p className="font-sans font-bold tracking-wide text-lg">COPIED</p>
+						<p className="font-sans font-bold tracking-wide text-lg ">COPIED</p>
 					</div>
 				</div>
 			</main>

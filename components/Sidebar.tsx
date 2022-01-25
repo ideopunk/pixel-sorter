@@ -218,7 +218,7 @@ export default function Sidebar({
 					{waiting ? "Glitching..." : "Glitch!"}
 				</button>
 				<div className="h-20 flex items-center justify-center">
-					{!newImage && !waiting && (
+					{!newImage && !waiting && window.isSecureContext && (
 						<button
 							className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer  bg-black text-white dark:bg-white  dark:text-black"
 							onClick={handleShare}
