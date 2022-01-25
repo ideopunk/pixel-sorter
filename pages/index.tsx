@@ -1,5 +1,3 @@
-import Head from "next/head";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Direction, IntervalStyle, Options, SortingStyle } from "../library/types";
@@ -118,8 +116,8 @@ export default function Home() {
 
 			if (!!navigator.share) {
 				const filesArray = [
-					new File([blob], "pielsorted.png", {
-						type: blob.type,
+					new File([blob], "pixelsorted.png", {
+						type: "image/png",
 						lastModified: new Date().getTime(),
 					}),
 				];
@@ -161,15 +159,11 @@ export default function Home() {
 
 				imageRef.current.onload = () => {
 					if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
-						const ctx = canvasRef.current?.getContext("2d");
+						// const ctx = canvasRef.current?.getContext("2d");
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
 
-						// ctx?.drawImage(imageRef.current, 0, 0);
-
 						setImageDimensions({
-							// height: imageRef.current.clientHeight,
-							// width: imageRef.current.clientWidth,
 							height: imageRef.current.naturalHeight || imageRef.current.height,
 							width: imageRef.current.naturalWidth || imageRef.current.width,
 						});
@@ -194,23 +188,18 @@ export default function Home() {
 		const reader = new FileReader();
 
 		reader.addEventListener("load", () => {
-			if (reader.result) {
-				if (typeof reader.result !== "string") {
-					console.log("huh?");
-					return;
-				}
+			if (!reader.result || typeof reader.result !== "string") return;
 
-				setImageUrl(reader.result);
-			}
+			setImageUrl(reader.result);
 		});
 		reader.readAsDataURL(newFile);
 	}
 
 	function handleReset() {
-		if (imageRef.current) {
-			const ctx = canvasRef.current?.getContext("2d");
-			ctx?.drawImage(imageRef.current, 0, 0);
-		}
+		if (!imageRef.current) return;
+
+		const ctx = canvasRef.current?.getContext("2d");
+		ctx?.drawImage(imageRef.current, 0, 0);
 	}
 
 	return (
@@ -235,15 +224,15 @@ export default function Home() {
 				newImage={newImage}
 				handleShare={handleShare}
 			/>
-			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4">
-				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center">
+			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
+				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center ">
 					<div className="relative">
 						<img ref={imageRef} alt="test-image" src="" className="object-contain" />
 
 						<div
 							ref={draggableRef}
 							draggable
-							className={`absolute w-40 overflow-auto bg-black bg-opacity-30 z-20 h-40 resize border-2 top-0 left-0 max-w-full max-h-full ${
+							className={`absolute w-40 overflow-auto bg-black bg-opacity-30 z-20 h-40 resize  top-0 left-0 max-w-full max-h-full ${
 								mask ? "visible" : "invisible"
 							}`}
 						>
@@ -256,12 +245,9 @@ export default function Home() {
 						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[800px] lg:h-[700px] max-w-full top-0 left-0 absolute object-contain"
 					/>
 				</div>
-				{/* <button className="absolute bottom-0 left-0">
-					{!!mask &&
-						`Client top ${draggableRef.current?.clientTop}, client lieft ${draggableRef.current?.clientLeft}, client height ${draggableRef.current?.clientHeight}, client width ${draggableRef.current?.clientWidth}`}
-				</button> */}
 
-				<div className="absolute bottom-4 w-full left-0 flex justify-center">
+				{/* TOAST */}
+				<div className="fixed bottom-4 w-full left-0 flex justify-center">
 					<div
 						className={`${
 							!toast ? "opacity-0" : "opacity-100"

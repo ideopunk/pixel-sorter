@@ -68,7 +68,7 @@ export default function Sidebar({
 	}, [sortingStyle, intervalStyle]);
 	return (
 		<div className="lg:h-screen border-r-2 w-full lg:w-96">
-			<div className="border-b border-gray-400 p-4 pb-6">
+			<div className=" border-gray-400 p-4 pb-0">
 				{/* DIRECTION */}
 				<label className="pb-8 block font-bold">
 					Direction
@@ -180,7 +180,7 @@ export default function Sidebar({
 			</div>
 
 			{/* BUTTONS */}
-			<div className="p-4">
+			<div className="p-4 pb-0">
 				<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white">
 					<label
 						htmlFor="fileinput"

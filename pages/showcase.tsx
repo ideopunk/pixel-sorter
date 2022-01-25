@@ -9,7 +9,9 @@ function Figure({ children, title }: { children: ReactNode; title: string }) {
 	return (
 		<figure className="mb-20">
 			{children}
-			<figcaption className="font-bold text-justify text-xl w-full ">{title}</figcaption>
+			<figcaption className="font-bold font-mono text-justify text-xl w-full ">
+				<pre className="whitespace-pre-wrap">{title}</pre>
+			</figcaption>
 		</figure>
 	);
 }
