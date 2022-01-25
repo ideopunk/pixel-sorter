@@ -118,7 +118,7 @@ export default function Home() {
 
 			if (!!navigator.share) {
 				const filesArray = [
-					new File([blob], "animation.png", {
+					new File([blob], "pielsorted.png", {
 						type: blob.type,
 						lastModified: new Date().getTime(),
 					}),
