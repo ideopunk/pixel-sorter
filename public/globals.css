@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 body {
+	
 	overflow: overlay;
 	overflow-x: hidden;
 	-ms-overflow-style: -ms-autohiding-scrollbar;

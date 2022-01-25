@@ -75,22 +75,28 @@ export default function Home() {
 	}, []);
 
 	async function handleShare() {
-		const dataUrl = canvasRef.current?.toDataURL();
-		if (!dataUrl) throw new Error("no data url found");
-		const blob = await (await fetch(dataUrl)).blob();
-		const filesArray = [
-			new File([blob], "animation.png", {
-				type: blob.type,
-				lastModified: new Date().getTime(),
-			}),
-		];
-		const shareData = { files: filesArray };
+		if (window.isSecureContext) {
+			const dataUrl = canvasRef.current?.toDataURL();
+			if (!dataUrl) throw new Error("no data url found");
+			const blob = await (await fetch(dataUrl)).blob();
+			const filesArray = [
+				new File([blob], "animation.png", {
+					type: blob.type,
+					lastModified: new Date().getTime(),
+				}),
+			];
 
-		if (!!navigator.share) {
-			await navigator.share(shareData);
-			alert("shared!");
-		} else {
-			alert("cannot share!");
+			if (!!navigator.share) {
+				await navigator.share({ files: filesArray, title: "Pixel Sorted!" });
+				alert("shared!");
+			} else {
+				navigator.clipboard.write([
+					new ClipboardItem({
+						"image/png": blob,
+					}),
+				]);
+				alert("Copied to clipboard!");
+			}
 		}
 	}
 
