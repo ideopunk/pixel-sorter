@@ -1,4 +1,4 @@
-import { HSLPixel, Pixel } from "./types";
+import { HSLPixel, MaskCoordinates, Pixel } from "./types";
 
 // RGB
 export function redWithinThresholdCheck(pixel: Pixel, min: number, max: number) {
@@ -30,8 +30,21 @@ export function lightnessWithinThresholdCheck(pixel: HSLPixel, min: number, max:
 	return pixel.l > min && pixel.l < max;
 }
 
+function maskArray(
+	matrix: HSLPixel,
+	mask: { left: number; top: number; width: number; height: number }
+) {}
 
-function maskArray(matrix: HSLPixel, mask: {left: number, top: number, width: number, height: number}) {
-	
+function maskCoordinates(mask: {
+	left: number;
+	top: number;
+	width: number;
+	height: number;
+}): MaskCoordinates {
+	return {
+		left: mask.left,
+		top: mask.top,
+		right: mask.left + mask.width,
+		bottom: mask.top + mask.height,
+	};
 }
-

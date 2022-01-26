@@ -73,6 +73,10 @@ export default function Home() {
 			},
 			false
 		);
+
+		return () => {
+			workerRef.current?.terminate();
+		};
 	}, []);
 
 	const draw = useCallback(

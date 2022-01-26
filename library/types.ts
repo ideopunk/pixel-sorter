@@ -41,3 +41,10 @@ export interface Options {
 	threshold?: [number, number];
 	mask?: { left: number; right: number; top: number; bottom: number };
 }
+
+export interface MaskCoordinates {
+	left: number;
+	right: number;
+	top: number;
+	bottom: number;
+}

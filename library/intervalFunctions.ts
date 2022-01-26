@@ -1,7 +1,9 @@
-import { HSLPixel, Pixel } from "./types";
+import { HSLPixel, MaskCoordinates, Pixel } from "./types";
 import * as threshold from "./thresholdFunctions";
 import * as sort from "./sortingFunctions";
 import { getRandomInt } from "./genericUtils";
+
+// mask check should go here to push whole interval over I can't do anything because max is on top of me and wants to type
 
 /**
  * Split a row into a row of intervals
@@ -23,7 +25,6 @@ export function intervalizeRowWithThresholds<T extends object>(
 	arrOfArrs[0].push(row[0]);
 
 	let latestIntervalIsWithinThreshold = thresholdCheck(row[0] as T, min, max);
-
 	for (let i = 1; i < row.length; i++) {
 		const latestPixelWithin = thresholdCheck(row[i], min, max);
 		if (latestPixelWithin === latestIntervalIsWithinThreshold) {
@@ -120,4 +121,59 @@ export function sortRandomRow<T extends object>(
 	// randomly decide which to start on
 	const startsWithinThreshold = Boolean(getRandomInt(0, 2));
 	return sortIntervalizedRow(intervalRow, startsWithinThreshold, sorter);
+}
+
+export function sortRowWithThresholdAndMaskProofOfConcept<T extends object>(
+	row: T[],
+	options: {
+		min: number;
+		max: number;
+		left: number;
+		right: number;
+		thresholdCheck: (pixel: T, min: number, max: number) => boolean;
+		sorter: (a: T, b: T) => number;
+	}
+): T[] {
+	const { min, max, thresholdCheck, sorter, left, right } = options;
+
+	const intervalRow = intervalizeRowWithThresholdsAndMaskProofOfConcept(
+		row,
+		min,
+		max,
+		left,
+		right,
+		thresholdCheck
+	);
+	const startsWithinThreshold = thresholdCheck(intervalRow[0][0], min, max);
+	return sortIntervalizedRow(intervalRow, startsWithinThreshold, sorter);
+}
+
+export function intervalizeRowWithThresholdsAndMaskProofOfConcept<T extends object>(
+	row: T[],
+	min: number,
+	max: number,
+	left: number,
+	right: number,
+	thresholdCheck: (pixel: T, min: number, max: number) => boolean
+): T[][] {
+	let arrOfArrs: T[][] = [[]];
+
+	// avoid if-check inside for loop.
+	arrOfArrs[0].push(row[0]);
+
+	let latestIntervalIsWithinThreshold = thresholdCheck(row[0] as T, min, max);
+	for (let i = 1; i < row.length; i++) {
+		const latestPixelWithin = thresholdCheck(row[i], min, max);
+		if (latestPixelWithin === latestIntervalIsWithinThreshold) {
+			// if mask
+			// add to current interval
+			arrOfArrs[arrOfArrs.length - 1].push(row[i]);
+		} else {
+			// start a new interval
+			latestIntervalIsWithinThreshold = latestPixelWithin;
+			arrOfArrs.push([row[i]]);
+		}
+	}
+
+	return arrOfArrs;
 }

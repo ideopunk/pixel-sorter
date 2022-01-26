@@ -7,7 +7,7 @@ import {
 	toHSLPixels,
 	toPixels,
 } from "./pixelUtils";
-import { HSLPixel, Pixel } from "./types";
+import { HSLPixel, MaskCoordinates, Pixel } from "./types";
 
 export function hslNoThresholdConversion(
 	data: Uint8ClampedArray,
@@ -282,3 +282,60 @@ export function rgbRandomConversion(
 	// throw new Error(JSON.stringify({ height: newData.height, width: newData.height }));
 	return newData;
 }
+
+// export function rgbThresholdConversionWithMaskProofOfConcept(
+// 	data: Uint8ClampedArray,
+// 	width: number,
+// 	height: number,
+// 	min: number,
+// 	max: number,
+// 	thresholdCheck: (pixel: Pixel, min: number, max: number) => boolean,
+// 	sorter: (a: Pixel, b: Pixel) => number,
+// 	columns: boolean,
+// 	mask: MaskCoordinates
+// ) {
+// 	let pixels: Pixel[] = [];
+
+// 	for (let i = 0; i < data.length; i += 4) {
+// 		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
+// 	}
+
+// 	let nestedData: Pixel[][] = [];
+
+// 	if (columns) {
+// 		nestedData = toColumns(pixels, width, height);
+// 	} else {
+// 		for (let i = 0; i < height; i++) {
+// 			nestedData.push(pixels.slice(i * width, (i + 1) * width));
+// 		}
+// 	}
+
+// 	let convertedArray: Pixel[][] = [];
+// 	for (let i = 0; i < nestedData.length; i++) {
+// 		if (i > mask.top && i < mask.bottom) {
+// 			sortRowWithThresholdAndMaskProofOfConcept(nestedData[i], {
+// 				min,
+// 				max,
+// 				left,
+// 				right,
+// 				thresholdCheck,
+// 			});
+// 		} else {
+// 			convertedArray.push(
+// 				sortRowWithThreshold(nestedData[i], min, max, thresholdCheck, sorter)
+// 			);
+// 		}
+// 	}
+
+// 	let flattenedArray: Pixel[] = [];
+// 	if (columns) {
+// 		flattenedArray = columnsToFlatArray(convertedArray);
+// 	} else {
+// 		flattenedArray = convertedArray.flat();
+// 	}
+
+// 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
+// 	const newData = new ImageData(clampedArr, width, height);
+
+// 	return newData;
+// }

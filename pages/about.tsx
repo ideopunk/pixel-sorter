@@ -30,7 +30,7 @@ export default function About() {
 					url: "https://pixel-sorter.com/about",
 				}}
 			/>
-			<div className="p-4 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
+			<div className="p-4 pt-0 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
 				<h1 className="text-white"> Pixel Sorter</h1>
 
 				<p>This is an interface to create glitch art with pixel sorting.</p>
@@ -109,7 +109,7 @@ export default function About() {
 								image: {
 									src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif",
 									alt: "Donate with PayPal button",
-									title: "PayPal - The safer, easier way to pay online!",
+									title: "PayPal!",
 								},
 							}).render("#donate-button");
 						}}
