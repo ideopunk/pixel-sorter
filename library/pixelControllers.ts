@@ -87,9 +87,7 @@ export function hslThresholdConversion(
 	}
 
 	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-
-	return newData;
+	return new ImageData(clampedArr, width, height);
 }
 
 /**

@@ -188,7 +188,7 @@ export default function Home() {
 
 	// new file
 	async function updateFile(newFile: File) {
-		const fileAsDataURL = URL.createObjectURL(newFile);
+		// const fileAsDataURL = URL.createObjectURL(newFile);
 		const reader = new FileReader();
 
 		reader.addEventListener("load", () => {
@@ -229,14 +229,19 @@ export default function Home() {
 				handleShare={handleShare}
 			/>
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
-				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center ">
-					<div className="relative">
-						<img ref={imageRef} alt="test-image" src="" className="object-contain" />
+				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center  justify-center ">
+					<div className="relative  w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] ">
+						<img
+							ref={imageRef}
+							alt="test-image"
+							src=""
+							className="object-contain w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px]"
+						/>
 
 						<div
 							ref={draggableRef}
 							draggable
-							className={`absolute w-40 overflow-auto bg-black bg-opacity-30 z-20 h-40 resize  top-0 left-0 max-w-full max-h-full ${
+							className={`absolute w-40 overflow-auto bg-black bg-opacity-30  z-20 h-40 resize  top-0 left-0 max-w-full max-h-full ${
 								mask ? "visible" : "invisible"
 							}`}
 						>

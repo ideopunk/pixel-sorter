@@ -39,15 +39,20 @@ export function columnsToFlatArray<T extends object>(columns: T[][]): T[] {
 }
 
 export function RGBtoClampArray(pixels: Pixel[]) {
-	let spreadArray = pixels.map((pixel) => [pixel.r, pixel.g, pixel.b, pixel.a]);
-	let flatArray = spreadArray.flat();
-	return Uint8ClampedArray.from(flatArray);
+	let preClamp: number[] = [];
+	pixels.forEach((pixel) => {
+		preClamp.push(pixel.r, pixel.g, pixel.b, pixel.a);
+	});
+	return Uint8ClampedArray.from(preClamp);
 }
 
 export function HSLtoClampArray(pixels: HSLPixel[]) {
-	let spreadArray = pixels.map((pixel) => HSLToRGB(pixel.h, pixel.s, pixel.l));
-	let flatArray = spreadArray.flat();
-	return Uint8ClampedArray.from(flatArray);
+	let preclamp: number[] = [];
+	pixels.forEach((pixel) => {
+		const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l);
+		preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
+	});
+	return Uint8ClampedArray.from(preclamp);
 }
 
 export function HSLToRGB(h: number, s: number, l: number) {
