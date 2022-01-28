@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Direction, IntervalStyle, Options, SortingStyle } from "../library/types";
+import { Rect, Options, SortingStyle } from "../library/types";
 import { NextSeo } from "next-seo";
 // import Draggable from "draggable";
 
@@ -17,7 +17,7 @@ export default function Home() {
 
 	// mask stuff
 	const [mask, setMask] = useState(false);
-	const [maskPosition, setMaskPosition] = useState({});
+	const [maskPosition, setMaskPosition] = useState<Rect>();
 
 	const draggableRef = useRef<HTMLDivElement>(null);
 	const handleRef = useRef<HTMLDivElement>(null);
@@ -36,9 +36,7 @@ export default function Home() {
 					// 	// y: [(700 - imageDimensions.height) / 2, imageDimensions.height],
 					// },
 					onDragEnd: (el: HTMLElement, x: number, y: number, event: any) => {
-						console.log(x, y, event);
 						const rect = el.getBoundingClientRect();
-						console.log(rect);
 						setMaskPosition({ x, y, width: rect.width, height: rect.height });
 					},
 				});
@@ -102,12 +100,18 @@ export default function Home() {
 						data: imageData.data,
 						width: imageDimensions.width,
 						height: imageDimensions.height,
-						options: { direction, sortingStyle, intervalStyle, threshold },
+						options: {
+							direction,
+							sortingStyle,
+							intervalStyle,
+							threshold,
+							mask: maskPosition,
+						} as Options,
 					});
 				}
 			}
 		},
-		[imageDimensions, newImage]
+		[imageDimensions, newImage, maskPosition]
 	);
 
 	async function handleShare() {

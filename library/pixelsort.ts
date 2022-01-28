@@ -1,14 +1,16 @@
 import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from "./types";
-import * as sorting from "./sortingFunctions";
-import * as threshold from "./thresholdFunctions";
+import * as sorting from "./sorting";
+import * as threshold from "./threshold";
 import {
 	hslNoThresholdConversion,
+	maskTestConversion,
 	hslRandomConversion,
 	hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbRandomConversion,
 	rgbThresholdConversion,
 } from "./pixelControllers";
+import * as maskLib from "./mask";
 
 export const pixelsort = (
 	data: Uint8ClampedArray,
@@ -66,17 +68,20 @@ export const pixelsort = (
 			throw new Error("unreachable");
 	}
 
+	const mask = options.mask ? maskLib.toCoordinates(options.mask) : undefined;
+
 	// DO THINGS
 
 	// HSL
 	if (schema === "hsl") {
 		if (options.intervalStyle === "none") {
-			return hslNoThresholdConversion(
+			return maskTestConversion(
+				// return hslNoThresholdConversion(
 				data,
 				width,
 				height,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				columns
+				mask
 			);
 		} else if (options.intervalStyle === "random") {
 			return hslRandomConversion(

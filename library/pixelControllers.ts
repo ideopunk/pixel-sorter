@@ -281,59 +281,50 @@ export function rgbRandomConversion(
 	return newData;
 }
 
-// export function rgbThresholdConversionWithMaskProofOfConcept(
-// 	data: Uint8ClampedArray,
-// 	width: number,
-// 	height: number,
-// 	min: number,
-// 	max: number,
-// 	thresholdCheck: (pixel: Pixel, min: number, max: number) => boolean,
-// 	sorter: (a: Pixel, b: Pixel) => number,
-// 	columns: boolean,
-// 	mask: MaskCoordinates
-// ) {
-// 	let pixels: Pixel[] = [];
+export function maskTestConversion(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	sortingFunction: (a: HSLPixel, b: HSLPixel) => number,
+	mask?: MaskCoordinates
+): ImageData {
+	console.log(mask);
+	let hslPixels: HSLPixel[] = [];
 
-// 	for (let i = 0; i < data.length; i += 4) {
-// 		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
-// 	}
+	for (let i = 0; i < data.length; i += 4) {
+		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+	}
 
-// 	let nestedData: Pixel[][] = [];
+	let nestedData: HSLPixel[][] = [];
 
-// 	if (columns) {
-// 		nestedData = toColumns(pixels, width, height);
-// 	} else {
-// 		for (let i = 0; i < height; i++) {
-// 			nestedData.push(pixels.slice(i * width, (i + 1) * width));
-// 		}
-// 	}
+	for (let i = 0; i < height; i++) {
+		nestedData.push(hslPixels.slice(i * width, (i + 1) * width));
+	}
 
-// 	let convertedArray: Pixel[][] = [];
-// 	for (let i = 0; i < nestedData.length; i++) {
-// 		if (i > mask.top && i < mask.bottom) {
-// 			sortRowWithThresholdAndMaskProofOfConcept(nestedData[i], {
-// 				min,
-// 				max,
-// 				left,
-// 				right,
-// 				thresholdCheck,
-// 			});
-// 		} else {
-// 			convertedArray.push(
-// 				sortRowWithThreshold(nestedData[i], min, max, thresholdCheck, sorter)
-// 			);
-// 		}
-// 	}
+	let convertedArray: HSLPixel[][] = [];
 
-// 	let flattenedArray: Pixel[] = [];
-// 	if (columns) {
-// 		flattenedArray = columnsToFlatArray(convertedArray);
-// 	} else {
-// 		flattenedArray = convertedArray.flat();
-// 	}
+	if (!!mask) {
+		const { top, bottom, left, right } = mask;
+		for (let i = 0; i < nestedData.length; i++) {
+			if (i >= top && i <= bottom) {
+				const convertedLeft = nestedData[i].slice(0, left).sort(sortingFunction);
+				const untouchedMid = nestedData[i].slice(left, right);
+				const convertedRight = nestedData[i].slice(right).sort(sortingFunction);
+				convertedArray.push(convertedLeft.concat(untouchedMid.concat(convertedRight)));
+			} else {
+				convertedArray.push(nestedData[i].sort(sortingFunction));
+			}
+		}
+	} else {
+		for (let i = 0; i < nestedData.length; i++) {
+			convertedArray.push(nestedData[i].sort(sortingFunction));
+		}
+	}
 
-// 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
-// 	const newData = new ImageData(clampedArr, width, height);
+	let flattenedArray: HSLPixel[] = [];
 
-// 	return newData;
-// }
+	flattenedArray = convertedArray.flat();
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
+	return new ImageData(clampedArr, width, height);
+}

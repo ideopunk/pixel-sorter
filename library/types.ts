@@ -34,12 +34,14 @@ export type PixelSorterData = { data: Uint8ClampedArray; width: number; height: 
 export type Pixel = { r: number; g: number; b: number; a: number };
 export type HSLPixel = { h: number; s: number; l: number };
 
+export type Rect = { x: number; y: number; width: number; height: number };
+
 export interface Options {
 	direction?: Direction;
 	sortingStyle: SortingStyle;
 	intervalStyle?: IntervalStyle;
 	threshold?: [number, number];
-	mask?: { left: number; right: number; top: number; bottom: number };
+	mask?: Rect;
 }
 
 export interface MaskCoordinates {

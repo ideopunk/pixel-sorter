@@ -1,6 +1,6 @@
 import { HSLPixel, MaskCoordinates, Pixel } from "./types";
-import * as threshold from "./thresholdFunctions";
-import * as sort from "./sortingFunctions";
+import * as threshold from "./threshold";
+import * as sort from "./sorting";
 import { getRandomInt } from "./genericUtils";
 
 // mask check should go here to push whole interval over I can't do anything because max is on top of me and wants to type

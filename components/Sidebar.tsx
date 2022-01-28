@@ -40,7 +40,6 @@ export default function Sidebar({
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
 	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);
-	const [masking, setMasking] = useState(false);
 
 	function handleDirection(newDir: string) {
 		if (arrayOfDirections.includes(newDir as Direction)) setDirection(newDir as Direction);
@@ -168,7 +167,7 @@ export default function Sidebar({
 					)}
 				</div>
 
-				{/* <label className="font-bold pt-6 flex items-baseline">
+				<label className="font-bold pt-6 flex items-baseline">
 					Masking{" "}
 					<input
 						className="ml-4 appearance-none w-4 h-4 rounded-md border-2 border-black dark:border-white checked:bg-gray-900 dark:checked:bg-gray-200 relative top-0.5"
@@ -176,7 +175,7 @@ export default function Sidebar({
 						type="checkbox"
 						onChange={(e) => setMask(e.target.checked)}
 					/>
-				</label> */}
+				</label>
 			</div>
 
 			{/* BUTTONS */}
