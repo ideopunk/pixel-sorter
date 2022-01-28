@@ -24,7 +24,7 @@ export default function Home() {
 	const handleRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		async function fn() {
-			if (mask) {
+			if (mask && draggableRef.current) {
 				// @ts-ignore
 				const Draggable = (await import("draggable")).default;
 
@@ -34,7 +34,6 @@ export default function Home() {
 					limit: {
 						x: [0, imageDimensions.width],
 						y: [0, imageDimensions.height],
-						// y: [(700 - imageDimensions.height) / 2, imageDimensions.height],
 					},
 					onDragEnd: (el: HTMLElement, x: number, y: number, event: any) => {
 						const rect = el.getBoundingClientRect();
@@ -125,6 +124,10 @@ export default function Home() {
 				const flexedY = canvasRef.current?.getBoundingClientRect().y;
 
 				const adjustedY = (flexedY || 0) - (containerY || 0);
+
+				const widthAdjustment = imageDimensions.width / imageRef.current.width;
+				const heightAdjustment = imageDimensions.height / imageRef.current.height;
+
 				const adjustedMaskPosition: Rect | undefined = mask
 					? {
 							x:
@@ -135,10 +138,10 @@ export default function Home() {
 								(imageDimensions.height / imageRef.current.height),
 							width:
 								(maskPosition?.width || 0) *
-								(imageDimensions.width / imageRef.current.width),
+								(widthAdjustment < 1 ? 1 : widthAdjustment),
 							height:
 								(maskPosition?.height || 0) *
-								(imageDimensions.height / imageRef.current.height),
+								(heightAdjustment < 1 ? 1 : heightAdjustment),
 					  }
 					: undefined;
 				if (imageData?.data) {
@@ -213,7 +216,6 @@ export default function Home() {
 
 				imageRef.current.onload = () => {
 					if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
-						// const ctx = canvasRef.current?.getContext("2d");
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
 
@@ -237,15 +239,16 @@ export default function Home() {
 
 	// new file
 	async function updateFile(newFile: File) {
-		// const fileAsDataURL = URL.createObjectURL(newFile);
-		const reader = new FileReader();
+		if (newFile) {
+			const reader = new FileReader();
 
-		reader.addEventListener("load", () => {
-			if (!reader.result || typeof reader.result !== "string") return;
+			reader.addEventListener("load", () => {
+				if (!reader.result || typeof reader.result !== "string") return;
 
-			setImageUrl(reader.result);
-		});
-		reader.readAsDataURL(newFile);
+				setImageUrl(reader.result);
+			});
+			reader.readAsDataURL(newFile);
+		}
 	}
 
 	function handleReset() {
@@ -280,25 +283,37 @@ export default function Home() {
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
 				<div
 					ref={containerRef}
-					className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center "
+					className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full max-h-full  relative flex items-center justify-center object-contain"
 				>
-					<div className="relative ">
-						<img ref={imageRef} alt="test-image" src="" className="object-contain " />
-
+					<div
+						style={
+							imageDimensions.width > imageDimensions.height
+								? { width: "100%" }
+								: { height: "100%" }
+						}
+						className="relative  max-h-[500px] md:max-w-[600px] md:max-h-[600px] lg:max-w-[800px] lg:max-h-[700px]"
+					>
+						<img
+							ref={imageRef}
+							alt="test-image"
+							src=""
+							className="object-contain w-full h-full"
+						/>
 						<div
 							ref={draggableRef}
 							draggable
-							className={`absolute w-40 overflow-auto top-0 bg-gray-500 bg-opacity-60 z-20 h-40 resize mr-20 mb-20 max-w-full max-h-full ${
+							className={`absolute w-40 overflow-auto top-0 bg-gray-500 bg-opacity-60 z-20 h-40 resize  max-w-full max-h-full ${
 								mask ? "visible" : "invisible"
 							}`}
 						>
 							<div ref={handleRef} className="w-11/12 h-full cursor-pointer" />
 						</div>
 					</div>
+
 					<canvas
 						onClick={handleShare}
 						ref={canvasRef}
-						className="w-[500px] h-[500px]  md:w-[600px] md:h-[600px]  lg:w-[800px] lg:h-[700px] max-w-full top-0 left-0 absolute object-contain"
+						className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full top-0 left-0 absolute object-contain"
 					/>
 				</div>
 
