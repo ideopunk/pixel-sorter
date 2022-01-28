@@ -310,7 +310,9 @@ export function maskTestConversion(
 				const convertedLeft = nestedData[i].slice(0, left).sort(sortingFunction);
 				const untouchedMid = nestedData[i].slice(left, right);
 				const convertedRight = nestedData[i].slice(right).sort(sortingFunction);
-				convertedArray.push(convertedLeft.concat(untouchedMid.concat(convertedRight)));
+				untouchedMid.push(...convertedRight);
+				convertedLeft.push(...untouchedMid);
+				convertedArray.push(convertedLeft);
 			} else {
 				convertedArray.push(nestedData[i].sort(sortingFunction));
 			}

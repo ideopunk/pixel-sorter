@@ -19,6 +19,7 @@ export default function Home() {
 	const [mask, setMask] = useState(false);
 	const [maskPosition, setMaskPosition] = useState<Rect>();
 
+	const containerRef = useRef<HTMLDivElement>(null);
 	const draggableRef = useRef<HTMLDivElement>(null);
 	const handleRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
@@ -29,12 +30,12 @@ export default function Home() {
 
 				new Draggable(draggableRef.current, {
 					handle: handleRef.current,
-					limit: imageRef.current,
-					// limit: {
-					// 	x: [bounds[0], bounds[0] + imageDimensions.width],
-					// 	y: [bounds[1], bounds[1] + imageDimensions.height],
-					// 	// y: [(700 - imageDimensions.height) / 2, imageDimensions.height],
-					// },
+					// limit: imageRef.current,
+					limit: {
+						x: [0, imageDimensions.width],
+						y: [0, imageDimensions.height],
+						// y: [(700 - imageDimensions.height) / 2, imageDimensions.height],
+					},
 					onDragEnd: (el: HTMLElement, x: number, y: number, event: any) => {
 						const rect = el.getBoundingClientRect();
 						setMaskPosition({ x, y, width: rect.width, height: rect.height });
@@ -46,6 +47,31 @@ export default function Home() {
 		fn();
 	}, [mask, imageDimensions.width, imageDimensions.height]);
 
+	// listen to resizing
+	useEffect(() => {
+		const resizeObserver = new ResizeObserver((entries) => {
+			for (let entry of entries) {
+				setMaskPosition((prev) => {
+					return {
+						x: prev?.x || 0,
+						y: prev?.y || 0,
+						width: entry.contentRect.width,
+						height: entry.contentRect.height,
+					};
+				});
+			}
+		});
+
+		if (draggableRef.current) {
+			resizeObserver.observe(draggableRef.current);
+
+			return () => {
+				if (draggableRef.current) {
+					resizeObserver.unobserve(draggableRef.current);
+				}
+			};
+		}
+	}, []);
 	const workerRef = useRef<Worker>();
 
 	useEffect(() => {
@@ -95,6 +121,26 @@ export default function Home() {
 					imageDimensions.height
 				);
 
+				const containerY = containerRef.current?.getBoundingClientRect().y;
+				const flexedY = canvasRef.current?.getBoundingClientRect().y;
+
+				const adjustedY = (flexedY || 0) - (containerY || 0);
+				const adjustedMaskPosition: Rect | undefined = mask
+					? {
+							x:
+								(maskPosition?.x || 0) *
+								(imageDimensions.width / imageRef.current.width),
+							y:
+								((maskPosition?.y || 0) + adjustedY) *
+								(imageDimensions.height / imageRef.current.height),
+							width:
+								(maskPosition?.width || 0) *
+								(imageDimensions.width / imageRef.current.width),
+							height:
+								(maskPosition?.height || 0) *
+								(imageDimensions.height / imageRef.current.height),
+					  }
+					: undefined;
 				if (imageData?.data) {
 					workerRef.current.postMessage({
 						data: imageData.data,
@@ -105,13 +151,13 @@ export default function Home() {
 							sortingStyle,
 							intervalStyle,
 							threshold,
-							mask: maskPosition,
+							mask: adjustedMaskPosition,
 						} as Options,
 					});
 				}
 			}
 		},
-		[imageDimensions, newImage, maskPosition]
+		[imageDimensions, newImage, maskPosition, mask]
 	);
 
 	async function handleShare() {
@@ -179,7 +225,6 @@ export default function Home() {
 				};
 				imageRef.current.onerror = (err: any) => {
 					console.error(err);
-					if (typeof err === "object" && "message" in err) console.log(err.message);
 				};
 			}
 		},
@@ -233,19 +278,17 @@ export default function Home() {
 				handleShare={handleShare}
 			/>
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
-				<div className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center  justify-center ">
-					<div className="relative  w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] ">
-						<img
-							ref={imageRef}
-							alt="test-image"
-							src=""
-							className="object-contain w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px]"
-						/>
+				<div
+					ref={containerRef}
+					className="w-[500px]  h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full  relative flex items-center justify-center "
+				>
+					<div className="relative ">
+						<img ref={imageRef} alt="test-image" src="" className="object-contain " />
 
 						<div
 							ref={draggableRef}
 							draggable
-							className={`absolute w-40 overflow-auto bg-black bg-opacity-30  z-20 h-40 resize  top-0 left-0 max-w-full max-h-full ${
+							className={`absolute w-40 overflow-auto top-0 bg-gray-500 bg-opacity-60 z-20 h-40 resize mr-20 mb-20 max-w-full max-h-full ${
 								mask ? "visible" : "invisible"
 							}`}
 						>

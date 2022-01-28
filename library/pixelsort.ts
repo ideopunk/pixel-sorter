@@ -69,7 +69,11 @@ export const pixelsort = (
 	}
 
 	const mask = options.mask ? maskLib.toCoordinates(options.mask) : undefined;
+	console.log("IMAGE:");
+	console.log(width, height);
 
+	console.log("MASK:");
+	console.log(mask);
 	// DO THINGS
 
 	// HSL
