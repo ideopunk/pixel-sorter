@@ -1,4 +1,5 @@
 import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
+import { maskNoThresholdRow, rotateCoordinates } from "./mask";
 import {
 	columnsToFlatArray,
 	HSLtoClampArray,
@@ -14,7 +15,8 @@ export function hslNoThresholdConversion(
 	width: number,
 	height: number,
 	sortingFunction: (a: HSLPixel, b: HSLPixel) => number,
-	columns: boolean
+	columns: boolean,
+	mask?: MaskCoordinates
 ): ImageData {
 	let hslPixels: HSLPixel[] = [];
 
@@ -33,8 +35,15 @@ export function hslNoThresholdConversion(
 	}
 
 	let convertedArray: HSLPixel[][] = [];
-	for (let row of nestedData) {
-		convertedArray.push(row.sort(sortingFunction));
+
+	if (!!mask) {
+		if (columns) mask = rotateCoordinates(mask, width, height);
+
+		convertedArray = maskNoThresholdRow(nestedData, sortingFunction, mask);
+	} else {
+		for (let row of nestedData) {
+			convertedArray.push(row.sort(sortingFunction));
+		}
 	}
 
 	let flattenedArray: HSLPixel[] = [];
@@ -148,7 +157,8 @@ export function rgbNoThresholdConversion(
 	width: number,
 	height: number,
 	sortingFunction: (a: Pixel, b: Pixel) => number,
-	columns: boolean
+	columns: boolean,
+	mask?: MaskCoordinates
 ) {
 	let pixels: Pixel[] = [];
 
@@ -167,8 +177,13 @@ export function rgbNoThresholdConversion(
 	}
 
 	let convertedArray: Pixel[][] = [];
-	for (let row of nestedData) {
-		convertedArray.push(row.sort(sortingFunction));
+
+	if (!!mask) {
+		convertedArray = maskNoThresholdRow(nestedData, sortingFunction, mask);
+	} else {
+		for (let row of nestedData) {
+			convertedArray.push(row.sort(sortingFunction));
+		}
 	}
 
 	let flattenedArray: Pixel[] = [];
@@ -277,56 +292,5 @@ export function rgbRandomConversion(
 	}
 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
-	// throw new Error(JSON.stringify({ height: newData.height, width: newData.height }));
 	return newData;
-}
-
-export function maskTestConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	sortingFunction: (a: HSLPixel, b: HSLPixel) => number,
-	mask?: MaskCoordinates
-): ImageData {
-	console.log(mask);
-	let hslPixels: HSLPixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
-
-	let nestedData: HSLPixel[][] = [];
-
-	for (let i = 0; i < height; i++) {
-		nestedData.push(hslPixels.slice(i * width, (i + 1) * width));
-	}
-
-	let convertedArray: HSLPixel[][] = [];
-
-	if (!!mask) {
-		const { top, bottom, left, right } = mask;
-		for (let i = 0; i < nestedData.length; i++) {
-			if (i >= top && i <= bottom) {
-				const convertedLeft = nestedData[i].slice(0, left).sort(sortingFunction);
-				const untouchedMid = nestedData[i].slice(left, right);
-				const convertedRight = nestedData[i].slice(right).sort(sortingFunction);
-				untouchedMid.push(...convertedRight);
-				convertedLeft.push(...untouchedMid);
-				convertedArray.push(convertedLeft);
-			} else {
-				convertedArray.push(nestedData[i].sort(sortingFunction));
-			}
-		}
-	} else {
-		for (let i = 0; i < nestedData.length; i++) {
-			convertedArray.push(nestedData[i].sort(sortingFunction));
-		}
-	}
-
-	let flattenedArray: HSLPixel[] = [];
-
-	flattenedArray = convertedArray.flat();
-
-	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	return new ImageData(clampedArr, width, height);
 }

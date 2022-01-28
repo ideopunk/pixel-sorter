@@ -3,7 +3,6 @@ import * as sorting from "./sorting";
 import * as threshold from "./threshold";
 import {
 	hslNoThresholdConversion,
-	maskTestConversion,
 	hslRandomConversion,
 	hslThresholdConversion,
 	rgbNoThresholdConversion,
@@ -68,7 +67,7 @@ export const pixelsort = (
 			throw new Error("unreachable");
 	}
 
-	const mask = options.mask ? maskLib.toCoordinates(options.mask) : undefined;
+	const mask = options?.mask ? maskLib.toCoordinates(options.mask) : undefined;
 	console.log("IMAGE:");
 	console.log(width, height);
 
@@ -79,12 +78,12 @@ export const pixelsort = (
 	// HSL
 	if (schema === "hsl") {
 		if (options.intervalStyle === "none") {
-			return maskTestConversion(
-				// return hslNoThresholdConversion(
+			return hslNoThresholdConversion(
 				data,
 				width,
 				height,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+				columns,
 				mask
 			);
 		} else if (options.intervalStyle === "random") {
@@ -118,7 +117,8 @@ export const pixelsort = (
 				width,
 				height,
 				sortingFunction as (a: Pixel, b: Pixel) => number,
-				columns
+				columns,
+				mask
 			);
 		} else if (options.intervalStyle === "random") {
 			return rgbRandomConversion(

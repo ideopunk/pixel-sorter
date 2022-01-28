@@ -82,6 +82,7 @@ export default function Home() {
 				if (ctx) {
 					ctx.putImageData(e.data, 0, 0);
 				}
+				setMask(false);
 				setWaiting(false);
 			},
 			false
@@ -91,8 +92,8 @@ export default function Home() {
 			"error",
 			(err) => {
 				setWaiting(false);
-				console.log(err);
 				alert(err.message);
+				throw err;
 			},
 			false
 		);
