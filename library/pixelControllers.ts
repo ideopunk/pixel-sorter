@@ -1,5 +1,5 @@
 import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
-import { maskNoThresholdRow, maskThresholdRow, rotateCoordinates } from "./mask";
+import { maskNoThresholdData, maskRandomData, maskThresholdData, rotateCoordinates } from "./mask";
 import {
 	columnsToFlatArray,
 	HSLtoClampArray,
@@ -39,7 +39,7 @@ export function hslNoThresholdConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		convertedArray = maskNoThresholdRow(nestedData, sortingFunction, mask);
+		convertedArray = maskNoThresholdData(nestedData, sortingFunction, mask);
 	} else {
 		for (let row of nestedData) {
 			convertedArray.push(row.sort(sortingFunction));
@@ -89,7 +89,7 @@ export function hslThresholdConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		convertedArray = maskThresholdRow(nestedData, min, max, thresholdCheck, sorter, mask);
+		convertedArray = maskThresholdData(nestedData, min, max, thresholdCheck, sorter, mask);
 	} else {
 		for (let row of nestedData) {
 			convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
@@ -124,7 +124,8 @@ export function hslRandomConversion(
 	min: number,
 	max: number,
 	sorter: (a: HSLPixel, b: HSLPixel) => number,
-	columns: boolean
+	columns: boolean,
+	mask: MaskCoordinates
 ) {
 	let pixels: HSLPixel[] = [];
 
@@ -143,8 +144,14 @@ export function hslRandomConversion(
 	}
 
 	let convertedArray: HSLPixel[][] = [];
-	for (let row of nestedData) {
-		convertedArray.push(sortRandomRow(row, min, max, sorter));
+	if (!!mask) {
+		if (columns) mask = rotateCoordinates(mask, width, height);
+
+		convertedArray = maskRandomData(nestedData, min, max, sorter, mask);
+	} else {
+		for (let row of nestedData) {
+			convertedArray.push(sortRandomRow(row, min, max, sorter));
+		}
 	}
 
 	let flattenedArray: HSLPixel[] = [];
@@ -189,7 +196,7 @@ export function rgbNoThresholdConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		convertedArray = maskNoThresholdRow(nestedData, sortingFunction, mask);
+		convertedArray = maskNoThresholdData(nestedData, sortingFunction, mask);
 	} else {
 		for (let row of nestedData) {
 			convertedArray.push(row.sort(sortingFunction));
@@ -241,7 +248,7 @@ export function rgbThresholdConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		convertedArray = maskThresholdRow(nestedData, min, max, thresholdCheck, sorter, mask);
+		convertedArray = maskThresholdData(nestedData, min, max, thresholdCheck, sorter, mask);
 	} else {
 		for (let row of nestedData) {
 			convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
@@ -299,12 +306,14 @@ export function rgbRandomConversion(
 
 	let convertedArray: Pixel[][] = [];
 
-	for (let row of nestedData) {
-		convertedArray.push(row.sort(sorter));
-	}
+	if (!!mask) {
+		if (columns) mask = rotateCoordinates(mask, width, height);
 
-	for (let row of nestedData) {
-		convertedArray.push(sortRandomRow(row, min, max, sorter));
+		convertedArray = maskRandomData(nestedData, min, max, sorter, mask);
+	} else {
+		for (let row of nestedData) {
+			convertedArray.push(sortRandomRow(row, min, max, sorter));
+		}
 	}
 
 	let flattenedArray: Pixel[] = [];

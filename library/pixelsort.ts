@@ -89,7 +89,8 @@ export const pixelsort = (
 				min,
 				max,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				columns
+				columns,
+				mask
 			);
 		} else {
 			return hslThresholdConversion(

@@ -1,4 +1,4 @@
-import { sortRowWithThreshold } from "./intervalFunctions";
+import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
 import { HSLPixel, MaskCoordinates } from "./types";
 
 export function toCoordinates(
@@ -43,7 +43,7 @@ export function rotateCoordinates(
 	};
 }
 
-export function maskNoThresholdRow<T extends object>(
+export function maskNoThresholdData<T extends object>(
 	data: T[][],
 	sorter: (a: T, b: T) => number,
 	mask: MaskCoordinates
@@ -68,7 +68,7 @@ export function maskNoThresholdRow<T extends object>(
 	return convertedArray;
 }
 
-export function maskThresholdRow<T extends object>(
+export function maskThresholdData<T extends object>(
 	data: T[][],
 	min: number,
 	max: number,
@@ -105,6 +105,36 @@ export function maskThresholdRow<T extends object>(
 			convertedArray.push(convertedLeft);
 		} else {
 			convertedArray.push(sortRowWithThreshold(data[i], min, max, thresholdCheck, sorter));
+		}
+	}
+
+	return convertedArray;
+}
+
+export function maskRandomData<T extends object>(
+	data: T[][],
+	min: number,
+	max: number,
+	sorter: (a: T, b: T) => number,
+	mask: MaskCoordinates
+): T[][] {
+	const { top, bottom, left, right } = mask;
+
+	let convertedArray: T[][] = [];
+
+	for (let i = 0; i < data.length; i++) {
+		if (i >= top && i <= bottom) {
+			const convertedLeft = sortRandomRow(data[i].slice(0, left), min, max, sorter);
+
+			const untouchedMid = data[i].slice(left, right);
+			const convertedRight = sortRandomRow(data[i].slice(right), min, max, sorter);
+
+			untouchedMid.push(...convertedRight);
+			convertedLeft.push(...untouchedMid);
+
+			convertedArray.push(convertedLeft);
+		} else {
+			convertedArray.push(sortRandomRow(data[i], min, max, sorter));
 		}
 	}
 
