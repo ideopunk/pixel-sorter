@@ -24,6 +24,8 @@ export default function Sidebar({
 	setMask,
 	draw,
 	reset,
+	undo,
+	previous,
 	updateFile,
 	handleShare,
 }: {
@@ -33,6 +35,8 @@ export default function Sidebar({
 	setMask: (b: boolean) => void;
 	draw: (options: Options) => void;
 	reset: () => void;
+	undo: () => void;
+	previous: boolean;
 	updateFile: (f: File) => void;
 	handleShare: () => void;
 }) {
@@ -216,6 +220,17 @@ export default function Sidebar({
 				>
 					{waiting ? "Glitching..." : "Glitch!"}
 				</button>
+
+				<button
+					className={`my-4 hover:underline p-3 font-bold hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white ${
+						!previous ? "opacity-50" : "opacity-90"
+					}`}
+					disabled={!previous}
+					onClick={undo}
+				>
+					Undo
+				</button>
+
 				<div className="h-20 flex items-center justify-center">
 					{!newImage && !waiting && window.isSecureContext && (
 						<button

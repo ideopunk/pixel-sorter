@@ -125,7 +125,7 @@ export function hslRandomConversion(
 	max: number,
 	sorter: (a: HSLPixel, b: HSLPixel) => number,
 	columns: boolean,
-	mask: MaskCoordinates
+	mask?: MaskCoordinates
 ) {
 	let pixels: HSLPixel[] = [];
 

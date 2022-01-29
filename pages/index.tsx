@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Rect, Options, SortingStyle } from "../library/types";
 import { NextSeo } from "next-seo";
-// import Draggable from "draggable";
+import { ctx } from "../library/pixel.worker";
 
 type Dimensions = { width: number; height: number };
 
@@ -10,6 +10,7 @@ export default function Home() {
 	const [imageDimensions, setImageDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 	const [imageUrl, setImageUrl] = useState("./defaultimage.png");
 	const [newImage, setNewImage] = useState(true);
+	const [previous, setPrevious] = useState<Uint8ClampedArray>();
 
 	// ui stuff
 	const [waiting, setWaiting] = useState(false);
@@ -120,6 +121,9 @@ export default function Home() {
 					imageDimensions.width,
 					imageDimensions.height
 				);
+
+				// this is separate from the above newImage conditional because we need to get the imageData before writing it to previous.
+				setPrevious(imageData?.data);
 
 				const containerY = containerRef.current?.getBoundingClientRect().y;
 				const flexedY = canvasRef.current?.getBoundingClientRect().y;
@@ -259,6 +263,18 @@ export default function Home() {
 		ctx?.drawImage(imageRef.current, 0, 0);
 	}
 
+	function handleUndo() {
+		if (previous) {
+			const ctx = canvasRef.current?.getContext("2d");
+			const imageData = new ImageData(
+				previous,
+				imageDimensions.width,
+				imageDimensions.height
+			);
+			ctx?.putImageData(imageData, 0, 0);
+		}
+	}
+
 	return (
 		<div className="w-screen lg:h-screen dark:bg-black flex flex-col lg:flex-row justify-center items-center">
 			<NextSeo
@@ -274,6 +290,8 @@ export default function Home() {
 			<Sidebar
 				draw={draw}
 				reset={handleReset}
+				undo={handleUndo}
+				previous={Boolean(previous)}
 				waiting={waiting}
 				updateFile={updateFile}
 				mask={mask}
