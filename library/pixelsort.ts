@@ -67,12 +67,7 @@ export const pixelsort = (
 			throw new Error("unreachable");
 	}
 
-	const mask = options?.mask ? maskLib.toCoordinates(options.mask) : undefined;
-	console.log("IMAGE:");
-	console.log(width, height);
-
-	console.log("MASK:");
-	console.log(mask);
+	const mask = options?.mask ? maskLib.toCoordinates(options.mask, width, height) : undefined;
 	// DO THINGS
 
 	// HSL
@@ -105,7 +100,8 @@ export const pixelsort = (
 				max,
 				thresholdCheck as (pixel: HSLPixel, min: number, max: number) => boolean,
 				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				columns
+				columns,
+				mask
 			);
 		}
 	}

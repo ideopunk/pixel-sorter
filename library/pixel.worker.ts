@@ -17,7 +17,7 @@ ctx.addEventListener(
 			self.postMessage(alteredImage);
 		} catch (e) {
 			const err = catcher(e);
-			throw new Error(err);
+			throw err;
 		}
 	},
 	false

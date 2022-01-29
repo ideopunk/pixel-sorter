@@ -1,5 +1,5 @@
 import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
-import { maskNoThresholdRow, rotateCoordinates } from "./mask";
+import { maskNoThresholdRow, maskThresholdRow, rotateCoordinates } from "./mask";
 import {
 	columnsToFlatArray,
 	HSLtoClampArray,
@@ -65,7 +65,8 @@ export function hslThresholdConversion(
 	max: number,
 	thresholdCheck: (pixel: HSLPixel, min: number, max: number) => boolean,
 	sorter: (a: HSLPixel, b: HSLPixel) => number,
-	columns: boolean
+	columns: boolean,
+	mask?: MaskCoordinates
 ) {
 	let pixels: HSLPixel[] = [];
 
@@ -84,8 +85,15 @@ export function hslThresholdConversion(
 	}
 
 	let convertedArray: HSLPixel[][] = [];
-	for (let row of nestedData) {
-		convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
+
+	if (!!mask) {
+		if (columns) mask = rotateCoordinates(mask, width, height);
+
+		convertedArray = maskThresholdRow(nestedData, min, max, thresholdCheck, sorter, mask);
+	} else {
+		for (let row of nestedData) {
+			convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
+		}
 	}
 
 	let flattenedArray: HSLPixel[] = [];
@@ -179,6 +187,8 @@ export function rgbNoThresholdConversion(
 	let convertedArray: Pixel[][] = [];
 
 	if (!!mask) {
+		if (columns) mask = rotateCoordinates(mask, width, height);
+
 		convertedArray = maskNoThresholdRow(nestedData, sortingFunction, mask);
 	} else {
 		for (let row of nestedData) {
@@ -261,7 +271,8 @@ export function rgbRandomConversion(
 	min: number,
 	max: number,
 	sorter: (a: Pixel, b: Pixel) => number,
-	columns: boolean
+	columns: boolean,
+	mask?: MaskCoordinates
 ) {
 	let pixels: Pixel[] = [];
 
@@ -280,6 +291,17 @@ export function rgbRandomConversion(
 	}
 
 	let convertedArray: Pixel[][] = [];
+
+	if (!!mask) {
+		if (columns) mask = rotateCoordinates(mask, width, height);
+
+		convertedArray = maskNoThresholdRow(nestedData, sorter, mask);
+	} else {
+		for (let row of nestedData) {
+			convertedArray.push(row.sort(sorter));
+		}
+	}
+
 	for (let row of nestedData) {
 		convertedArray.push(sortRandomRow(row, min, max, sorter));
 	}
