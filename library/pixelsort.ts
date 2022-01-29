@@ -124,7 +124,8 @@ export const pixelsort = (
 				min,
 				max,
 				sortingFunction as (a: Pixel, b: Pixel) => number,
-				columns
+				columns,
+				mask
 			);
 		} else {
 			return rgbThresholdConversion(
@@ -135,7 +136,8 @@ export const pixelsort = (
 				max,
 				thresholdCheck as (pixel: Pixel, min: number, max: number) => boolean,
 				sortingFunction as (a: Pixel, b: Pixel) => number,
-				columns
+				columns,
+				mask
 			);
 		}
 	}
