@@ -69,18 +69,19 @@ export default function Sidebar({
 			setThreshold([0, 10]);
 		}
 	}, [sortingStyle, intervalStyle]);
+
 	return (
-		<div className="lg:h-screen border-r-2 w-full lg:w-96">
-			<div className=" border-gray-400 p-4 pb-0">
+		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between">
+			<div className=" border-gray-400 lg:p-4 pb-0 flex flex-wrap items-center lg:block">
 				{/* DIRECTION */}
-				<label className="pb-8 block font-bold">
+				<label className="mb-4 flex p-4 lg:p-0 items-center justify-between font-bold w-1/2 lg:w-full">
 					Direction
 					<select
 						value={direction}
 						onChange={(e) => {
 							handleDirection(e.target.value);
 						}}
-						className="block p-1 w-full lg:w-4/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+						className="appearance-none block p-1 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfDirections.map((dir) => (
 							<option key={dir} value={dir}>
@@ -91,14 +92,14 @@ export default function Sidebar({
 				</label>
 
 				{/* SORTING STYLE */}
-				<label className="pb-8 block font-bold">
+				<label className="mb-4 p-4 lg:p-0 flex items-center justify-between font-bold w-1/2 lg:w-full">
 					Sorting Style
 					<select
 						value={sortingStyle}
 						onChange={(e) => {
 							setSortingStyle(e.target.value as SortingStyle);
 						}}
-						className="block p-1 w-full lg:w-4/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+						className="appearance-none block p-1 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfSortingStyles.map((sortstyle) => (
 							<option key={sortstyle} value={sortstyle}>
@@ -109,14 +110,14 @@ export default function Sidebar({
 				</label>
 
 				{/* INTERVAL STYLE */}
-				<label className="pb-8 block font-bold">
+				<label className="flex p-4 lg:p-0 justify-between items-center font-bold w-1/2 lg:w-full">
 					Interval Style
 					<select
 						value={intervalStyle}
 						onChange={(e) => {
 							setIntervalStyle(e.target.value as IntervalStyle);
 						}}
-						className="block p-1 w-full lg:w-4/5 bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+						className="appearance-none block p-1 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
 					>
 						{arrayOfIntervalStyles.map((intervalstyle) => (
 							<option key={intervalstyle} value={intervalstyle}>
@@ -127,9 +128,9 @@ export default function Sidebar({
 				</label>
 
 				{/* THRESHOLD */}
-				<div className="h-20 ">
+				<div className="order-last p-4 lg:px-0 w-full py-4">
 					{(intervalStyle === "threshold" || intervalStyle === "random") && (
-						<label className="relative font-bold ">
+						<label className="relative font-bold">
 							Thresholds
 							<Slider.Root
 								className="relative flex items-center w-full h-6 select-none"
@@ -171,7 +172,7 @@ export default function Sidebar({
 					)}
 				</div>
 
-				<label className="font-bold pt-6 flex items-baseline">
+				<label className="font-bold p-4 lg:p-0 lg:pt-3 flex items-baseline w-1/2">
 					Masking{" "}
 					<input
 						className="ml-4 appearance-none w-4 h-4 rounded-md border-2 border-black dark:border-white checked:bg-gray-900 dark:checked:bg-gray-200 relative top-0.5"
@@ -183,11 +184,11 @@ export default function Sidebar({
 			</div>
 
 			{/* BUTTONS */}
-			<div className="p-4 pb-0">
-				<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white">
+			<div className="p-4 pb-0 order-last lg:order-none">
+				<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12">
 					<label
 						htmlFor="fileinput"
-						className="w-1/2 text-center  font-bold cursor-pointer hover:underline"
+						className="w-full text-center  font-bold cursor-pointer hover:underline"
 					>
 						Choose file
 					</label>
@@ -203,8 +204,22 @@ export default function Sidebar({
 						}}
 						className="hidden"
 					/>
+				</div>
+				<div
+					className={`flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
+						!previous ? "opacity-50" : "opacity-90 cursor-pointer"
+					}`}
+				>
+					<button
+						className={`hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
+						disabled={!previous}
+						onClick={undo}
+					>
+						Undo
+					</button>
 					<button
 						className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 cursor-pointer "
+						disabled={!previous}
 						onClick={reset}
 					>
 						Reset
@@ -221,29 +236,18 @@ export default function Sidebar({
 					{waiting ? "Glitching..." : "Glitch!"}
 				</button>
 
-				<button
-					className={`my-4 hover:underline p-3 font-bold hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white ${
-						!previous ? "opacity-50" : "opacity-90"
-					}`}
-					disabled={!previous}
-					onClick={undo}
-				>
-					Undo
-				</button>
-
 				<div className="h-20 flex items-center justify-center">
 					{!newImage && !waiting && window.isSecureContext && (
 						<button
-							className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer  bg-black text-white dark:bg-white  dark:text-black"
+							className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white"
 							onClick={handleShare}
 						>
 							Share
 						</button>
 					)}
 				</div>
-
-				<Links />
 			</div>
+			<Links />
 		</div>
 	);
 }

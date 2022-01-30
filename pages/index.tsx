@@ -299,7 +299,7 @@ export default function Home() {
 				newImage={newImage}
 				handleShare={handleShare}
 			/>
-			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
+			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 border-2 ">
 				<div
 					ref={containerRef}
 					className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full max-h-full  relative flex items-center justify-center object-contain"
@@ -337,7 +337,7 @@ export default function Home() {
 				</div>
 
 				{/* TOAST */}
-				<div className="fixed bottom-4 w-full left-0 flex justify-center">
+				<div className="fixed bottom-4 w-full left-0 flex justify-center pointer-events-none">
 					<div
 						className={`${
 							!toast ? "opacity-0" : "opacity-100"
