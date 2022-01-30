@@ -83,7 +83,6 @@ export default function Home() {
 				if (ctx) {
 					ctx.putImageData(e.data, 0, 0);
 				}
-				setMask(false);
 				setWaiting(false);
 			},
 			false
@@ -224,6 +223,11 @@ export default function Home() {
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
 
+						console.log("NATURAL:");
+						console.log(imageRef.current.naturalWidth, imageRef.current.naturalHeight);
+
+						console.log("SQUISHED:");
+						console.log(imageRef.current.width, imageRef.current.height);
 						setImageDimensions({
 							height: imageRef.current.naturalHeight || imageRef.current.height,
 							width: imageRef.current.naturalWidth || imageRef.current.width,
@@ -299,10 +303,10 @@ export default function Home() {
 				newImage={newImage}
 				handleShare={handleShare}
 			/>
-			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 border-2 ">
+			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
 				<div
 					ref={containerRef}
-					className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full max-h-full  relative flex items-center justify-center object-contain"
+					className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px] max-w-full max-h-full relative flex items-center justify-center object-contain "
 				>
 					<div
 						style={
@@ -310,7 +314,7 @@ export default function Home() {
 								? { width: "100%" }
 								: { height: "100%" }
 						}
-						className="relative  max-h-[500px] md:max-w-[600px] md:max-h-[600px] lg:max-w-[800px] lg:max-h-[700px]"
+						className="relative max-w-[500px] max-h-[500px] md:max-w-[600px] md:max-h-[600px] lg:max-w-[700px] lg:max-h-[700px]"
 					>
 						<img
 							ref={imageRef}
@@ -332,7 +336,12 @@ export default function Home() {
 					<canvas
 						onClick={handleShare}
 						ref={canvasRef}
-						className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[700px] max-w-full top-0 left-0 absolute object-contain"
+						style={
+							imageDimensions.width > imageDimensions.height
+								? { maxWidth: "100%" }
+								: { maxHeight: "100%" }
+						}
+						className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px]  top-0 left-0 absolute object-contain"
 					/>
 				</div>
 
