@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes } from "react";
 import Links from "../components/Links";
 import Script from "next/script";
+import X from "../components/XSvg";
 
 function Lank(
 	props: DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>
@@ -30,6 +31,11 @@ export default function About() {
 					url: "https://pixel-sorter.com/about",
 				}}
 			/>
+			<Link href="/">
+				<a className="fixed top-4 right-4 p-4">
+					<X />
+				</a>
+			</Link>
 			<div className="p-4 pt-0 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
 				<h1 className="text-white"> Pixel Sorter</h1>
 

@@ -4,6 +4,8 @@ import { ReactNode } from "react";
 import Links from "../components/Links";
 import botns from "../public/showcase/botns.png";
 import starrynight from "../public/showcase/starrynight.png";
+import X from "../components/XSvg";
+import Link from "next/link";
 
 function Figure({ children, title }: { children: ReactNode; title: string }) {
 	return (
@@ -19,6 +21,11 @@ function Figure({ children, title }: { children: ReactNode; title: string }) {
 export default function Showcase() {
 	return (
 		<div className="flex flex-col w-full items-center">
+			<Link href="/">
+				<a className="fixed top-4 right-4 p-4">
+					<X />
+				</a>
+			</Link>
 			<NextSeo
 				title="Pixel Sorter Showcase"
 				description="Art made with Pixel Sorter"
