@@ -7,11 +7,11 @@ import FrameSVG from "./FrameSVG";
 import { useRouter } from "next/router";
 import FlashSVG from "./FlashSVG";
 
-export default function Links() {
+export default function Links({ between }: { between?: boolean }) {
 	const { theme, setTheme } = useTheme();
 	const router = useRouter();
 	return (
-		<div className="flex items-center h-20 justify-evenly">
+		<div className={`flex items-center h-20 ${between ? "justify-between" : "justify-evenly"}`}>
 			<button
 				title="Toggle theme"
 				onClick={() => setTheme(theme === "light" ? "dark" : "light")}

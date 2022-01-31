@@ -36,38 +36,34 @@ export default function About() {
 					<X />
 				</a>
 			</Link>
-			<div className="p-4 pt-0 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
-				<h1 className="text-white"> Pixel Sorter</h1>
+			<div className="mt-12 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
+				<h1>Pixel Sorter</h1>
 
 				<p>This is an interface to create glitch art with pixel sorting.</p>
-				<ul>
-					<li>
-						Interval functions:
-						<ul>
-							<li>Threshold with min and max</li>
-							<li>Random</li>
-							<li>None</li>
-						</ul>
-					</li>
-					<li>
-						Sorting functions:
-						<ul>
-							<li>Hue</li>
-							<li>Saturation</li>
-							<li>Lightness</li>
-							<li>Color (individual RGB)</li>
-							<li>Intensity (sum of RGB)</li>
-						</ul>
-					</li>
-					<li>
-						Direction:
-						<ul>
-							<li>Left / Right</li>
-							<li> Up / Down</li>
-						</ul>
-					</li>
-				</ul>
-				<p>A mobile version and a masking feature are coming soon.</p>
+
+				<h2>How Does It Work?</h2>
+				<p>
+					Pixel sorting re-orders the pixels in a row (or a column) accoding to some
+					parameter. For example, you might sort the pixels in a row based on how red
+					they are.
+				</p>
+				<p>
+					This gets cool when you use thresholds. You might set a threshold to only sort
+					pixels that are somewhat light -- this will ignore pixels that are too light or
+					too dark. This creates natural intervals within a row: a block of pixels within
+					the threshold will be sorted, blocks of pixels outside the threshold will
+					interrupt the sorting. This can create beautiful effects.
+				</p>
+				<p>
+					You can take this further by masking. This will set an area for the sorting to
+					ignore, and can bring focus to a scene.
+				</p>
+				<p>
+					Try different modes and different thresholds. Sensible defaults have been
+					chosen. Have fun!{" "}
+				</p>
+
+				<h2>Shout Outs</h2>
 				<p>
 					<Lank href="https://github.com/kimasendorf/ASDFPixelSort">Original script</Lank>{" "}
 					by Kim Asendorf.
@@ -82,7 +78,7 @@ export default function About() {
 					<Lank href="https://github.com/brandly/butter.js">Butter.js</Lank>.
 				</p>
 				<p>
-					Project assigned by{" "}
+					Project requested by{" "}
 					<Lank href="https://twitter.com/petesanf">Peter Sanfilippo</Lank>.
 				</p>
 				<p>
@@ -96,32 +92,31 @@ export default function About() {
 					</Link>
 					{"!"}
 				</p>
-				<div id="donate-button-container" className="flex flex-col items-center">
-					<p className="inline">
-						Pixel Sorter will always be free. All code is executed in your browser, so
-						there are no server costs to pay. If you enjoy Pixel Sorter, you can leave a
-						tip here:{" "}
-					</p>
-					<div id="donate-button" />
-					<Script
-						id="paypal"
-						src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
-						charSet="UTF-8"
-						onLoad={() => {
-							// @ts-ignore
-							PayPal.Donation.Button({
-								env: "production",
-								hosted_button_id: "ZMA9AS9F39HLE",
-								image: {
-									src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif",
-									alt: "Donate with PayPal button",
-									title: "PayPal!",
-								},
-							}).render("#donate-button");
-						}}
-					/>
+				<p className="inline">
+					Pixel Sorter will always be free. All code is executed in your browser, so there
+					are no server costs to pay. If you enjoy Pixel Sorter, you can leave a tip here:{" "}
+				</p>
+				<div id="donate-button" />
+				<Script
+					id="paypal"
+					src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
+					charSet="UTF-8"
+					onLoad={() => {
+						// @ts-ignore
+						PayPal.Donation.Button({
+							env: "production",
+							hosted_button_id: "ZMA9AS9F39HLE",
+							image: {
+								src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif",
+								alt: "Donate with PayPal button",
+								title: "PayPal!",
+							},
+						}).render("#donate-button");
+					}}
+				/>
+				<div className="w-48">
+					<Links between />
 				</div>
-				<Links />
 			</div>
 		</div>
 	);

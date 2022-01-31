@@ -4,15 +4,25 @@ import { ReactNode } from "react";
 import Links from "../components/Links";
 import botns from "../public/showcase/botns.png";
 import starrynight from "../public/showcase/starrynight.png";
+import wands from "../public/showcase/wands.png";
 import X from "../components/XSvg";
 import Link from "next/link";
 
-function Figure({ children, title }: { children: ReactNode; title: string }) {
+function Figure({
+	children,
+	title,
+	creator,
+}: {
+	children: ReactNode;
+	title: string;
+	creator: string;
+}) {
 	return (
 		<figure className="mb-20">
 			{children}
-			<figcaption className="font-bold font-mono text-justify text-xl w-full ">
+			<figcaption className="font-bold font-mono text-center text-xl w-full ">
 				<pre className="whitespace-pre-wrap">{title}</pre>
+				<pre className="whitespace-pre-wrap mt-4">{creator}</pre>
 			</figcaption>
 		</figure>
 	);
@@ -41,12 +51,22 @@ export default function Showcase() {
 					<h1 className="font-bold text-3xl text-center">Pixel Sorter Showcase</h1>
 					<Links />
 				</div>
-				<Figure title="THERE IS NO MAGIC. THERE IS ONLY KNOWLEDGE, MORE OR LESS HIDDEN.">
+				<Figure
+					creator="Ideopunk"
+					title="THERE IS NO MAGIC. THERE IS ONLY KNOWLEDGE, MORE OR LESS HIDDEN."
+				>
 					<Image src={botns} width={677} height={845} alt="BOOK OF THE NEW SUN" />
 				</Figure>
 
-				<Figure title="PUT OUT MORE SAIL, CAPTAIN, FOR THE UNIVERSE IS LEAVING US BEHIND...">
+				<Figure
+					creator="Ideopunk"
+					title="PUT OUT MORE SAIL, CAPTAIN, FOR THE UNIVERSE IS LEAVING US BEHIND..."
+				>
 					<Image src={starrynight} width={1199} height={950} alt="STARRY NIGHT" />
+				</Figure>
+
+				<Figure creator="Severian King Comfort" title="ACE OF WANDS">
+					<Image src={wands} width={1052} height={1381} alt="ACE OF WANDS" />
 				</Figure>
 				<Links />
 			</div>

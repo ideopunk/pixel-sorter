@@ -17,6 +17,41 @@ import Links from "./Links";
 
 type Dimensions = { width: number; height: number };
 
+function Select({
+	title,
+	value,
+	setValue,
+	options,
+	style,
+}: {
+	title: string;
+	value: string;
+	setValue: (s: any) => void;
+	options: readonly string[];
+	style?: string;
+}) {
+	return (
+		<label
+			className={`mb-4 flex p-4 lg:p-0 items-center justify-between font-bold w-1/2 lg:w-full ${style}`}
+		>
+			{title}
+			<select
+				value={value}
+				onChange={(e) => {
+					setValue(e.target.value);
+				}}
+				className="appearance-none block p-1 pr-2 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
+			>
+				{options.map((opt) => (
+					<option key={opt} value={opt}>
+						{toTitleCase(opt)}
+					</option>
+				))}
+			</select>
+		</label>
+	);
+}
+
 export default function Sidebar({
 	waiting,
 	mask,
@@ -74,58 +109,28 @@ export default function Sidebar({
 		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between">
 			<div className=" border-gray-400 lg:p-4 pb-0 flex flex-wrap items-center lg:block">
 				{/* DIRECTION */}
-				<label className="mb-4 flex p-4 lg:p-0 items-center justify-between font-bold w-1/2 lg:w-full">
-					Direction
-					<select
-						value={direction}
-						onChange={(e) => {
-							handleDirection(e.target.value);
-						}}
-						className="appearance-none block p-1 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
-					>
-						{arrayOfDirections.map((dir) => (
-							<option key={dir} value={dir}>
-								{toTitleCase(dir)}
-							</option>
-						))}
-					</select>
-				</label>
+				<Select
+					title="Direction"
+					value={direction}
+					setValue={handleDirection}
+					options={arrayOfDirections}
+				/>
 
 				{/* SORTING STYLE */}
-				<label className="mb-4 p-4 lg:p-0 flex items-center justify-between font-bold w-1/2 lg:w-full">
-					Sorting Style
-					<select
-						value={sortingStyle}
-						onChange={(e) => {
-							setSortingStyle(e.target.value as SortingStyle);
-						}}
-						className="appearance-none block p-1 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
-					>
-						{arrayOfSortingStyles.map((sortstyle) => (
-							<option key={sortstyle} value={sortstyle}>
-								{toTitleCase(sortstyle)}
-							</option>
-						))}
-					</select>
-				</label>
+				<Select
+					title="Sorting Style"
+					value={sortingStyle}
+					setValue={setSortingStyle}
+					options={arrayOfSortingStyles}
+				/>
 
 				{/* INTERVAL STYLE */}
-				<label className="flex p-4 lg:p-0 justify-between items-center font-bold w-1/2 lg:w-full">
-					Interval Style
-					<select
-						value={intervalStyle}
-						onChange={(e) => {
-							setIntervalStyle(e.target.value as IntervalStyle);
-						}}
-						className="appearance-none block p-1 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
-					>
-						{arrayOfIntervalStyles.map((intervalstyle) => (
-							<option key={intervalstyle} value={intervalstyle}>
-								{toTitleCase(intervalstyle)}
-							</option>
-						))}
-					</select>
-				</label>
+				<Select
+					title="Interval Style"
+					value={intervalStyle}
+					setValue={setIntervalStyle}
+					options={arrayOfIntervalStyles}
+				/>
 
 				{/* THRESHOLD */}
 				<div className="order-last p-4 lg:px-0 w-full py-4">
