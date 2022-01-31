@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { NextSeo } from "next-seo";
 import { ReactNode } from "react";
+import Link from "next/link";
+
 import Links from "../components/Links";
+import X from "../components/XSvg";
+
 import botns from "../public/showcase/botns.png";
 import starrynight from "../public/showcase/starrynight.png";
 import wands from "../public/showcase/wands.png";
-import X from "../components/XSvg";
-import Link from "next/link";
+import influencer from "../public/showcase/influencer.png";
 
 function Figure({
 	children,
@@ -18,10 +21,10 @@ function Figure({
 	creator: string;
 }) {
 	return (
-		<figure className="mb-20">
+		<figure className="mb-20 flex flex-col items-center">
 			{children}
-			<figcaption className="font-bold font-mono text-center text-xl w-full ">
-				<pre className="whitespace-pre-wrap">{title}</pre>
+			<figcaption className="font-bold font-mono text-center text-xl  ">
+				<pre className="whitespace-pre-wrap mt-2">{title}</pre>
 				<pre className="whitespace-pre-wrap mt-4">{creator}</pre>
 			</figcaption>
 		</figure>
@@ -46,7 +49,7 @@ export default function Showcase() {
 					url: "https://pixel-sorter.com/showcase",
 				}}
 			/>
-			<div className="w-1/2 max-w-xl py-10">
+			<div className="w-3/5 flex flex-col items-center py-10">
 				<div className="pb-12">
 					<h1 className="font-bold text-3xl text-center">Pixel Sorter Showcase</h1>
 					<Links />
@@ -68,7 +71,13 @@ export default function Showcase() {
 				<Figure creator="Severian King Comfort" title="ACE OF WANDS">
 					<Image src={wands} width={1052} height={1381} alt="ACE OF WANDS" />
 				</Figure>
-				<Links />
+
+				<Figure creator="Peter Sanfilippo" title="INFLUENCER">
+					<Image src={influencer} width={1920} height={1279} alt="INFLUENCER" />
+				</Figure>
+				<div className="w-48">
+					<Links between />
+				</div>
 			</div>
 		</div>
 	);
