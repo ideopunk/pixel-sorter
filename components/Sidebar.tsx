@@ -4,9 +4,11 @@ import * as Slider from "@radix-ui/react-slider";
 import {
 	arrayOfDirections,
 	arrayOfIntervalStyles,
+	arrayOfMaskOptions,
 	arrayOfSortingStyles,
 	Direction,
 	IntervalStyle,
+	MaskOptions,
 	Options,
 	SortingStyle,
 } from "../library/types";
@@ -65,9 +67,9 @@ export default function Sidebar({
 	handleShare,
 }: {
 	waiting: boolean;
-	mask: boolean;
+	mask: MaskOptions;
 	newImage: boolean;
-	setMask: (b: boolean) => void;
+	setMask: (m: MaskOptions) => void;
 	draw: (options: Options) => void;
 	reset: () => void;
 	undo: () => void;
@@ -132,6 +134,14 @@ export default function Sidebar({
 					options={arrayOfIntervalStyles}
 				/>
 
+				{/* MASKING STYLE */}
+				<Select
+					title="Masking"
+					value={mask}
+					setValue={setMask}
+					options={arrayOfMaskOptions}
+				/>
+
 				{/* THRESHOLD */}
 				<div className="order-last p-4 lg:px-0 w-full py-4">
 					{(intervalStyle === "threshold" || intervalStyle === "random") && (
@@ -177,7 +187,7 @@ export default function Sidebar({
 					)}
 				</div>
 
-				<label className="font-bold p-4 lg:p-0 lg:pt-3 flex items-baseline w-1/2">
+				{/* <label className="font-bold p-4 lg:p-0 lg:pt-3 flex items-baseline w-1/2">
 					Masking{" "}
 					<input
 						className="ml-4 appearance-none w-4 h-4 rounded-md border-2 border-black dark:border-white checked:bg-gray-900 dark:checked:bg-gray-200 relative top-0.5"
@@ -185,7 +195,7 @@ export default function Sidebar({
 						type="checkbox"
 						onChange={(e) => setMask(e.target.checked)}
 					/>
-				</label>
+				</label> */}
 			</div>
 
 			{/* BUTTONS */}

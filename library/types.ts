@@ -42,6 +42,7 @@ export interface Options {
 	intervalStyle?: IntervalStyle;
 	threshold?: [number, number];
 	mask?: Rect;
+	invertedMask?: boolean;
 }
 
 export interface MaskCoordinates {
@@ -49,4 +50,8 @@ export interface MaskCoordinates {
 	right: number;
 	top: number;
 	bottom: number;
+	inverted: boolean;
 }
+
+export const arrayOfMaskOptions = ["none", "regular", "inverted"] as const;
+export type MaskOptions = typeof arrayOfMaskOptions[number];

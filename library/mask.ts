@@ -8,6 +8,7 @@ export function toCoordinates(
 		width: number;
 		height: number;
 	},
+	inverted: boolean | undefined,
 	width: number,
 	height: number
 ): MaskCoordinates {
@@ -25,6 +26,7 @@ export function toCoordinates(
 		top,
 		right,
 		bottom,
+		inverted: Boolean(inverted),
 	};
 
 	return coordinates;
@@ -40,6 +42,7 @@ export function rotateCoordinates(
 		right: mask.bottom,
 		bottom: width - 1 - mask.left,
 		top: width - 1 - mask.right,
+		inverted: mask.inverted,
 	};
 }
 
@@ -52,16 +55,31 @@ export function maskNoThresholdData<T extends object>(
 
 	let convertedArray: T[][] = [];
 
-	for (let i = 0; i < data.length; i++) {
-		if (i >= top && i <= bottom) {
-			const convertedLeft = data[i].slice(0, left).sort(sorter);
-			const untouchedMid = data[i].slice(left, right);
-			const convertedRight = data[i].slice(right).sort(sorter);
-			untouchedMid.push(...convertedRight);
-			convertedLeft.push(...untouchedMid);
-			convertedArray.push(convertedLeft);
-		} else {
-			convertedArray.push(data[i].sort(sorter));
+	if (mask.inverted) {
+		for (let i = 0; i < data.length; i++) {
+			if (i >= top && i <= bottom) {
+				const untouchedLeft = data[i].slice(0, left);
+				const convertedMid = data[i].slice(left, right).sort(sorter);
+				const untouchedRight = data[i].slice(right);
+				convertedMid.push(...untouchedRight);
+				untouchedLeft.push(...convertedMid);
+				convertedArray.push(untouchedLeft);
+			} else {
+				convertedArray.push(data[i]);
+			}
+		}
+	} else {
+		for (let i = 0; i < data.length; i++) {
+			if (i >= top && i <= bottom) {
+				const convertedLeft = data[i].slice(0, left).sort(sorter);
+				const untouchedMid = data[i].slice(left, right);
+				const convertedRight = data[i].slice(right).sort(sorter);
+				untouchedMid.push(...convertedRight);
+				convertedLeft.push(...untouchedMid);
+				convertedArray.push(convertedLeft);
+			} else {
+				convertedArray.push(data[i].sort(sorter));
+			}
 		}
 	}
 
@@ -80,34 +98,60 @@ export function maskThresholdData<T extends object>(
 
 	let convertedArray: T[][] = [];
 
-	for (let i = 0; i < data.length; i++) {
-		if (i >= top && i <= bottom) {
-			const convertedLeft = sortRowWithThreshold(
-				data[i].slice(0, left),
-				min,
-				max,
-				thresholdCheck,
-				sorter
-			);
+	if (mask.inverted) {
+		for (let i = 0; i < data.length; i++) {
+			if (i >= top && i <= bottom) {
+				const untouchedLeft = data[i].slice(0, left);
 
-			const untouchedMid = data[i].slice(left, right);
-			const convertedRight = sortRowWithThreshold(
-				data[i].slice(right),
-				min,
-				max,
-				thresholdCheck,
-				sorter
-			);
+				const convertedMid = sortRowWithThreshold(
+					data[i].slice(left, right),
+					min,
+					max,
+					thresholdCheck,
+					sorter
+				);
 
-			untouchedMid.push(...convertedRight);
-			convertedLeft.push(...untouchedMid);
+				const untouchedRight = data[i].slice(right);
 
-			convertedArray.push(convertedLeft);
-		} else {
-			convertedArray.push(sortRowWithThreshold(data[i], min, max, thresholdCheck, sorter));
+				convertedMid.push(...untouchedRight);
+				untouchedLeft.push(...convertedMid);
+
+				convertedArray.push(untouchedLeft);
+			} else {
+				convertedArray.push(data[i]);
+			}
+		}
+	} else {
+		for (let i = 0; i < data.length; i++) {
+			if (i >= top && i <= bottom) {
+				const convertedLeft = sortRowWithThreshold(
+					data[i].slice(0, left),
+					min,
+					max,
+					thresholdCheck,
+					sorter
+				);
+
+				const untouchedMid = data[i].slice(left, right);
+				const convertedRight = sortRowWithThreshold(
+					data[i].slice(right),
+					min,
+					max,
+					thresholdCheck,
+					sorter
+				);
+
+				untouchedMid.push(...convertedRight);
+				convertedLeft.push(...untouchedMid);
+
+				convertedArray.push(convertedLeft);
+			} else {
+				convertedArray.push(
+					sortRowWithThreshold(data[i], min, max, thresholdCheck, sorter)
+				);
+			}
 		}
 	}
-
 	return convertedArray;
 }
 

@@ -67,7 +67,11 @@ export const pixelsort = (
 			throw new Error("unreachable");
 	}
 
-	const mask = options?.mask ? maskLib.toCoordinates(options.mask, width, height) : undefined;
+	console.log("INVERTED: ", options.invertedMask);
+	
+	const mask = options?.mask
+		? maskLib.toCoordinates(options.mask, options.invertedMask, width, height)
+		: undefined;
 	// DO THINGS
 
 	// HSL

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Rect, Options, SortingStyle } from "../library/types";
+import { Rect, Options, SortingStyle, MaskOptions } from "../library/types";
 import { NextSeo } from "next-seo";
 import { ctx } from "../library/pixel.worker";
 
@@ -17,7 +17,7 @@ export default function Home() {
 	const [toast, setToast] = useState(false);
 
 	// mask stuff
-	const [mask, setMask] = useState(false);
+	const [mask, setMask] = useState<MaskOptions>("none");
 	const [maskPosition, setMaskPosition] = useState<Rect>();
 
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,7 @@ export default function Home() {
 	const handleRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		async function fn() {
-			if (mask && draggableRef.current) {
+			if (mask !== "none" && draggableRef.current) {
 				// @ts-ignore
 				const Draggable = (await import("draggable")).default;
 
@@ -132,22 +132,23 @@ export default function Home() {
 				const widthAdjustment = imageDimensions.width / imageRef.current.width;
 				const heightAdjustment = imageDimensions.height / imageRef.current.height;
 
-				const adjustedMaskPosition: Rect | undefined = mask
-					? {
-							x:
-								(maskPosition?.x || 0) *
-								(imageDimensions.width / imageRef.current.width),
-							y:
-								((maskPosition?.y || 0) + adjustedY) *
-								(imageDimensions.height / imageRef.current.height),
-							width:
-								(maskPosition?.width || 0) *
-								(widthAdjustment < 1 ? 1 : widthAdjustment),
-							height:
-								(maskPosition?.height || 0) *
-								(heightAdjustment < 1 ? 1 : heightAdjustment),
-					  }
-					: undefined;
+				const adjustedMaskPosition: Rect | undefined =
+					mask !== "none"
+						? {
+								x:
+									(maskPosition?.x || 0) *
+									(imageDimensions.width / imageRef.current.width),
+								y:
+									((maskPosition?.y || 0) + adjustedY) *
+									(imageDimensions.height / imageRef.current.height),
+								width:
+									(maskPosition?.width || 0) *
+									(widthAdjustment < 1 ? 1 : widthAdjustment),
+								height:
+									(maskPosition?.height || 0) *
+									(heightAdjustment < 1 ? 1 : heightAdjustment),
+						  }
+						: undefined;
 				if (imageData?.data) {
 					workerRef.current.postMessage({
 						data: imageData.data,
@@ -159,6 +160,7 @@ export default function Home() {
 							intervalStyle,
 							threshold,
 							mask: adjustedMaskPosition,
+							invertedMask: mask === "inverted",
 						} as Options,
 					});
 				}
@@ -326,7 +328,7 @@ export default function Home() {
 							ref={draggableRef}
 							draggable
 							className={`absolute w-40 overflow-auto top-0 bg-gray-500 bg-opacity-60 z-20 h-40 resize  max-w-full max-h-full ${
-								mask ? "visible" : "invisible"
+								mask !== "none" ? "visible" : "invisible"
 							}`}
 						>
 							<div ref={handleRef} className="w-11/12 h-full cursor-pointer" />
