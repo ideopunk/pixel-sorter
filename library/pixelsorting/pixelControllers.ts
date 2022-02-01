@@ -5,6 +5,7 @@ import {
 	HSLMatrixtoClampArray,
 	HSLtoClampArray,
 	RGBMatrixtoClampArray,
+	RGBtoClampArray,
 	toColumns,
 	toHSLPixels,
 	toPixels,
@@ -47,7 +48,14 @@ export function hslNoThresholdConversion(
 		}
 	}
 
-	const clampedArr = HSLMatrixtoClampArray(convertedArray);
+	let flattenedArray: HSLPixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
 	return new ImageData(clampedArr, width, height);
 }
 
@@ -90,7 +98,14 @@ export function hslThresholdConversion(
 		}
 	}
 
-	const clampedArr = HSLMatrixtoClampArray(convertedArray);
+	let flattenedArray: HSLPixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
 	return new ImageData(clampedArr, width, height);
 }
 
@@ -141,7 +156,14 @@ export function hslRandomConversion(
 		}
 	}
 
-	const clampedArr = HSLMatrixtoClampArray(convertedArray);
+	let flattenedArray: HSLPixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
 
 	return newData;
@@ -183,7 +205,14 @@ export function rgbNoThresholdConversion(
 		}
 	}
 
-	const clampedArr = RGBMatrixtoClampArray(convertedArray);
+	let flattenedArray: Pixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
 
 	return newData;
@@ -228,7 +257,14 @@ export function rgbThresholdConversion(
 		}
 	}
 
-	const clampedArr = RGBMatrixtoClampArray(convertedArray);
+	let flattenedArray: Pixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
 	const newData = new ImageData(clampedArr, width, height);
 
 	return newData;
@@ -282,6 +318,14 @@ export function rgbRandomConversion(
 		}
 	}
 
-	const clampedArr = RGBMatrixtoClampArray(convertedArray);
+	let flattenedArray: Pixel[] = [];
+	if (columns) {
+		flattenedArray = columnsToFlatArray(convertedArray);
+	} else {
+		flattenedArray = convertedArray.flat();
+	}
+
+	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
+	
 	return new ImageData(clampedArr, width, height);
 }
