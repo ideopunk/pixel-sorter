@@ -23,7 +23,7 @@ export function hslNoThresholdConversion(
 	let hslPixels: HSLPixel[] = [];
 
 	for (let i = 0; i < data.length; i += 4) {
-		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
 	}
 
 	let nestedData: HSLPixel[][] = [];
@@ -73,7 +73,7 @@ export function hslThresholdConversion(
 	let pixels: HSLPixel[] = [];
 
 	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
 	}
 
 	let nestedData: HSLPixel[][] = [];
@@ -132,7 +132,7 @@ export function hslRandomConversion(
 	let pixels: HSLPixel[] = [];
 
 	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
 	}
 
 	let nestedData: HSLPixel[][] = [];
@@ -326,6 +326,6 @@ export function rgbRandomConversion(
 	}
 
 	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
-	
+
 	return new ImageData(clampedArr, width, height);
 }

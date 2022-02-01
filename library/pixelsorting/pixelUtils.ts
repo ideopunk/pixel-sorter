@@ -38,13 +38,13 @@ export function RGBtoClampArray(pixels: Pixel[]) {
 export function HSLtoClampArray(pixels: HSLPixel[]) {
 	let preclamp: number[] = [];
 	pixels.forEach((pixel) => {
-		const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l);
+		const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l, pixel.a);
 		preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
 	});
 	return Uint8ClampedArray.from(preclamp);
 }
 
-export function HSLToRGB(h: number, s: number, l: number) {
+export function HSLToRGB(h: number, s: number, l: number, a: number) {
 	// Must be fractions of 1
 	s /= 100;
 	l /= 100;
@@ -84,7 +84,7 @@ export function HSLToRGB(h: number, s: number, l: number) {
 	r = Math.round((r + m) * 255);
 	g = Math.round((g + m) * 255);
 	b = Math.round((b + m) * 255);
-
+	a = Math.round(a * 255);
 	return [r, g, b, 255];
 }
 
@@ -92,11 +92,11 @@ export function toPixels(r: number, g: number, b: number, a: number): Pixel {
 	return { r, g, b, a };
 }
 
-export const toHSLPixels = (r: number, g: number, b: number): HSLPixel => {
+export const toHSLPixels = (r: number, g: number, b: number, a: number): HSLPixel => {
 	r = r / 255;
 	g = g / 255;
 	b = b / 255;
-
+	a = a / 255;
 	const l = Math.max(r, g, b);
 	const s = l - Math.min(r, g, b);
 	const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
@@ -105,6 +105,7 @@ export const toHSLPixels = (r: number, g: number, b: number): HSLPixel => {
 		h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
 		s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
 		l: (100 * (2 * l - s)) / 2,
+		a,
 	};
 };
 
@@ -122,7 +123,7 @@ export function HSLMatrixtoClampArray(matrix: HSLPixel[][]) {
 	let preclamp: number[] = [];
 	matrix.forEach((row) => {
 		row.forEach((pixel) => {
-			const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l);
+			const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l, pixel.a);
 			preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
 		});
 	});
