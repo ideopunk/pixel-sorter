@@ -1,4 +1,4 @@
-import { HSLPixel, Pixel } from "./types";
+import { HSLPixel, Pixel } from "../types";
 
 // ASCENDING
 export function byRedAscending(a: Pixel, b: Pixel) {

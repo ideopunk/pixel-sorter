@@ -1,5 +1,5 @@
-import { toColumns } from "../library/pixelUtils";
-import { rotateCoordinates } from "../library/mask";
+import { toColumns } from "../library/pixelsorting/pixelUtils";
+import { rotateCoordinates } from "../library/pixelsorting/mask";
 import { HSLPixel, MaskCoordinates, Pixel } from "../library/types";
 
 test("ping", () => expect("pong").toBe("pong"));

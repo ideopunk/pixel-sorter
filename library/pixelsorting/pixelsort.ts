@@ -1,4 +1,4 @@
-import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from "./types";
+import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from "../types";
 import * as sorting from "./sorting";
 import * as threshold from "./threshold";
 import {

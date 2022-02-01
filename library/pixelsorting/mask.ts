@@ -1,5 +1,5 @@
 import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
-import { HSLPixel, MaskCoordinates } from "./types";
+import { HSLPixel, MaskCoordinates } from "../types";
 
 export function toCoordinates(
 	mask: {

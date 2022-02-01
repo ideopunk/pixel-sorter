@@ -1,6 +1,6 @@
-import { catcher } from "./genericUtils";
+import { catcher } from "../genericUtils";
 import { pixelsort } from "./pixelsort";
-import { Options } from "./types";
+import { Options } from "../types";
 
 export const ctx: Worker = self as any;
 

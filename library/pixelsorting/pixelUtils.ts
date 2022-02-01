@@ -1,4 +1,4 @@
-import { HSLPixel, Pixel } from "./types";
+import { HSLPixel, Pixel } from "../types";
 
 export function transpose(original: any[][], width: number, height: number): any[][] {
 	let newMatrix: any[][] = [];

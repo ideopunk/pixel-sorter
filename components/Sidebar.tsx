@@ -77,7 +77,7 @@ export default function Sidebar({
 	updateFile: (f: File) => void;
 	handleShare: () => void;
 }) {
-	const [direction, setDirection] = useState<Direction>("down");
+	const [direction, setDirection] = useState<Direction>("up");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
 	const [threshold, setThreshold] = useState<[number, number]>([25, 80]);

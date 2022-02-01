@@ -8,7 +8,7 @@ import {
 	toHSLPixels,
 	toPixels,
 } from "./pixelUtils";
-import { HSLPixel, MaskCoordinates, Pixel } from "./types";
+import { HSLPixel, MaskCoordinates, Pixel } from "../types";
 
 export function hslNoThresholdConversion(
 	data: Uint8ClampedArray,

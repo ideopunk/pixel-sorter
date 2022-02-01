@@ -1,4 +1,4 @@
-import { HSLPixel, MaskCoordinates, Pixel } from "./types";
+import { HSLPixel, MaskCoordinates, Pixel } from "../types";
 
 // RGB
 export function redWithinThresholdCheck(pixel: Pixel, min: number, max: number) {

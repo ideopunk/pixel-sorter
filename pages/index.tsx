@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Rect, Options, SortingStyle, MaskOptions } from "../library/types";
 import { NextSeo } from "next-seo";
-import { ctx } from "../library/pixel.worker";
+// import { ctx } from "../library/pixel.worker";
 
 type Dimensions = { width: number; height: number };
 
@@ -76,7 +76,9 @@ export default function Home() {
 	// GLITCHING
 	const workerRef = useRef<Worker>();
 	useEffect(() => {
-		workerRef.current = new Worker(new URL("../library/pixel.worker.ts", import.meta.url));
+		workerRef.current = new Worker(
+			new URL("../library/pixelsorting/pixel.worker.ts", import.meta.url)
+		);
 		workerRef.current.addEventListener(
 			"message",
 			(e: MessageEvent<ImageData>) => {
