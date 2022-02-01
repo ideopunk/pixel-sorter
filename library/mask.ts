@@ -166,19 +166,36 @@ export function maskRandomData<T extends object>(
 
 	let convertedArray: T[][] = [];
 
-	for (let i = 0; i < data.length; i++) {
-		if (i >= top && i <= bottom) {
-			const convertedLeft = sortRandomRow(data[i].slice(0, left), min, max, sorter);
+	if (mask.inverted) {
+		for (let i = 0; i < data.length; i++) {
+			if (i >= top && i <= bottom) {
+				const untouchedLeft = data[i].slice(0, left);
+				const convertedMid = sortRandomRow(data[i].slice(left, right), min, max, sorter);
+				const untouchedRight = data[i].slice(right);
 
-			const untouchedMid = data[i].slice(left, right);
-			const convertedRight = sortRandomRow(data[i].slice(right), min, max, sorter);
+				convertedMid.push(...untouchedRight);
+				untouchedLeft.push(...convertedMid);
 
-			untouchedMid.push(...convertedRight);
-			convertedLeft.push(...untouchedMid);
+				convertedArray.push(untouchedLeft);
+			} else {
+				convertedArray.push(data[i]);
+			}
+		}
+	} else {
+		for (let i = 0; i < data.length; i++) {
+			if (i >= top && i <= bottom) {
+				const convertedLeft = sortRandomRow(data[i].slice(0, left), min, max, sorter);
 
-			convertedArray.push(convertedLeft);
-		} else {
-			convertedArray.push(sortRandomRow(data[i], min, max, sorter));
+				const untouchedMid = data[i].slice(left, right);
+				const convertedRight = sortRandomRow(data[i].slice(right), min, max, sorter);
+
+				untouchedMid.push(...convertedRight);
+				convertedLeft.push(...untouchedMid);
+
+				convertedArray.push(convertedLeft);
+			} else {
+				convertedArray.push(sortRandomRow(data[i], min, max, sorter));
+			}
 		}
 	}
 
