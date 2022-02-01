@@ -1,328 +1,111 @@
-import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
-import { maskNoThresholdData, maskRandomData, maskThresholdData, rotateCoordinates } from "./mask";
-import {
-	columnsToFlatArray,
-	HSLtoClampArray,
-	RGBtoClampArray,
-	toColumns,
-	toHSLPixels,
-	toPixels,
-} from "./pixelUtils";
-import { HSLPixel, MaskCoordinates, Pixel } from "../types";
+export const nope = "nope";
+// import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
+// import { maskNoThresholdData, maskRandomData, maskThresholdData, rotateCoordinates } from "./mask";
+// import { columnsToFlatArray, HSLtoClampArray, HSLToRGB, toHSLPixels } from "./pixelUtils";
+// import { HSLPixel, MaskCoordinates, Pixel } from "../types";
 
-export function hslNoThresholdConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	sortingFunction: (a: HSLPixel, b: HSLPixel) => number,
-	columns: boolean,
-	mask?: MaskCoordinates
-): ImageData {
-	let hslPixels: HSLPixel[] = [];
+// function* toMatrix(data: Uint8ClampedArray, width: number, height: number) {
+// 	for (let i = 0; i < height; i++) {
+// 		yield data.slice(i * width * 4, i + 1 * width * 4);
+// 	}
+// }
 
-	for (let i = 0; i < data.length; i += 4) {
-		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
+// function* rowToHSL(data: Uint8ClampedArray[]) {
+// 	for (let i = 0; i < data.length; i += 4) {
+// 		yield toHSLPixels(data[i], data[i + 1], data[i + 2]);
+// 	}
+// }
+// function* toWow(
+// 	data: Uint8ClampedArray,
+// 	width: number,
+// 	height: number,
+// 	sortingFunction: (a: HSLPixel, b: HSLPixel) => number
+// ) {
+// 	let matrix = toMatrix(data, width, height);
+// 	for (let row of matrix) {
+// 		let hslRow = rowToHSL(row);
+// 		yield row.map;
+// 	}
 
-	let nestedData: HSLPixel[][] = [];
+// 	for (let row of toNest(hslPixels, width, height)) {
+// 		yield row.sort(sortingFunction);
+// 	}
+// }
 
-	if (columns) {
-		nestedData = toColumns(hslPixels, width, height);
-	} else {
-		for (let i = 0; i < height; i++) {
-			nestedData.push(hslPixels.slice(i * width, (i + 1) * width));
-		}
-	}
+// export function pyramidConversion(
+// 	data: Uint8ClampedArray,
+// 	width: number,
+// 	height: number,
+// 	sortingFunction: (a: HSLPixel, b: HSLPixel) => number
+// ): ImageData {
+// 	let preclamp = [];
+// 	for (let row of toWow(data, width, height, sortingFunction)) {
+// 		preclamp.push(...HSLtoClampRow(row));
+// 	}
 
-	let convertedArray: HSLPixel[][] = [];
+// 	return new ImageData(Uint8ClampedArray.from(preclamp), width, height);
+// }
 
-	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
+// export function simpleConversion(
+// 	data: Uint8ClampedArray,
+// 	width: number,
+// 	height: number,
+// 	sortingFunction: (a: HSLPixel, b: HSLPixel) => number
+// ): ImageData {
+// 	let hslPixels: HSLPixel[] = [];
+// 	for (let i = 0; i < data.length; i += 4) {
+// 		hslPixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
+// 	}
 
-		convertedArray = maskNoThresholdData(nestedData, sortingFunction, mask);
-	} else {
-		for (let row of nestedData) {
-			convertedArray.push(row.sort(sortingFunction));
-		}
-	}
+// 	let nestedData = toNest(hslPixels, width, height);
 
-	let flattenedArray: HSLPixel[] = [];
-	if (columns) {
-		flattenedArray = columnsToFlatArray(convertedArray);
-	} else {
-		flattenedArray = convertedArray.flat();
-	}
+// 	let convertedArray: HSLPixel[][] = [];
+// 	for (let row of nestedData) {
+// 		convertedArray.push(row.sort(sortingFunction));
+// 	}
 
-	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	return new ImageData(clampedArr, width, height);
-}
+// 	const preclampArr: number[] = [];
+// 	for (let row of convertedArray) {
+// 		preclampArr.push(...HSLtoClampRow(row));
+// 	}
+// 	return new ImageData(Uint8ClampedArray.from(preclampArr), width, height);
+// }
 
-export function hslThresholdConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	min: number,
-	max: number,
-	thresholdCheck: (pixel: HSLPixel, min: number, max: number) => boolean,
-	sorter: (a: HSLPixel, b: HSLPixel) => number,
-	columns: boolean,
-	mask?: MaskCoordinates
-) {
-	let pixels: HSLPixel[] = [];
+// function* toHSLPixelArr(data: Uint8ClampedArray) {
+// 	for (let i = 0; i < data.length; i += 4) {
+// 		yield toHSLPixels(data[i], data[i + 1], data[i + 2]);
+// 	}
+// }
 
-	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
+// function* toNest<T>(pixels: T[], width: number, height: number) {
+// 	for (let i = 0; i < height; i++) {
+// 		yield pixels.slice(i * width, (i + 1) * width);
+// 	}
+// }
 
-	let nestedData: HSLPixel[][] = [];
+// function* toConverted<T>(nest: T[][], sortingFunction: (a: T, b: T) => number) {
+// 	for (let row of nest) {
+// 		yield row.sort(sortingFunction);
+// 	}
+// }
 
-	if (columns) {
-		nestedData = toColumns(pixels, width, height);
-	} else {
-		for (let i = 0; i < height; i++) {
-			nestedData.push(pixels.slice(i * width, (i + 1) * width));
-		}
-	}
+// export function HSLMatrixtoClampArray(matrix: HSLPixel[][]) {
+// 	let preclamp: number[] = [];
+// 	matrix.forEach((row) => {
+// 		row.forEach((pixel) => {
+// 			const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l);
+// 			preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
+// 		});
+// 	});
+// 	return Uint8ClampedArray.from(preclamp);
+// }
 
-	let convertedArray: HSLPixel[][] = [];
+// function HSLtoClampRow(row: HSLPixel[]) {
+// 	const pix: number[] = [];
+// 	row.forEach((pixel) => {
+// 		const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l);
+// 		pix.push(pixels[0], pixels[1], pixels[2], pixels[3]);
+// 	});
 
-	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-
-		convertedArray = maskThresholdData(nestedData, min, max, thresholdCheck, sorter, mask);
-	} else {
-		for (let row of nestedData) {
-			convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
-		}
-	}
-
-	let flattenedArray: HSLPixel[] = [];
-	if (columns) {
-		flattenedArray = columnsToFlatArray(convertedArray);
-	} else {
-		flattenedArray = convertedArray.flat();
-	}
-
-	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	return new ImageData(clampedArr, width, height);
-}
-
-/**
- *
- * @param data
- * @param width
- * @param height
- * @param min The minimum acceptable random value for an interval range
- * @param max The maximum (exclusive) acceptable random value for an interval range
- * @param sorter
- * @returns
- */
-export function hslRandomConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	min: number,
-	max: number,
-	sorter: (a: HSLPixel, b: HSLPixel) => number,
-	columns: boolean,
-	mask?: MaskCoordinates
-) {
-	let pixels: HSLPixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toHSLPixels(data[i], data[i + 1], data[i + 2]));
-	}
-
-	let nestedData: HSLPixel[][] = [];
-
-	if (columns) {
-		nestedData = toColumns(pixels, width, height);
-	} else {
-		for (let i = 0; i < height; i++) {
-			nestedData.push(pixels.slice(i * width, (i + 1) * width));
-		}
-	}
-
-	let convertedArray: HSLPixel[][] = [];
-	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-
-		convertedArray = maskRandomData(nestedData, min, max, sorter, mask);
-	} else {
-		for (let row of nestedData) {
-			convertedArray.push(sortRandomRow(row, min, max, sorter));
-		}
-	}
-
-	let flattenedArray: HSLPixel[] = [];
-	if (columns) {
-		flattenedArray = columnsToFlatArray(convertedArray);
-	} else {
-		flattenedArray = convertedArray.flat();
-	}
-
-	const clampedArr = Uint8ClampedArray.from(HSLtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-
-	return newData;
-}
-
-export function rgbNoThresholdConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	sortingFunction: (a: Pixel, b: Pixel) => number,
-	columns: boolean,
-	mask?: MaskCoordinates
-) {
-	let pixels: Pixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
-	}
-
-	let nestedData: Pixel[][] = [];
-
-	if (columns) {
-		nestedData = toColumns(pixels, width, height);
-	} else {
-		for (let i = 0; i < height; i++) {
-			nestedData.push(pixels.slice(i * width, (i + 1) * width));
-		}
-	}
-
-	let convertedArray: Pixel[][] = [];
-
-	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-
-		convertedArray = maskNoThresholdData(nestedData, sortingFunction, mask);
-	} else {
-		for (let row of nestedData) {
-			convertedArray.push(row.sort(sortingFunction));
-		}
-	}
-
-	let flattenedArray: Pixel[] = [];
-	if (columns) {
-		flattenedArray = columnsToFlatArray(convertedArray);
-	} else {
-		flattenedArray = convertedArray.flat();
-	}
-
-	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-
-	return newData;
-}
-
-export function rgbThresholdConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	min: number,
-	max: number,
-	thresholdCheck: (pixel: Pixel, min: number, max: number) => boolean,
-	sorter: (a: Pixel, b: Pixel) => number,
-	columns: boolean,
-	mask?: MaskCoordinates
-) {
-	let pixels: Pixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
-	}
-
-	let nestedData: Pixel[][] = [];
-
-	if (columns) {
-		nestedData = toColumns(pixels, width, height);
-	} else {
-		for (let i = 0; i < height; i++) {
-			nestedData.push(pixels.slice(i * width, (i + 1) * width));
-		}
-	}
-
-	let convertedArray: Pixel[][] = [];
-
-	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-
-		convertedArray = maskThresholdData(nestedData, min, max, thresholdCheck, sorter, mask);
-	} else {
-		for (let row of nestedData) {
-			convertedArray.push(sortRowWithThreshold(row, min, max, thresholdCheck, sorter));
-		}
-	}
-
-	let flattenedArray: Pixel[] = [];
-	if (columns) {
-		flattenedArray = columnsToFlatArray(convertedArray);
-	} else {
-		flattenedArray = convertedArray.flat();
-	}
-
-	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-
-	return newData;
-}
-
-/**
- *
- * @param data
- * @param width
- * @param height
- * @param min The minimum acceptable random value for an interval range
- * @param max The maximum (exclusive) acceptable random value for an interval range
- * @param sorter
- * @returns
- */
-export function rgbRandomConversion(
-	data: Uint8ClampedArray,
-	width: number,
-	height: number,
-	min: number,
-	max: number,
-	sorter: (a: Pixel, b: Pixel) => number,
-	columns: boolean,
-	mask?: MaskCoordinates
-) {
-	let pixels: Pixel[] = [];
-
-	for (let i = 0; i < data.length; i += 4) {
-		pixels.push(toPixels(data[i], data[i + 1], data[i + 2], data[i + 3]));
-	}
-
-	let nestedData: Pixel[][] = [];
-
-	if (columns) {
-		nestedData = toColumns(pixels, width, height);
-	} else {
-		for (let i = 0; i < height; i++) {
-			nestedData.push(pixels.slice(i * width, (i + 1) * width));
-		}
-	}
-
-	let convertedArray: Pixel[][] = [];
-
-	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-
-		convertedArray = maskRandomData(nestedData, min, max, sorter, mask);
-	} else {
-		for (let row of nestedData) {
-			convertedArray.push(sortRandomRow(row, min, max, sorter));
-		}
-	}
-
-	let flattenedArray: Pixel[] = [];
-	if (columns) {
-		flattenedArray = columnsToFlatArray(convertedArray);
-	} else {
-		flattenedArray = convertedArray.flat();
-	}
-	const clampedArr = Uint8ClampedArray.from(RGBtoClampArray(flattenedArray));
-	const newData = new ImageData(clampedArr, width, height);
-	return newData;
-}
+// 	return pix;
+// }

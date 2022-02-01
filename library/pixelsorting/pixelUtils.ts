@@ -1,16 +1,5 @@
 import { HSLPixel, Pixel } from "../types";
 
-export function transpose(original: any[][], width: number, height: number): any[][] {
-	let newMatrix: any[][] = [];
-	for (let i = 0; i < height; i++) {
-		newMatrix[i] = [];
-		for (let j = 0; j < width; j++) {
-			newMatrix[i][j] = original[j][i];
-		}
-	}
-	return newMatrix;
-}
-
 export function toColumns<T extends object>(
 	data: T[],
 	originalWidth: number,
@@ -118,3 +107,24 @@ export const toHSLPixels = (r: number, g: number, b: number): HSLPixel => {
 		l: (100 * (2 * l - s)) / 2,
 	};
 };
+
+export function RGBMatrixtoClampArray(matrix: Pixel[][]) {
+	let preClamp: number[] = [];
+	matrix.forEach((row) => {
+		row.forEach((pixel) => {
+			preClamp.push(pixel.r, pixel.g, pixel.b, pixel.a);
+		});
+	});
+	return Uint8ClampedArray.from(preClamp);
+}
+
+export function HSLMatrixtoClampArray(matrix: HSLPixel[][]) {
+	let preclamp: number[] = [];
+	matrix.forEach((row) => {
+		row.forEach((pixel) => {
+			const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l);
+			preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
+		});
+	});
+	return Uint8ClampedArray.from(preclamp);
+}
