@@ -10,6 +10,7 @@ import botns from "../public/showcase/botns.png";
 import starrynight from "../public/showcase/starrynight.png";
 import wands from "../public/showcase/wands.png";
 import influencer from "../public/showcase/influencer.png";
+import coldmonet from "../public/showcase/coldmonet.png";
 
 function Figure({
 	children,
@@ -74,6 +75,10 @@ export default function Showcase() {
 
 				<Figure creator="Peter Sanfilippo" title="INFLUENCER">
 					<Image src={influencer} width={1920} height={1279} alt="INFLUENCER" />
+				</Figure>
+
+				<Figure creator="Turtle Bear" title="COLD MONET">
+					<Image src={coldmonet} width={720} height={503} alt="COLD MONET" />
 				</Figure>
 				<div className="w-48">
 					<Links between />
