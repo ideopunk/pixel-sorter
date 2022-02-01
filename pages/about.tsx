@@ -44,8 +44,8 @@ export default function About() {
 				<h2>How Does It Work?</h2>
 				<p>
 					Pixel sorting re-orders the pixels in a row (or a column) accoding to some
-					parameter. For example, you might sort the pixels in a row based on how red
-					they are.
+					parameter. For example, you might sort the pixels in a row based on how red they
+					are.
 				</p>
 				<p>
 					This gets cool when you use thresholds. You might set a threshold to only sort
@@ -63,6 +63,17 @@ export default function About() {
 					chosen. Have fun!{" "}
 				</p>
 
+				<h2>To-Dos</h2>
+				<ul>
+					<li>
+						{
+							"Fix Chrome crashing on large images (anybody know a solution that doesn't involve WebAssembly?)"
+						}
+					</li>
+					<li>
+						{`Find a solution to keeping your work when navigating the site that isn't "Open pages in a new tab".`}{" "}
+					</li>
+				</ul>
 				<h2>Shout Outs</h2>
 				<p>
 					<Lank href="https://github.com/kimasendorf/ASDFPixelSort">Original script</Lank>{" "}
