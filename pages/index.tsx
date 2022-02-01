@@ -20,6 +20,7 @@ export default function Home() {
 	const [mask, setMask] = useState<MaskOptions>("none");
 	const [maskPosition, setMaskPosition] = useState<Rect>();
 
+	// MASKING
 	const containerRef = useRef<HTMLDivElement>(null);
 	const draggableRef = useRef<HTMLDivElement>(null);
 	const handleRef = useRef<HTMLDivElement>(null);
@@ -47,7 +48,6 @@ export default function Home() {
 		fn();
 	}, [mask, imageDimensions.width, imageDimensions.height]);
 
-	// listen to resizing
 	useEffect(() => {
 		const resizeObserver = new ResizeObserver((entries) => {
 			for (let entry of entries) {
@@ -72,8 +72,9 @@ export default function Home() {
 			};
 		}
 	}, []);
-	const workerRef = useRef<Worker>();
 
+	// GLITCHING
+	const workerRef = useRef<Worker>();
 	useEffect(() => {
 		workerRef.current = new Worker(new URL("../library/pixel.worker.ts", import.meta.url));
 		workerRef.current.addEventListener(
@@ -122,6 +123,7 @@ export default function Home() {
 				);
 
 				// this is separate from the above newImage conditional because we need to get the imageData before writing it to previous.
+				console.log(imageData?.data.length);
 				setPrevious(imageData?.data);
 
 				const containerY = containerRef.current?.getBoundingClientRect().y;
@@ -225,11 +227,6 @@ export default function Home() {
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
 
-						console.log("NATURAL:");
-						console.log(imageRef.current.naturalWidth, imageRef.current.naturalHeight);
-
-						console.log("SQUISHED:");
-						console.log(imageRef.current.width, imageRef.current.height);
 						setImageDimensions({
 							height: imageRef.current.naturalHeight || imageRef.current.height,
 							width: imageRef.current.naturalWidth || imageRef.current.width,

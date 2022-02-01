@@ -20,5 +20,5 @@ module.exports = {
 		// This is allowed because it's failing on `new ClipbaordItem` even though it works fine! Should this resolve, make build errors work again!
 		// !! WARN !!
 		ignoreBuildErrors: true,
-	  },
+	},
 };
