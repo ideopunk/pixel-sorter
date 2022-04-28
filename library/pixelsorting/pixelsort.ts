@@ -20,14 +20,16 @@ export const pixelsort = (
 	// ASSIGN THINGS
 	const [min, max] = options.threshold || [0, 0];
 
+	let downOrRight: boolean = options.direction === "down" || options.direction === "right";
+	let columns: boolean = options.direction === "up" || options.direction === "down";
+
 	let sortingFunction: ((a: HSLPixel, b: HSLPixel) => number) | ((a: Pixel, b: Pixel) => number);
 	let thresholdCheck:
 		| ((pixel: HSLPixel, min: number, max: number) => boolean)
 		| ((pixel: Pixel, min: number, max: number) => boolean);
 
 	let schema: "rgb" | "hsl" = "rgb";
-	let downOrRight: boolean = options.direction === "down" || options.direction === "right";
-	let columns: boolean = options.direction === "up" || options.direction === "down";
+
 	switch (options.sortingStyle) {
 		case "hue":
 			schema = "hsl";
@@ -67,8 +69,6 @@ export const pixelsort = (
 			throw new Error("unreachable");
 	}
 
-	console.log("INVERTED: ", options.invertedMask);
-	
 	const mask = options?.mask
 		? maskLib.toCoordinates(options.mask, options.invertedMask, width, height)
 		: undefined;

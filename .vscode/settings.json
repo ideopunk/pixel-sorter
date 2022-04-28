@@ -2,5 +2,7 @@
 	"workbench.colorCustomizations": {
 		"editor.lineHighlightBackground": "#1073cf2d",
 		"editor.lineHighlightBorder": "#9fced11f"
-	}
+	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true
 }

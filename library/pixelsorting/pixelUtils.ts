@@ -85,7 +85,7 @@ export function HSLToRGB(h: number, s: number, l: number, a: number) {
 	g = Math.round((g + m) * 255);
 	b = Math.round((b + m) * 255);
 	a = Math.round(a * 255);
-	return [r, g, b, 255];
+	return [r, g, b, a];
 }
 
 export function toPixels(r: number, g: number, b: number, a: number): Pixel {

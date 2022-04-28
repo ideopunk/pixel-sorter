@@ -1,4 +1,4 @@
-import { toColumns } from "../library/pixelsorting/pixelUtils";
+import { HSLToRGB, toColumns } from "../library/pixelsorting/pixelUtils";
 import { rotateCoordinates } from "../library/pixelsorting/mask";
 import { HSLPixel, MaskCoordinates, Pixel } from "../library/types";
 
@@ -37,14 +37,27 @@ describe("convert to columns", () => {
 	});
 });
 
-describe("rotate mask to suit columns", () => {
-	test("yeah", () => {
-		const width = 3;
-		const height = 2;
-		const mask: MaskCoordinates = { top: 0, bottom: 1, left: 0, right: 1 };
+// describe("rotate mask to suit columns", () => {
+// 	test("yeah", () => {
+// 		const width = 3;
+// 		const height = 2;
+// 		const mask: MaskCoordinates = { top: 0, bottom: 1, left: 0, right: 1 };
 
-		const rotated = rotateCoordinates(mask, width, height);
+// 		const rotated = rotateCoordinates(mask, width, height);
 
-		expect(rotated).toStrictEqual({ top: 1, bottom: 2, left: 0, right: 1 });
-	});
-});
+// 		expect(rotated).toStrictEqual({ top: 1, bottom: 2, left: 0, right: 1 });
+// 	});
+// });
+
+describe.only('hsl to pix', () => {
+	test("does this even work properly in ts?", () => {
+		
+        let result = HSLToRGB(0, 49.8, 50, 0);
+        console.log(result);
+
+        expect(result[0]).toBe(191);
+        expect(result[1]).toBe(64);
+        expect(result[2]).toBe(64);
+        expect(result[3]).toBe(0);
+	})
+})
