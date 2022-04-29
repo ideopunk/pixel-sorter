@@ -1,4 +1,4 @@
-import { HSLPixel, MaskCoordinates, Pixel } from "../types";
+import {  MaskCoordinates, PixelArray } from "../types";
 import * as threshold from "./threshold";
 import * as sort from "./sorting";
 import { getRandomInt } from "../genericUtils";
@@ -7,10 +7,10 @@ import { sectionSort } from "./pixelUtils";
 // mask check should go here to push whole interval over I can't do anything because max is on top of me and wants to type
 
 export function sortRowWithRandomness(
-	row: Uint8ClampedArray,
+	row: PixelArray,
 	min: number,
 	max: number,
-	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number
+	sorter: (a: PixelArray, b: PixelArray) => number
 ) {
 	let sortableRange = Boolean(getRandomInt(0, 1));
 
@@ -36,18 +36,21 @@ export function sortRowWithRandomness(
 }
 
 export function sortRowWithThreshold(
-	row: Uint8ClampedArray,
+	row: PixelArray,
 	min: number,
 	max: number,
-	thresholdCheck: (pixel: Uint8ClampedArray, min: number, max: number) => boolean,
-	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number
+	thresholdCheck: (pixel: PixelArray, min: number, max: number) => boolean,
+	sorter: (a: PixelArray, b: PixelArray) => number
 ) {
 	let onRun = false;
 	let currentMin = 0;
 
 	let length = row.length / 4;
 	for (let i = 0; i < length; i++) {
-		let latestPixelWithin = thresholdCheck(row.subarray(i* 4, i*4 + 4), min, max);
+		const f = new Float32Array()
+		f.subarray()
+		const sub = row.subarray(i* 4, i*4 + 4)
+		let latestPixelWithin = thresholdCheck(sub, min, max);
 		console.log(i, latestPixelWithin);
 		if (latestPixelWithin && !onRun) {
 			console.log("START");

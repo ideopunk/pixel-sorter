@@ -31,8 +31,13 @@ export type Direction = typeof arrayOfDirections[number];
 
 export type PixelSorterData = { data: Uint8ClampedArray; width: number; height: number };
 
-export type Pixel = { r: number; g: number; b: number; a: number };
-export type HSLPixel = { h: number; s: number; l: number; a: number };
+export type PixelArray = ArrayLike<any> & {
+	BYTES_PER_ELEMENT: number;
+	set(array: ArrayLike<number>, offset?: number): void;
+	slice(start?: number, end?: number): PixelArray;
+	subarray: (begin?: number | undefined, end?: number | undefined) => PixelArray;
+	[n: number]: number;
+};
 
 export type Rect = { x: number; y: number; width: number; height: number };
 

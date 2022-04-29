@@ -5,7 +5,7 @@ import {
 	toColumns,
 } from "../library/pixelsorting/pixelUtils";
 import { maskNoThresholdData, rotateCoordinates } from "../library/pixelsorting/mask";
-import { HSLPixel, MaskCoordinates, Pixel } from "../library/types";
+import { MaskCoordinates } from "../library/types";
 import {
 	rgbNoThresholdConversion,
 	rgbThresholdConversion,
