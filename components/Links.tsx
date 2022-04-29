@@ -6,9 +6,13 @@ import QuestionMark from "./QuestionMarkSvg";
 import FrameSVG from "./FrameSVG";
 import { useRouter } from "next/router";
 import FlashSVG from "./FlashSVG";
+import { useEffect, useState } from "react";
 
 export default function Links({ between }: { between?: boolean }) {
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => setMounted(true), []);
 	const { theme, setTheme } = useTheme();
+
 	const router = useRouter();
 	return (
 		<div className={`flex items-center h-20 ${between ? "justify-between" : "justify-evenly"}`}>
@@ -17,7 +21,7 @@ export default function Links({ between }: { between?: boolean }) {
 				onClick={() => setTheme(theme === "light" ? "dark" : "light")}
 				className="w-8 h-8 hover:scale-125 transition-transform "
 			>
-				{theme === "dark" ? <SunSvg /> : <MoonSvg />}
+				{!mounted ? null : theme === "dark" ? <SunSvg /> : <MoonSvg />}
 			</button>
 			{router.pathname !== "/" && (
 				<Link href="/">

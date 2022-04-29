@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo";
 import Link from "next/link";
-import { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes } from "react";
+import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import Links from "../components/Links";
 import Script from "next/script";
 import X from "../components/XSvg";
@@ -36,7 +36,7 @@ export default function About() {
 					<X />
 				</a>
 			</Link>
-			<div className="mt-12 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white">
+			<div className="mt-12 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white dark:prose-headings:text-purple-200">
 				<h1>Pixel Sorter</h1>
 
 				<p>This is an interface to create glitch art with pixel sorting.</p>
@@ -63,17 +63,6 @@ export default function About() {
 					chosen. Have fun!{" "}
 				</p>
 
-				<h2>To-Dos</h2>
-				<ul>
-					<li>
-						{
-							"Fix Chrome crashing on large images (anybody know a solution that doesn't involve WebAssembly?)"
-						}
-					</li>
-					<li>
-						{`Find a solution to keeping your work when navigating the site that isn't "Open pages in a new tab".`}{" "}
-					</li>
-				</ul>
 				<h2>Shout Outs</h2>
 				<p>
 					<Lank href="https://github.com/kimasendorf/ASDFPixelSort">Original script</Lank>{" "}
