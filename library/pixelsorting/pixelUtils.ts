@@ -36,7 +36,7 @@ export function toColumns(
 		// lil optimization
 		const slideIntoColumn = originalWidth - i - 1;
 		for (let j = 0; j < originalHeight; j++) {
-			const columnIndex = i * originalHeight * 4 + j * 4;
+			const columnIndex = (i * originalHeight + j) * 4;
 			const dataIndex = (j * originalWidth + slideIntoColumn) * 4;
 
 			columns[columnIndex] = data[dataIndex];
@@ -58,7 +58,13 @@ export function columnsToRows(
 
 	for (let i = 0; i < columnWidth; i++) {
 		for (let j = 0; j < columnHeight; j++) {
-			rows[i * columnWidth + j] = columns[columnWidth * (columnHeight - j - 1) + i];
+			const rowIndex = (i * columnHeight + j) * 4;
+			const dataIndex = (columnWidth * (columnHeight - j - 1) + i) * 4;
+			
+			rows[rowIndex] = columns[dataIndex];
+			rows[rowIndex + 1] = columns[dataIndex + 1];
+			rows[rowIndex + 2] = columns[dataIndex + 2];
+			rows[rowIndex + 3] = columns[dataIndex + 3];
 		}
 	}
 

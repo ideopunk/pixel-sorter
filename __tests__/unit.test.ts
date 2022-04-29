@@ -1,5 +1,10 @@
-import { HSLToRGB, sectionSort, toColumns } from "../library/pixelsorting/pixelUtils";
-import { rotateCoordinates } from "../library/pixelsorting/mask";
+import {
+	columnsToRows,
+	HSLToRGB,
+	sectionSort,
+	toColumns,
+} from "../library/pixelsorting/pixelUtils";
+import { maskNoThresholdData, rotateCoordinates } from "../library/pixelsorting/mask";
 import { HSLPixel, MaskCoordinates, Pixel } from "../library/types";
 import {
 	rgbNoThresholdConversion,
@@ -14,63 +19,6 @@ import { redOrHueWithinThresholdCheck } from "../library/pixelsorting/threshold"
 import { sortRowWithThreshold } from "../library/pixelsorting/intervalFunctions";
 
 test("ping", () => expect("pong").toBe("pong"));
-
-// describe("convert to columns", () => {
-// 	test("yeah", () => {
-// 		const matrix: Pixel[] = [
-// 			{ r: 255, g: 0, b: 0, a: 0 },
-// 			{ r: 255, g: 0, b: 0, a: 0 },
-// 			{ r: 255, g: 0, b: 0, a: 0 },
-// 			{ r: 0, g: 255, b: 0, a: 0 },
-// 			{ r: 0, g: 255, b: 0, a: 0 },
-// 			{ r: 0, g: 255, b: 0, a: 0 },
-// 		];
-
-// 		const columns = toColumns(matrix, 3, 2);
-
-// 		console.log(columns);
-// 		expect(columns[0].length).toBe(2);
-// 		expect(columns.length).toBe(3);
-// 		expect(columns).toStrictEqual([
-// 			[
-// 				{ r: 255, g: 0, b: 0, a: 0 },
-// 				{ r: 0, g: 255, b: 0, a: 0 },
-// 			],
-// 			[
-// 				{ r: 255, g: 0, b: 0, a: 0 },
-// 				{ r: 0, g: 255, b: 0, a: 0 },
-// 			],
-// 			[
-// 				{ r: 255, g: 0, b: 0, a: 0 },
-// 				{ r: 0, g: 255, b: 0, a: 0 },
-// 			],
-// 		]);
-// 	});
-// });
-
-// describe("rotate mask to suit columns", () => {
-// 	test("yeah", () => {
-// 		const width = 3;
-// 		const height = 2;
-// 		const mask: MaskCoordinates = { top: 0, bottom: 1, left: 0, right: 1 };
-
-// 		const rotated = rotateCoordinates(mask, width, height);
-
-// 		expect(rotated).toStrictEqual({ top: 1, bottom: 2, left: 0, right: 1 });
-// 	});
-// });
-
-// describe("hsl to pix", () => {
-// 	test("does this even work properly in ts?", () => {
-// 		let result = HSLToRGB(0, 49.8, 50, 0);
-// 		console.log(result);
-
-// 		expect(result[0]).toBe(191);
-// 		expect(result[1]).toBe(64);
-// 		expect(result[2]).toBe(64);
-// 		expect(result[3]).toBe(0);
-// 	});
-// });
 
 function arraysEqual(a1: any[], a2: any[]) {
 	/* WARNING: arrays must not contain {objects} or behavior may be undefined */
@@ -255,87 +203,64 @@ test("test_to_columns", () => {
 	).toBe(true);
 });
 
-// #[test]
-// fn test_to_rows() {
-//     let r = 0;
-//     let g = 0;
-//     let a = 0;
-//     let inputData = vec![
-//         RGBPixel { r, g, b: 1, a },
-//         RGBPixel { r, g, b: 2, a },
-//         RGBPixel { r, g, b: 3, a },
-//         RGBPixel { r, g, b: 4, a },
-//         RGBPixel { r, g, b: 5, a },
-//         RGBPixel { r, g, b: 6, a },
-//     ];
-//     let result = to_rows_rgb(inputData, 2, 3); // hoping thisll output width 3 height 2
+test("test_to_rows", () => {
+	let inputData = new Uint8ClampedArray([
+		20, 0, 0, 3, 10, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 5, 10, 0, 0, 1, 20, 0, 0, 4,
+	]);
+	let result = columnsToRows(inputData, 2, 3);
+	console.log(result);
+	expect(
+		arraysEqual(
+			Array.from(result),
+			[10, 0, 0, 1, 0, 0, 0, 2, 20, 0, 0, 3, 20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6]
+		)
+	).toBe(true);
+});
 
-//     assert_eq!(result[0].b, 5);
-//     assert_eq!(result[1].b, 3);
-//     assert_eq!(result[2].b, 1);
-//     assert_eq!(result[3].b, 6);
-//     assert_eq!(result[4].b, 4);
-//     assert_eq!(result[5].b, 2);
-// }
+test("test masking no thresh", () => {
+	let g = 0;
+	let a = 0;
+	let inputData = new Uint8ClampedArray([
+		0, 0, 0, 1, 20, 0, 0, 2, 10, 0, 0, 3, 0, 0, 0, 4, 20, 0, 0, 5, 10, 0, 0, 6,
+	]);
 
-// #[test]
-// fn test_masking_no_thresh() {
-//     let g = 0;
-//     let a = 0;
-//     let inputData = vec![
-//         RGBPixel { r: 0, g, b: 1, a },
-//         RGBPixel { r: 20, g, b: 2, a },
-//         RGBPixel { r: 10, g, b: 3, a },
-//         RGBPixel { r: 0, g, b: 4, a },
-//         RGBPixel { r: 20, g, b: 5, a },
-//         RGBPixel { r: 10, g, b: 6, a },
-//     ];
+	let mask_coords = {
+		left: 0,
+		top: 1,
+		right: 2,
+		bottom: 2,
+		inverted: false,
+	};
 
-//     let mask_coords = MaskCoordinates {
-//         left: 0,
-//         top: 1,
-//         right: 2,
-//         bottom: 2,
-//         inverted: false,
-//     };
+	maskNoThresholdData(inputData, 3, 2, byRedOrHueAscending, mask_coords);
+	expect(
+		arraysEqual(
+			Array.from(inputData),
+			[0, 0, 0, 1, 10, 0, 0, 3, 20, 0, 0, 2, 0, 0, 0, 4, 20, 0, 0, 5, 10, 0, 0, 6]
+		)
+	);
+});
 
-//     let result = mask_no_threshold_data(inputData, 3, by_red_ascending, mask_coords);
+test("test masking no thresh", () => {
+	let g = 0;
+	let a = 0;
+	let inputData = new Uint8ClampedArray([
+		0, 0, 0, 1, 20, 0, 0, 2, 10, 0, 0, 3, 0, 0, 0, 4, 20, 0, 0, 5, 10, 0, 0, 6,
+	]);
 
-//     assert_eq!(result[0].b, 1);
-//     assert_eq!(result[1].b, 3);
-//     assert_eq!(result[2].b, 2);
-//     assert_eq!(result[3].b, 4);
-//     assert_eq!(result[4].b, 5);
-//     assert_eq!(result[5].b, 6);
-// }
+	let mask_coords = {
+		left: 0,
+		top: 1,
+		right: 3,
+		bottom: 3,
+		inverted: true,
+	};
 
-// #[test]
-// fn test_masking_no_thresh_inverted() {
-//     let g = 0;
-//     let a = 0;
-//     let inputData = vec![
-//         RGBPixel { r: 0, g, b: 1, a },
-//         RGBPixel { r: 20, g, b: 2, a },
-//         RGBPixel { r: 10, g, b: 3, a },
-//         RGBPixel { r: 0, g, b: 4, a },
-//         RGBPixel { r: 20, g, b: 5, a },
-//         RGBPixel { r: 10, g, b: 6, a },
-//     ];
-
-//     let mask_coords = MaskCoordinates {
-//         left: 0,
-//         top: 1,
-//         right: 3,
-//         bottom: 3,
-//         inverted: true,
-//     };
-
-//     let result = mask_no_threshold_data(inputData, 3, by_red_ascending, mask_coords);
-
-//     assert_eq!(result[0].b, 1);
-//     assert_eq!(result[1].b, 2);
-//     assert_eq!(result[2].b, 3);
-//     assert_eq!(result[3].b, 4);
-//     assert_eq!(result[4].b, 6);
-//     assert_eq!(result[5].b, 5);
-//
+	maskNoThresholdData(inputData, 3, 2, byRedOrHueAscending, mask_coords);
+	expect(
+		arraysEqual(
+			Array.from(inputData),
+			[0, 0, 0, 1, 20, 0, 0, 2, 10, 0, 0, 3, 0, 0, 0, 4, 10, 0, 0, 6, 20, 0, 0, 5]
+		)
+	);
+});
