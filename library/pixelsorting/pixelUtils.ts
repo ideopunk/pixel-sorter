@@ -46,7 +46,7 @@ export function toColumns(data: Uint8ClampedArray, originalWidth: number, origin
 export function columnsToRows(
 	columns: ArrayLike<number>,
 	columnWidth: number,
-	columnHeight: number
+	columnHeight: number	
 ): Uint8ClampedArray {
 	let rows = new Uint8ClampedArray(columns.length);
 

@@ -11,8 +11,12 @@ export function hslNoThresholdConversion(
 	columns: boolean,
 	mask?: MaskCoordinates
 ): ImageData {
+	let internalWidth = width;
+	let internalHeight = height;
 	if (columns) {
 		data = toColumns(data, width, height);
+		internalWidth = height;
+		internalHeight = width;
 	}
 
 	let hslPixels = new Float32Array(data.length);
@@ -29,10 +33,10 @@ export function hslNoThresholdConversion(
 		if (columns) mask = rotateCoordinates(mask, width, height);
 		maskNoThresholdData(hslPixels, width, height, sorter, mask);
 	} else {
-		for (let i = 0; i < height; i++) {
-			const previous = width * 4 * i;
+		for (let i = 0; i < internalHeight; i++) {
+			const previous = internalWidth * 4 * i;
 
-			const row = hslPixels.subarray(previous, previous + width * 4);
+			const row = hslPixels.subarray(previous, previous + internalWidth * 4);
 			sectionSort(row, sorter);
 		}
 	}
@@ -63,8 +67,12 @@ export function hslThresholdConversion(
 	columns: boolean,
 	mask?: MaskCoordinates
 ): ImageData {
+	let internalWidth = width;
+	let internalHeight = height;
 	if (columns) {
 		data = toColumns(data, width, height);
+		internalWidth = height;
+		internalHeight = width;
 	}
 
 	let hslPixels = new Float32Array(data.length);
@@ -81,10 +89,10 @@ export function hslThresholdConversion(
 		if (columns) mask = rotateCoordinates(mask, width, height);
 		maskThresholdData(hslPixels, width, min, max, thresholdCheck, sorter, mask);
 	} else {
-		for (let i = 0; i < height; i++) {
-			const previous = width * 4 * i;
+		for (let i = 0; i < internalHeight; i++) {
+			const previous = internalWidth * 4 * i;
 
-			const row = hslPixels.subarray(previous, previous + width * 4);
+			const row = hslPixels.subarray(previous, previous + internalWidth * 4);
 			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
 		}
 	}
@@ -114,8 +122,12 @@ export function hslRandomConversion(
 	columns: boolean,
 	mask?: MaskCoordinates
 ): ImageData {
+	let internalWidth = width;
+	let internalHeight = height;
 	if (columns) {
 		data = toColumns(data, width, height);
+		internalWidth = height;
+		internalHeight = width;
 	}
 
 	let hslPixels = new Float32Array(data.length);
@@ -133,10 +145,10 @@ export function hslRandomConversion(
 
 		maskRandomData(hslPixels, width, min, max, sorter, mask);
 	} else {
-		for (let i = 0; i < height; i++) {
-			const previous = width * 4 * i;
+		for (let i = 0; i < internalHeight; i++) {
+			const previous = internalWidth * 4 * i;
 
-			const row = hslPixels.subarray(previous, previous + width * 4);
+			const row = hslPixels.subarray(previous, previous + internalWidth * 4);
 			sortRowWithRandomness(row, min, max, sorter);
 		}
 	}
@@ -164,19 +176,23 @@ export function rgbNoThresholdConversion(
 	columns: boolean,
 	mask?: MaskCoordinates
 ) {
+	let internalWidth = width;
+	let internalHeight = height;
 	if (columns) {
 		data = toColumns(data, width, height);
+		internalWidth = height;
+		internalHeight = width;
 	}
 
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		maskNoThresholdData(data, width, height, sorter, mask);
+		maskNoThresholdData(data, internalWidth, internalHeight, sorter, mask);
 	} else {
-		for (let i = 0; i < height; i++) {
-			const previous = width * 4 * i;
+		for (let i = 0; i < internalHeight; i++) {
+			const previous = internalWidth * 4 * i;
 
-			const row = data.subarray(previous, previous + width * 4);
+			const row = data.subarray(previous, previous + internalWidth * 4);
 			sectionSort(row, sorter);
 		}
 	}
@@ -199,8 +215,12 @@ export function rgbThresholdConversion(
 	columns: boolean,
 	mask?: MaskCoordinates
 ) {
+	let internalWidth = width;
+	let internalHeight = height;
 	if (columns) {
 		data = toColumns(data, width, height);
+		internalWidth = height;
+		internalHeight = width;
 	}
 
 	if (!!mask) {
@@ -208,10 +228,10 @@ export function rgbThresholdConversion(
 
 		maskThresholdData(data, width, min, max, thresholdCheck, sorter, mask);
 	} else {
-		for (let i = 0; i < height; i++) {
-			const previous = width * 4 * i;
+		for (let i = 0; i < internalHeight; i++) {
+			const previous = internalWidth * 4 * i;
 
-			const row = data.subarray(previous, previous + width * 4);
+			const row = data.subarray(previous, previous + internalWidth * 4);
 			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
 		}
 	}
@@ -243,8 +263,12 @@ export function rgbRandomConversion(
 	columns: boolean,
 	mask?: MaskCoordinates
 ) {
+	let internalWidth = width;
+	let internalHeight = height;
 	if (columns) {
 		data = toColumns(data, width, height);
+		internalWidth = height;
+		internalHeight = width;
 	}
 
 	if (!!mask) {
@@ -252,10 +276,10 @@ export function rgbRandomConversion(
 
 		maskRandomData(data, width, min, max, sorter, mask);
 	} else {
-		for (let i = 0; i < height; i++) {
-			const previous = width * 4 * i;
+		for (let i = 0; i < internalHeight; i++) {
+			const previous = internalWidth * 4 * i;
 
-			const row = data.subarray(previous, previous + width * 4);
+			const row = data.subarray(previous, previous + internalWidth * 4);
 			sortRowWithRandomness(row, min, max, sorter);
 		}
 	}

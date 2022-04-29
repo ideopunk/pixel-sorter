@@ -185,13 +185,27 @@ test("test_threshold_hue_ascending_dummy", () => {
 
 test("test_to_columns", () => {
 	let inputData = new Uint8ClampedArray([
-		10, 0, 0, 1, 0, 0, 0, 2, 20, 0, 0, 3, 20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6,
+		// row 1
+		10, 0, 0, 1, 0, 0, 0, 2, 20, 0, 0, 3,
+		// row 2
+		20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6,
+		// row 3
+		10, 0, 0, 1, 0, 0, 0, 2, 20, 0, 0, 3,
+		// row 4
+		20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6,
 	]);
-	let result = toColumns(inputData, 3, 2);
+	let result = toColumns(inputData, 3, 4);
 	expect(
 		arraysEqual(
 			Array.from(result),
-			[20, 0, 0, 3, 10, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 5, 10, 0, 0, 1, 20, 0, 0, 4]
+			[
+				// row 1
+				20, 0, 0, 3, 10, 0, 0, 6, 20, 0, 0, 3, 10, 0, 0, 6,
+				// row 2
+				0, 0, 0, 2, 0, 0, 0, 5, 0, 0, 0, 2, 0, 0, 0, 5,
+				// row 3
+				10, 0, 0, 1, 20, 0, 0, 4, 10, 0, 0, 1, 20, 0, 0, 4,
+			]
 		)
 	).toBe(true);
 });
