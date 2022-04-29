@@ -1,48 +1,78 @@
 import { HSLPixel, Pixel } from "../types";
 
-export function toColumns<T extends object>(
-	data: T[],
+/**
+ * The big one.
+ * @param section
+ * @param sorter
+ */
+export function sectionSort(
+	section: Uint8ClampedArray,
+	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number
+) {
+	const pixels = [];
+	const width = section.length / 4;
+	for (let j = 0; j < width; j++) {
+		const pixel = section.slice(j * 4, j * 4 + 4);
+		pixels.push(pixel);
+	}
+	pixels.sort(sorter);
+
+	for (let k = 0; k < width; k++) {
+		const curr = k * 4;
+		section[curr] = pixels[k][0];
+		section[curr + 1] = pixels[k][1];
+		section[curr + 2] = pixels[k][2];
+		section[curr + 3] = pixels[k][3];
+	}
+}
+
+export function toColumns(
+	data: Uint8ClampedArray,
 	originalWidth: number,
 	originalHeight: number
-): T[][] {
-	let columns: T[][] = [];
+): Uint8ClampedArray {
+	let columns = new Uint8ClampedArray(data.length);
 	for (let i = 0; i < originalWidth; i++) {
-		columns.push([]);
 		for (let j = 0; j < originalHeight; j++) {
-			columns[i].push(data[j * originalWidth + (originalWidth - i) - 1]);
+			columns[i * originalWidth + j] = data[j * originalWidth + (originalWidth - i) - 1];
 		}
 	}
 
 	return columns;
 }
 
-export function columnsToFlatArray<T extends object>(columns: T[][]): T[] {
-	let flatArray: T[] = [];
-	for (let i = 0; i < columns[0].length; i++) {
-		for (let j = 0; j < columns.length; j++) {
-			flatArray.push(columns[columns.length - j - 1][i]);
+export function columnsToRows(
+	columns: Uint8ClampedArray,
+	columnWidth: number,
+	columnHeight: number
+): Uint8ClampedArray {
+	let rows = new Uint8ClampedArray(columns.length);
+
+	for (let i = 0; i < columnWidth; i++) {
+		for (let j = 0; j < columnHeight; j++) {
+			rows[i * columnWidth + j] = columns[columnWidth * (columnHeight - j - 1) + i];
 		}
 	}
 
-	return flatArray;
+	return rows;
 }
 
-export function RGBtoClampArray(pixels: Pixel[]) {
-	let preClamp: number[] = [];
-	pixels.forEach((pixel) => {
-		preClamp.push(pixel.r, pixel.g, pixel.b, pixel.a);
-	});
-	return Uint8ClampedArray.from(preClamp);
-}
+// export function RGBtoClampArray(pixels: Pixel[]) {
+// 	let preClamp: number[] = [];
+// 	pixels.forEach((pixel) => {
+// 		preClamp.push(pixel.r, pixel.g, pixel.b, pixel.a);
+// 	});
+// 	return Uint8ClampedArray.from(preClamp);
+// }
 
-export function HSLtoClampArray(pixels: HSLPixel[]) {
-	let preclamp: number[] = [];
-	pixels.forEach((pixel) => {
-		const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l, pixel.a);
-		preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
-	});
-	return Uint8ClampedArray.from(preclamp);
-}
+// export function HSLtoClampArray(pixels: HSLPixel[]) {
+// 	let preclamp: number[] = [];
+// 	pixels.forEach((pixel) => {
+// 		const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l, pixel.a);
+// 		preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
+// 	});
+// 	return Uint8ClampedArray.from(preclamp);
+// }
 
 export function HSLToRGB(h: number, s: number, l: number, a: number) {
 	// Must be fractions of 1
@@ -88,44 +118,45 @@ export function HSLToRGB(h: number, s: number, l: number, a: number) {
 	return [r, g, b, a];
 }
 
-export function toPixels(r: number, g: number, b: number, a: number): Pixel {
-	return { r, g, b, a };
-}
+// export function toPixels(r: number, g: number, b: number, a: number): Pixel {
+// 	return { r, g, b, a };
+// }
 
-export const toHSLPixels = (r: number, g: number, b: number, a: number): HSLPixel => {
-	r = r / 255;
-	g = g / 255;
-	b = b / 255;
-	a = a / 255;
-	const l = Math.max(r, g, b);
-	const s = l - Math.min(r, g, b);
-	const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
+// one pixel at a time please
+// export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float32Array => {
+// 	const r = rgb[0] / 255;
+// 	const g = rgb[1] / 255;
+// 	const b = rgb[2] / 255;
+// 	const a = rgb[3] / 255;
+// 	const l = Math.max(r, g, b);
+// 	const s = l - Math.min(r, g, b);
+// 	const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
 
-	return {
-		h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
-		s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
-		l: (100 * (2 * l - s)) / 2,
-		a,
-	};
-};
+// 	return {
+// 		h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
+// 		s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+// 		l: (100 * (2 * l - s)) / 2,
+// 		a,
+// 	};
+// };
 
-export function RGBMatrixtoClampArray(matrix: Pixel[][]) {
-	let preClamp: number[] = [];
-	matrix.forEach((row) => {
-		row.forEach((pixel) => {
-			preClamp.push(pixel.r, pixel.g, pixel.b, pixel.a);
-		});
-	});
-	return Uint8ClampedArray.from(preClamp);
-}
+// export function RGBMatrixtoClampArray(matrix: Pixel[][]) {
+// 	let preClamp: number[] = [];
+// 	matrix.forEach((row) => {
+// 		row.forEach((pixel) => {
+// 			preClamp.push(pixel.r, pixel.g, pixel.b, pixel.a);
+// 		});
+// 	});
+// 	return Uint8ClampedArray.from(preClamp);
+// }
 
-export function HSLMatrixtoClampArray(matrix: HSLPixel[][]) {
-	let preclamp: number[] = [];
-	matrix.forEach((row) => {
-		row.forEach((pixel) => {
-			const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l, pixel.a);
-			preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
-		});
-	});
-	return Uint8ClampedArray.from(preclamp);
-}
+// export function HSLMatrixtoClampArray(matrix: HSLPixel[][]) {
+// 	let preclamp: number[] = [];
+// 	matrix.forEach((row) => {
+// 		row.forEach((pixel) => {
+// 			const pixels = HSLToRGB(pixel.h, pixel.s, pixel.l, pixel.a);
+// 			preclamp.push(pixels[0], pixels[1], pixels[2], pixels[3]);
+// 		});
+// 	});
+// 	return Uint8ClampedArray.from(preclamp);
+// }

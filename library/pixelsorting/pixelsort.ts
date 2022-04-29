@@ -2,9 +2,9 @@ import { Direction, Pixel, IntervalStyle, SortingStyle, HSLPixel, Options } from
 import * as sorting from "./sorting";
 import * as threshold from "./threshold";
 import {
-	hslNoThresholdConversion,
-	hslRandomConversion,
-	hslThresholdConversion,
+	// hslNoThresholdConversionGenerator,
+	// hslRandomConversion,
+	// hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbRandomConversion,
 	rgbThresholdConversion,
@@ -23,49 +23,53 @@ export const pixelsort = (
 	let downOrRight: boolean = options.direction === "down" || options.direction === "right";
 	let columns: boolean = options.direction === "up" || options.direction === "down";
 
-	let sortingFunction: ((a: HSLPixel, b: HSLPixel) => number) | ((a: Pixel, b: Pixel) => number);
-	let thresholdCheck:
-		| ((pixel: HSLPixel, min: number, max: number) => boolean)
-		| ((pixel: Pixel, min: number, max: number) => boolean);
+	let sortingFunction: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number;
+	let thresholdCheck: (pixel: Uint8ClampedArray, min: number, max: number) => boolean;
 
 	let schema: "rgb" | "hsl" = "rgb";
 
 	switch (options.sortingStyle) {
-		case "hue":
-			schema = "hsl";
-			thresholdCheck = threshold.hueWithinThresholdCheck;
-			sortingFunction = downOrRight ? sorting.byHueAscending : sorting.byHueDescending;
-			break;
-		case "lightness":
-			schema = "hsl";
-			thresholdCheck = threshold.lightnessWithinThresholdCheck;
-			sortingFunction = downOrRight ? sorting.byLightAscending : sorting.byLightDescending;
-			break;
-		case "saturation":
-			schema = "hsl";
-			thresholdCheck = threshold.saturationWithinThresholdCheck;
-			sortingFunction = downOrRight
-				? sorting.bySaturationAscending
-				: sorting.bySaturationDescending;
-			break;
+		// case "hue":
+		// 	schema = "hsl";
+		// 	thresholdCheck = threshold.hueWithinThresholdCheck;
+		// 	sortingFunction = downOrRight ? sorting.byHueAscending : sorting.byHueDescending;
+		// 	break;
+		// case "lightness":
+		// 	schema = "hsl";
+		// 	thresholdCheck = threshold.lightnessWithinThresholdCheck;
+		// 	sortingFunction = downOrRight ? sorting.byLightAscending : sorting.byLightDescending;
+		// 	break;
+		// case "saturation":
+		// 	schema = "hsl";
+		// 	thresholdCheck = threshold.saturationWithinThresholdCheck;
+		// 	sortingFunction = downOrRight
+		// 		? sorting.bySaturationAscending
+		// 		: sorting.bySaturationDescending;
+		// 	break;
 		case "red":
-			thresholdCheck = threshold.redWithinThresholdCheck;
-			sortingFunction = downOrRight ? sorting.byRedAscending : sorting.byRedDescending;
+			thresholdCheck = threshold.redOrHueWithinThresholdCheck;
+			sortingFunction = downOrRight
+				? sorting.byRedOrHueAscending
+				: sorting.byRedOrHueDescending;
 			break;
 		case "green":
-			thresholdCheck = threshold.greenWithinThresholdCheck;
-			sortingFunction = downOrRight ? sorting.byGreenAscending : sorting.byGreenDescending;
+			thresholdCheck = threshold.greenOrSaturationWithinThresholdCheck;
+			sortingFunction = downOrRight
+				? sorting.byGreenOrSaturationAscending
+				: sorting.byGreenOrSaturationDescending;
 			break;
 		case "blue":
-			thresholdCheck = threshold.blueWithinThresholdCheck;
-			sortingFunction = downOrRight ? sorting.byBlueAscending : sorting.byBlueDescending;
+			thresholdCheck = threshold.blueOrLightnessWithinThresholdCheck;
+			sortingFunction = downOrRight
+				? sorting.byBlueOrLightnessAscending
+				: sorting.byBlueOrLightnessDescending;
 			break;
 		case "intensity":
 			thresholdCheck = threshold.intensityWithinThresholdCheck;
 			sortingFunction = downOrRight ? sorting.byRGBAscending : sorting.byRGBDescending;
 			break;
 		default:
-			const exhaustiveCheck: never = options.sortingStyle;
+			// const exhaustiveCheck: never = options.sortingStyle;
 			throw new Error("unreachable");
 	}
 
@@ -75,78 +79,62 @@ export const pixelsort = (
 	// DO THINGS
 
 	// HSL
-	if (schema === "hsl") {
-		if (options.intervalStyle === "none") {
-			return hslNoThresholdConversion(
-				data,
-				width,
-				height,
-				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				columns,
-				mask
-			);
-		} else if (options.intervalStyle === "random") {
-			return hslRandomConversion(
-				data,
-				width,
-				height,
-				min,
-				max,
-				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				columns,
-				mask
-			);
-		} else {
-			return hslThresholdConversion(
-				data,
-				width,
-				height,
-				min,
-				max,
-				thresholdCheck as (pixel: HSLPixel, min: number, max: number) => boolean,
-				sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
-				columns,
-				mask
-			);
-		}
-	}
+	// if (schema === "hsl") {
+	// 	if (options.intervalStyle === "none") {
+	// 		return hslNoThresholdConversionGenerator(
+	// 			data,
+	// 			width,
+	// 			height,
+	// 			sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+	// 			columns,
+	// 			mask
+	// 		);
+	// 	} else if (options.intervalStyle === "random") {
+	// 		return hslRandomConversion(
+	// 			data,
+	// 			width,
+	// 			height,
+	// 			min,
+	// 			max,
+	// 			sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+	// 			columns,
+	// 			mask
+	// 		);
+	// 	} else {
+	// 		return hslThresholdConversion(
+	// 			data,
+	// 			width,
+	// 			height,
+	// 			min,
+	// 			max,
+	// 			thresholdCheck as (pixel: HSLPixel, min: number, max: number) => boolean,
+	// 			sortingFunction as (a: HSLPixel, b: HSLPixel) => number,
+	// 			columns,
+	// 			mask
+	// 		);
+	// 	}
+	// }
 
-	if (schema === "rgb") {
-		if (options.intervalStyle === "none") {
-			return rgbNoThresholdConversion(
-				data,
-				width,
-				height,
-				sortingFunction as (a: Pixel, b: Pixel) => number,
-				columns,
-				mask
-			);
-		} else if (options.intervalStyle === "random") {
-			return rgbRandomConversion(
-				data,
-				width,
-				height,
-				min,
-				max,
-				sortingFunction as (a: Pixel, b: Pixel) => number,
-				columns,
-				mask
-			);
-		} else {
-			return rgbThresholdConversion(
-				data,
-				width,
-				height,
-				min,
-				max,
-				thresholdCheck as (pixel: Pixel, min: number, max: number) => boolean,
-				sortingFunction as (a: Pixel, b: Pixel) => number,
-				columns,
-				mask
-			);
-		}
+	// if (schema === "rgb") {
+	if (options.intervalStyle === "none") {
+		return rgbNoThresholdConversion(data, width, height, sortingFunction, columns, mask);
+	} else if (options.intervalStyle === "random") {
+		return rgbRandomConversion(data, width, height, min, max, sortingFunction, columns, mask);
+	} else {
+		return rgbThresholdConversion(
+			data,
+			width,
+			height,
+			min,
+			max,
+			thresholdCheck,
+			sortingFunction,
+			columns,
+			mask
+		);
 	}
+	// }
 
-	const exhaustiveCheckFinal: never = schema;
+	// const exhaustiveCheckFinal: never = schema;
 	throw Error("uhhh unreachable");
 };

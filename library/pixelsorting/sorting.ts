@@ -1,71 +1,69 @@
-import { HSLPixel, Pixel } from "../types";
-
 // ASCENDING
-export function byRedAscending(a: Pixel, b: Pixel) {
-	return a.r - b.r;
+export function byRedOrHueAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return a[0] - b[0];
 }
 
-export function byGreenAscending(a: Pixel, b: Pixel) {
-	return a.g - b.g;
+export function byGreenOrSaturationAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return a[1] - b[1];
 }
 
-export function byBlueAscending(a: Pixel, b: Pixel) {
-	return a.b - b.b;
+export function byBlueOrLightnessAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return a[2] - b[2];
 }
 
-export function byAlphaAscending(a: Pixel, b: Pixel) {
-	return a.a - b.a;
+export function byAlphaAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return a[3] - b[3];
 }
 
-export function byRGBAscending(a: Pixel, b: Pixel) {
-	const sumA = a.r + a.g + a.b;
-	const sumB = b.r + b.g + b.b;
+export function byRGBAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	const sumA = a[0] + a[1] + a[2];
+	const sumB = b[0] + b[1] + b[2];
 	return sumA - sumB;
 }
 
-export function byHueAscending(a: HSLPixel, b: HSLPixel) {
-	return a.h - b.h;
-}
+// export function byHueAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+// 	return a.h - b.h;
+// }
 
-export function bySaturationAscending(a: HSLPixel, b: HSLPixel) {
-	return a.s - b.s;
-}
+// export function bySaturationAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+// 	return a.s - b.s;
+// }
 
-export function byLightAscending(a: HSLPixel, b: HSLPixel) {
-	return a.l - b.l;
-}
+// export function byLightAscending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+// 	return a.l - b.l;
+// }
 
 // DESCENDING
-export function byRedDescending(a: Pixel, b: Pixel) {
-	return b.r - a.r;
+export function byRedOrHueDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return b[0] - a[0];
 }
 
-export function byGreenDescending(a: Pixel, b: Pixel) {
-	return b.g - a.g;
+export function byGreenOrSaturationDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return b[1] - a[1];
 }
 
-export function byBlueDescending(a: Pixel, b: Pixel) {
-	return b.b - a.b;
+export function byBlueOrLightnessDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return b[2] - a[2];
 }
 
-export function byAlphaDescending(a: Pixel, b: Pixel) {
-	return b.a - a.a;
+export function byAlphaDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	return b[0] - a[0];
 }
 
-export function byRGBDescending(a: Pixel, b: Pixel) {
-	const sumA = a.r + a.g + a.b;
-	const sumB = b.r + b.g + b.b;
+export function byRGBDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+	const sumA = a[0] + a[1] + a[2];
+	const sumB = b[0] + b[1] + b[2];
 	return sumB - sumA;
 }
 
-export function byHueDescending(a: HSLPixel, b: HSLPixel) {
-	return b.h - a.h;
-}
+// export function byHueDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+// 	return b.h - a.h;
+// }
 
-export function bySaturationDescending(a: HSLPixel, b: HSLPixel) {
-	return b.s - a.s;
-}
+// export function bySaturationDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+// 	return b.s - a.s;
+// }
 
-export function byLightDescending(a: HSLPixel, b: HSLPixel) {
-	return b.l - a.l;
-}
+// export function byLightDescending(a: Uint8ClampedArray, b: Uint8ClampedArray) {
+// 	return b.l - a.l;
+// }

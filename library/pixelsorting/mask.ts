@@ -1,5 +1,6 @@
-import { sortRandomRow, sortRowWithThreshold } from "./intervalFunctions";
+import { sortRowWithRandomness, sortRowWithThreshold } from "./intervalFunctions";
 import { HSLPixel, MaskCoordinates } from "../types";
+import { sectionSort } from "./pixelUtils";
 
 export function toCoordinates(
 	mask: {
@@ -46,158 +47,116 @@ export function rotateCoordinates(
 	};
 }
 
-export function maskNoThresholdData<T extends object>(
-	data: T[][],
-	sorter: (a: T, b: T) => number,
+export function maskNoThresholdData(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number,
+	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number,
 	mask: MaskCoordinates
 ) {
 	const { top, bottom, left, right } = mask;
 
-	let convertedArray: T[][] = [];
-
 	if (mask.inverted) {
-		for (let i = 0; i < data.length; i++) {
-			if (i >= top && i <= bottom) {
-				const untouchedLeft = data[i].slice(0, left);
-				const convertedMid = data[i].slice(left, right).sort(sorter);
-				const untouchedRight = data[i].slice(right);
-				convertedMid.push(...untouchedRight);
-				untouchedLeft.push(...convertedMid);
-				convertedArray.push(untouchedLeft);
-			} else {
-				convertedArray.push(data[i]);
-			}
+		for (let i = top; i < bottom; i++) {
+			const previous = width * 4 * i;
+
+			const section = data.subarray(previous + left * 4, previous + right * 4);
+			sectionSort(section, sorter);
 		}
 	} else {
-		for (let i = 0; i < data.length; i++) {
-			if (i >= top && i <= bottom) {
-				const convertedLeft = data[i].slice(0, left).sort(sorter);
-				const untouchedMid = data[i].slice(left, right);
-				const convertedRight = data[i].slice(right).sort(sorter);
-				untouchedMid.push(...convertedRight);
-				convertedLeft.push(...untouchedMid);
-				convertedArray.push(convertedLeft);
-			} else {
-				convertedArray.push(data[i].sort(sorter));
-			}
+		for (let i = top; i < bottom; i++) {
+			const previous = width * 4 * i;
+
+			const leftSection = data.subarray(previous, previous + left * 4);
+			sectionSort(leftSection, sorter);
+
+			const rightSection = data.subarray(previous + right * 4, previous + width * 4);
+			sectionSort(rightSection, sorter);
 		}
 	}
 
-	return convertedArray;
+	// return convertedArray;
 }
 
 export function maskThresholdData<T extends object>(
-	data: T[][],
+	data: Uint8ClampedArray,
+	width: number,
 	min: number,
 	max: number,
-	thresholdCheck: (pixel: T, min: number, max: number) => boolean,
-	sorter: (a: T, b: T) => number,
+	thresholdCheck: (pixel: Uint8ClampedArray, min: number, max: number) => boolean,
+	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number,
 	mask: MaskCoordinates
-): T[][] {
+) {
 	const { top, bottom, left, right } = mask;
 
-	let convertedArray: T[][] = [];
-
 	if (mask.inverted) {
-		for (let i = 0; i < data.length; i++) {
-			if (i >= top && i <= bottom) {
-				const untouchedLeft = data[i].slice(0, left);
+		for (let i = top; i < bottom; i++) {
+			const previous = width * 4 * i;
 
-				const convertedMid = sortRowWithThreshold(
-					data[i].slice(left, right),
-					min,
-					max,
-					thresholdCheck,
-					sorter
-				);
-
-				const untouchedRight = data[i].slice(right);
-
-				convertedMid.push(...untouchedRight);
-				untouchedLeft.push(...convertedMid);
-
-				convertedArray.push(untouchedLeft);
-			} else {
-				convertedArray.push(data[i]);
-			}
+			sortRowWithThreshold(
+				data.subarray(previous + left * 4, previous + right * 4),
+				min,
+				max,
+				thresholdCheck,
+				sorter
+			);
 		}
 	} else {
-		for (let i = 0; i < data.length; i++) {
-			if (i >= top && i <= bottom) {
-				const convertedLeft = sortRowWithThreshold(
-					data[i].slice(0, left),
-					min,
-					max,
-					thresholdCheck,
-					sorter
-				);
+		for (let i = top; i < bottom; i++) {
+			const previous = width * 4 * i;
 
-				const untouchedMid = data[i].slice(left, right);
-				const convertedRight = sortRowWithThreshold(
-					data[i].slice(right),
-					min,
-					max,
-					thresholdCheck,
-					sorter
-				);
+			sortRowWithThreshold(
+				data.subarray(previous, previous + left * 4),
+				min,
+				max,
+				thresholdCheck,
+				sorter
+			);
 
-				untouchedMid.push(...convertedRight);
-				convertedLeft.push(...untouchedMid);
-
-				convertedArray.push(convertedLeft);
-			} else {
-				convertedArray.push(
-					sortRowWithThreshold(data[i], min, max, thresholdCheck, sorter)
-				);
-			}
+			sortRowWithThreshold(
+				data.subarray(previous + right * 4, previous + width * 4),
+				min,
+				max,
+				thresholdCheck,
+				sorter
+			);
 		}
 	}
-	return convertedArray;
 }
 
-export function maskRandomData<T extends object>(
-	data: T[][],
+export function maskRandomData(
+	data: Uint8ClampedArray,
+	width: number,
 	min: number,
 	max: number,
-	sorter: (a: T, b: T) => number,
+	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number,
 	mask: MaskCoordinates
-): T[][] {
+) {
 	const { top, bottom, left, right } = mask;
 
-	let convertedArray: T[][] = [];
-
 	if (mask.inverted) {
-		for (let i = 0; i < data.length; i++) {
-			if (i >= top && i <= bottom) {
-				const untouchedLeft = data[i].slice(0, left);
-				const convertedMid = sortRandomRow(data[i].slice(left, right), min, max, sorter);
-				const untouchedRight = data[i].slice(right);
+		for (let i = top; i < bottom; i++) {
+			const previous = width * 4 * i;
 
-				convertedMid.push(...untouchedRight);
-				untouchedLeft.push(...convertedMid);
-
-				convertedArray.push(untouchedLeft);
-			} else {
-				convertedArray.push(data[i]);
-			}
+			sortRowWithRandomness(
+				data.subarray(previous + left * 4, previous + right * 4),
+				min,
+				max,
+				sorter
+			);
 		}
 	} else {
-		for (let i = 0; i < data.length; i++) {
-			if (i >= top && i <= bottom) {
-				const convertedLeft = sortRandomRow(data[i].slice(0, left), min, max, sorter);
+		for (let i = top; i < bottom; i++) {
+			const previous = width * 4 * i;
 
-				const untouchedMid = data[i].slice(left, right);
-				const convertedRight = sortRandomRow(data[i].slice(right), min, max, sorter);
+			sortRowWithRandomness(data.subarray(previous, previous + left * 4), min, max, sorter);
 
-				untouchedMid.push(...convertedRight);
-				convertedLeft.push(...untouchedMid);
-
-				convertedArray.push(convertedLeft);
-			} else {
-				convertedArray.push(sortRandomRow(data[i], min, max, sorter));
-			}
+			sortRowWithRandomness(
+				data.subarray(previous + right * 4, previous + width * 4),
+				min,
+				max,
+				sorter
+			);
 		}
 	}
-
-	return convertedArray;
 }
