@@ -33,8 +33,16 @@ export function toColumns(
 ): Uint8ClampedArray {
 	let columns = new Uint8ClampedArray(data.length);
 	for (let i = 0; i < originalWidth; i++) {
+		// lil optimization
+		const slideIntoColumn = originalWidth - i - 1;
 		for (let j = 0; j < originalHeight; j++) {
-			columns[i * originalWidth + j] = data[j * originalWidth + (originalWidth - i) - 1];
+			const columnIndex = i * originalHeight * 4 + j * 4;
+			const dataIndex = (j * originalWidth + slideIntoColumn) * 4;
+
+			columns[columnIndex] = data[dataIndex];
+			columns[columnIndex + 1] = data[dataIndex + 1];
+			columns[columnIndex + 2] = data[dataIndex + 2];
+			columns[columnIndex + 3] = data[dataIndex + 3];
 		}
 	}
 

@@ -163,40 +163,6 @@ test("test  threshold red ascending", () => {
 });
 
 // #[test]
-// fn test_threshold_red_ascending() {
-//     let inputData = vec![
-//         10, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0,
-//     ];
-//     let result = rgb_threshold_conversion(
-//         inputData,
-//         6,
-//         1,
-//         5,
-//         30,
-//         red_within_threshold_check,
-//         by_red_ascending,
-//         false,
-//         None,
-//     );
-//     assert_eq!(
-//         result,
-//         vec![10, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0,]
-//     )
-// }
-
-// #[test]
-// fn test_no_threshold_blue_descending() {
-//     let inputData = vec![
-//         0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0, 10, 0, 0, 0, 0, 0,
-//     ];
-//     let result = rgb_no_threshold_conversion(inputData, 3, 2, by_blue_ascending, false, None);
-//     assert_eq!(
-//         result,
-//         vec![0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 20, 0]
-//     )
-// }
-
-// #[test]
 // fn test_pixel_to_hsl() {
 //     let result = to_hsl_pixel(191, 64, 64, 0);
 //     let satch_delta = (result.s - 49.8).abs();
@@ -275,27 +241,19 @@ test("test  threshold red ascending", () => {
 //     )
 // }
 
-// #[test]
-// fn test_to_columns() {
-//     let g = 0;
-//     let a = 0;
-//     let inputData = vec![
-//         RGBPixel { r: 10, g, b: 1, a },
-//         RGBPixel { r: 0, g, b: 2, a },
-//         RGBPixel { r: 20, g, b: 3, a },
-//         RGBPixel { r: 20, g, b: 4, a },
-//         RGBPixel { r: 0, g, b: 5, a },
-//         RGBPixel { r: 10, g, b: 6, a },
-//     ];
-//     let result = to_columns_rgb(inputData, 3, 2);
-
-//     assert_eq!(result[0].b, 3);
-//     assert_eq!(result[1].b, 6);
-//     assert_eq!(result[2].b, 2);
-//     assert_eq!(result[3].b, 5);
-//     assert_eq!(result[4].b, 1);
-//     assert_eq!(result[5].b, 4);
-// }
+test("test_to_columns", () => {
+	let inputData = new Uint8ClampedArray([
+		10, 0, 0, 1, 0, 0, 0, 2, 20, 0, 0, 3, 20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6,
+	]);
+	let result = toColumns(inputData, 3, 2);
+	console.log(result);
+	expect(
+		arraysEqual(
+			Array.from(result),
+			[20, 0, 0, 3, 10, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 5, 10, 0, 0, 1, 20, 0, 0, 4]
+		)
+	).toBe(true);
+});
 
 // #[test]
 // fn test_to_rows() {
