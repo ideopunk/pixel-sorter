@@ -51,17 +51,12 @@ export function sortRowWithThreshold(
 		f.subarray()
 		const sub = row.subarray(i* 4, i*4 + 4)
 		let latestPixelWithin = thresholdCheck(sub, min, max);
-		console.log(i, latestPixelWithin);
 		if (latestPixelWithin && !onRun) {
-			console.log("START");
 			// start a new run
 			currentMin = i;
 			onRun = true;
 		} else if (!latestPixelWithin && onRun) {
 			// finish a run
-			console.log(
-				"FINISH. sorting run. section length is " + currentMin * 4 + " to " + i * 4
-			);
 			const section = row.subarray(currentMin * 4, i * 4);
 			sectionSort(section, sorter);
 			currentMin = 0;

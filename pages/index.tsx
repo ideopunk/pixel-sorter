@@ -82,7 +82,6 @@ export default function Home() {
 		workerRef.current.addEventListener(
 			"message",
 			(e: MessageEvent<ImageData>) => {
-				console.log("end: ", Date.now());
 
 				const ctx = canvasRef.current?.getContext("2d");
 				if (ctx) {
@@ -127,7 +126,6 @@ export default function Home() {
 				);
 
 				// this is separate from the above newImage conditional because we need to get the imageData before writing it to previous.
-				console.log(imageData?.data.length);
 				setPrevious(imageData?.data);
 
 				const containerY = containerRef.current?.getBoundingClientRect().y;
@@ -156,7 +154,6 @@ export default function Home() {
 						  }
 						: undefined;
 				if (imageData?.data) {
-					console.log("start: ", Date.now());
 					workerRef.current.postMessage({
 						data: imageData.data,
 						width: imageDimensions.width,

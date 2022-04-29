@@ -1,12 +1,15 @@
 import {
 	columnsToRows,
 	HSLToRGB,
+	rgbPixeltoHslPixel,
 	sectionSort,
 	toColumns,
 } from "../library/pixelsorting/pixelUtils";
 import { maskNoThresholdData, rotateCoordinates } from "../library/pixelsorting/mask";
 import { MaskCoordinates } from "../library/types";
 import {
+	hslNoThresholdConversion,
+	hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbThresholdConversion,
 } from "../library/pixelsorting/pixelControllers";
@@ -76,14 +79,12 @@ test("test no threshold blue descending", () => {
 test("threshold row nothing", () => {
 	let inputData = new Uint8ClampedArray([10, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0]);
 	sortRowWithThreshold(inputData, 5, 30, redOrHueWithinThresholdCheck, byRedOrHueAscending);
-	console.log(inputData);
 	expect(arraysEqual(Array.from(inputData), [10, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0])).toBe(true);
 });
 
 test("threshold row something", () => {
 	let inputData = new Uint8ClampedArray([20, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0]);
 	sortRowWithThreshold(inputData, 5, 30, redOrHueWithinThresholdCheck, byRedOrHueAscending);
-	console.log(inputData);
 	expect(arraysEqual(Array.from(inputData), [10, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0])).toBe(true);
 });
 
@@ -97,11 +98,10 @@ test("test  threshold red ascending", () => {
 		2,
 		5,
 		30,
-		redOrHueWithinThresholdCheck,
 		byRedOrHueAscending,
+		redOrHueWithinThresholdCheck,
 		false
 	);
-	console.log(result.data);
 	expect(
 		arraysEqual(
 			Array.from(result.data),
@@ -110,91 +110,84 @@ test("test  threshold red ascending", () => {
 	).toBe(true);
 });
 
-// #[test]
-// fn test_pixel_to_hsl() {
-//     let result = to_hsl_pixel(191, 64, 64, 0);
-//     let satch_delta = (result.s - 49.8).abs();
-//     assert_eq!(true, satch_delta < 0.15);
+test("test_pixel_to_hsl", () => {
+	let result = rgbPixeltoHslPixel(new Uint8ClampedArray([191, 64, 64, 0]));
 
-//     let light_delta = (result.l - 50.0).abs();
-//     assert_eq!(true, light_delta < 0.15)
-// }
+	let satch_delta = Math.abs(result[1] - 49.8);
+	let light_delta = Math.abs(result[2] - 50.0);
 
-// #[test]
-// fn test_hsl_to_pixel() {
-//     let hsl = HSLPixel {
-//         h: 0.0,
-//         s: 49.8,
-//         l: 50.0,
-//         a: 0.0,
-//     };
-//     // something is fcked here conor
-//     let result = hsl_to_u8s(hsl.h, hsl.s, hsl.l, hsl.a);
+	expect(satch_delta < 0.15).toBe(true);
+	expect!(light_delta < 0.15).toBe(true);
+});
 
-//     assert_eq!(result[0], 191);
-//     assert_eq!(result[1], 64);
-//     assert_eq!(result[2], 64);
-//     assert_eq!(result[3], 0);
-// }
+test("test hsl to pixel", () => {
+	let hsl = new Float32Array([0, 49.8, 50, 0]);
+	// something is fcked here conor
+	let result = HSLToRGB(hsl);
 
-// #[test]
-// fn test_no_threshold_hue_descending() {
-//     let inputData = vec![
-//         106, 191, 64, 0, // 1
-//         191, 64, 64, 0, // 0
-//         64, 149, 191, 0, // 2
-//         64, 149, 191, 0, // 2
-//         106, 191, 64, 0, // 1
-//         191, 64, 64, 0, // 0
-//     ];
-//     let result = hsl_no_threshold_conversion(inputData, 3, 2, by_hue_descending, false, None);
-//     assert_eq!(
-//         result,
-//         vec![
-//             64, 149, 191, 0, // 2
-//             106, 191, 64, 0, // 1
-//             191, 64, 64, 0, // 0
-//             64, 149, 191, 0, // 2
-//             106, 191, 64, 0, // 1
-//             191, 64, 64, 0, // 0
-//         ]
-//     )
-// }
+	expect(result[0]).toBe(191);
+	expect(result[1]).toBe(64);
+	expect(result[2]).toBe(64);
+	expect(result[3]).toBe(0);
+});
 
-// #[test]
-// fn test_threshold_hue_ascending_dummy() {
-//     let inputData = vec![
-//         106, 191, 64, 0, // 1
-//         191, 64, 64, 0, // 0
-//         64, 149, 191, 0, // 2
-//     ];
-//     let result = hsl_threshold_conversion(
-//         inputData,
-//         3,
-//         1,
-//         0,
-//         255,
-//         hue_within_threshold_check,
-//         by_hue_ascending,
-//         false,
-//         None,
-//     );
-//     assert_eq!(
-//         result,
-//         vec![
-//             191, 64, 64, 0, // 0
-//             106, 191, 64, 0, // 1
-//             64, 149, 191, 0, // 2
-//         ] // uhhh
-//     )
-// }
+// spread operator to accomodate prettier
+test(" test_no_threshold_hue_descending", () => {
+	let inputData = new Uint8ClampedArray([
+		...[106, 191, 64, 0], // 1
+		...[191, 64, 64, 0], // 0
+		...[64, 149, 191, 0], // 2
+		...[64, 149, 191, 0], // 2
+		...[106, 191, 64, 0], // 1
+		...[191, 64, 64, 0], // 0
+	]);
+	let result = hslNoThresholdConversion(inputData, 3, 2, byRedOrHueDescending, false);
+
+	expect(
+		arraysEqual(Array.from(result.data), [
+			...[64, 149, 191, 0], // 2
+			...[106, 191, 64, 0], // 1
+			...[191, 64, 64, 0], // 0
+			...[64, 149, 191, 0], // 2
+			...[106, 191, 64, 0], // 1
+			...[191, 64, 64, 0], // 0
+		])
+	).toBe(true);
+});
+
+test("test_threshold_hue_ascending_dummy", () => {
+	let inputData = new Uint8ClampedArray([
+		// 1, 0, 2
+		106, 191, 64, 0, 191, 64, 64, 0, 64, 149, 191, 0,
+	]);
+	let result = hslThresholdConversion(
+		inputData,
+		3,
+		1,
+		0,
+		255,
+		byRedOrHueAscending,
+		redOrHueWithinThresholdCheck,
+		false
+	);
+
+	console.log(result.data);
+	expect(
+		arraysEqual(
+			Array.from(result.data),
+			[
+				// 0, 1, 2
+				191, 64, 64, 0, 106, 191, 64, 0, 64, 149, 191, 0,
+			]
+		)
+	).toBe(true);
+});
 
 test("test_to_columns", () => {
 	let inputData = new Uint8ClampedArray([
 		10, 0, 0, 1, 0, 0, 0, 2, 20, 0, 0, 3, 20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6,
 	]);
 	let result = toColumns(inputData, 3, 2);
-	console.log(result);
 	expect(
 		arraysEqual(
 			Array.from(result),
@@ -208,7 +201,6 @@ test("test_to_rows", () => {
 		20, 0, 0, 3, 10, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 5, 10, 0, 0, 1, 20, 0, 0, 4,
 	]);
 	let result = columnsToRows(inputData, 2, 3);
-	console.log(result);
 	expect(
 		arraysEqual(
 			Array.from(result),

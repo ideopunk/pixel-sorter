@@ -1,5 +1,5 @@
 import { sortRowWithRandomness, sortRowWithThreshold } from "./intervalFunctions";
-import { HSLPixel, MaskCoordinates } from "../types";
+import { MaskCoordinates, PixelArray } from "../types";
 import { sectionSort } from "./pixelUtils";
 
 export function toCoordinates(
@@ -48,10 +48,10 @@ export function rotateCoordinates(
 }
 
 export function maskNoThresholdData(
-	data: Uint8ClampedArray,
+	data: PixelArray,
 	width: number,
 	height: number,
-	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number,
+	sorter: (a: PixelArray, b: PixelArray) => number,
 	mask: MaskCoordinates
 ) {
 	const { top, bottom, left, right } = mask;
@@ -78,13 +78,13 @@ export function maskNoThresholdData(
 	// return convertedArray;
 }
 
-export function maskThresholdData<T extends object>(
-	data: Uint8ClampedArray,
+export function maskThresholdData(
+	data: PixelArray,
 	width: number,
 	min: number,
 	max: number,
-	thresholdCheck: (pixel: Uint8ClampedArray, min: number, max: number) => boolean,
-	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number,
+	thresholdCheck: (pixel: PixelArray, min: number, max: number) => boolean,
+	sorter: (a: PixelArray, b: PixelArray) => number,
 	mask: MaskCoordinates
 ) {
 	const { top, bottom, left, right } = mask;
@@ -125,11 +125,11 @@ export function maskThresholdData<T extends object>(
 }
 
 export function maskRandomData(
-	data: Uint8ClampedArray,
+	data: PixelArray,
 	width: number,
 	min: number,
 	max: number,
-	sorter: (a: Uint8ClampedArray, b: Uint8ClampedArray) => number,
+	sorter: (a: PixelArray, b: PixelArray) => number,
 	mask: MaskCoordinates
 ) {
 	const { top, bottom, left, right } = mask;
