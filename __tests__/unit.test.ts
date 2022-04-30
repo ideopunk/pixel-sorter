@@ -120,7 +120,7 @@ test("test_pixel_to_hsl", () => {
 	expect!(light_delta < 0.15).toBe(true);
 });
 
-test("test hsl to pixel", () => {
+test("hsl to pixel", () => {
 	let hsl = new Float64Array([0, 49.8, 50, 0]);
 	// something is fcked here conor
 	let result = HSLToRGB(hsl);
@@ -130,6 +130,16 @@ test("test hsl to pixel", () => {
 	expect(result[2]).toBe(64);
 	expect(result[3]).toBe(0);
 });
+
+test("pixel to hsl and back", () => {
+	let hsl = rgbPixeltoHslPixel(new Uint8ClampedArray([191, 64, 64, 0]));
+	let result = HSLToRGB(hsl);
+	expect(result[0]).toBe(191);
+	expect(result[1]).toBe(64);
+	expect(result[2]).toBe(64);
+	expect(result[3]).toBe(0);
+
+})
 
 // spread operator to accomodate prettier
 test(" test_no_threshold_hue_descending", () => {

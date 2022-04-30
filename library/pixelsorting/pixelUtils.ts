@@ -112,18 +112,53 @@ export function HSLToRGB(hsl: Float64Array) {
 
 // one pixel at a time please
 export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float64Array => {
-	const r = rgb[0] / 255;
-	const g = rgb[1] / 255;
-	const b = rgb[2] / 255;
-	const a = rgb[3] / 255;
-	const l = Math.max(r, g, b);
-	const s = l - Math.min(r, g, b);
-	const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
+	let r = rgb[0] / 255;
+	let g = rgb[1] / 255;
+	let b = rgb[2] / 255;
 
-	return new Float64Array([
-		60 * h < 0 ? 60 * h + 360 : 60 * h,
-		100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
-		(100 * (2 * l - s)) / 2,
-		a,
-	]);
+	// Find greatest and smallest channel values
+	let cmin = Math.min(r, g, b),
+		cmax = Math.max(r, g, b),
+		delta = cmax - cmin,
+		h = 0,
+		s = 0,
+		l = 0;
+
+	if (delta == 0) h = 0;
+	// Red is max
+	else if (cmax == r) h = ((g - b) / delta) % 6;
+	// Green is max
+	else if (cmax == g) h = (b - r) / delta + 2;
+	// Blue is max
+	else h = (r - g) / delta + 4;
+
+	h = Math.round(h * 60);
+
+	// Make negative hues positive behind 360°
+	if (h < 0) h += 360;
+
+	l = (cmax + cmin) / 2;
+
+	// Calculate saturation
+	s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+
+	// Multiply l and s by 100
+	s = +(s * 100).toFixed(1);
+	l = +(l * 100).toFixed(1);
+
+	return new Float64Array([h, s, l, rgb[3] / 255]);
+	// const r = rgb[0] / 255;
+	// const g = rgb[1] / 255;
+	// const b = rgb[2] / 255;
+	// const a = rgb[3] / 255;
+	// const l = Math.max(r, g, b);
+	// const s = l - Math.min(r, g, b);
+	// const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
+
+	// return new Float64Array([
+	// 	60 * h < 0 ? 60 * h + 360 : 60 * h,
+	// 	100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+	// 	(100 * (2 * l - s)) / 2,
+	// 	a,
+	// ]);
 };
