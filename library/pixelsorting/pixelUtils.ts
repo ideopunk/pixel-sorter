@@ -1,6 +1,5 @@
 import { PixelArray } from "../types";
 
-
 /**
  * The big one.
  * @param section
@@ -46,7 +45,7 @@ export function toColumns(data: Uint8ClampedArray, originalWidth: number, origin
 export function columnsToRows(
 	columns: ArrayLike<number>,
 	columnWidth: number,
-	columnHeight: number	
+	columnHeight: number
 ): Uint8ClampedArray {
 	let rows = new Uint8ClampedArray(columns.length);
 
@@ -66,7 +65,7 @@ export function columnsToRows(
 }
 
 // only [;4] please
-export function HSLToRGB(hsl: Float32Array) {
+export function HSLToRGB(hsl: Float64Array) {
 	// Must be fractions of 1
 	const h = hsl[0];
 	const s = hsl[1] / 100;
@@ -112,7 +111,7 @@ export function HSLToRGB(hsl: Float32Array) {
 }
 
 // one pixel at a time please
-export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float32Array => {
+export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float64Array => {
 	const r = rgb[0] / 255;
 	const g = rgb[1] / 255;
 	const b = rgb[2] / 255;
@@ -121,11 +120,10 @@ export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float32Array => {
 	const s = l - Math.min(r, g, b);
 	const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
 
-	return new Float32Array([
+	return new Float64Array([
 		60 * h < 0 ? 60 * h + 360 : 60 * h,
 		100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
 		(100 * (2 * l - s)) / 2,
 		a,
 	]);
 };
-

@@ -47,8 +47,6 @@ export function sortRowWithThreshold(
 
 	let length = row.length / 4;
 	for (let i = 0; i < length; i++) {
-		const f = new Float32Array()
-		f.subarray()
 		const sub = row.subarray(i* 4, i*4 + 4)
 		let latestPixelWithin = thresholdCheck(sub, min, max);
 		if (latestPixelWithin && !onRun) {

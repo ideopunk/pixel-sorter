@@ -23,10 +23,10 @@ export function toCoordinates(
 	const bottom = prebottom > height ? height : prebottom;
 
 	const coordinates = {
-		left,
-		top,
-		right,
-		bottom,
+		left: Math.round(left),
+		top: Math.round(top),
+		right: Math.round(right),
+		bottom: Math.round(bottom),
 		inverted: Boolean(inverted),
 	};
 
@@ -57,6 +57,8 @@ export function maskNoThresholdData(
 	const { top, bottom, left, right } = mask;
 
 	if (mask.inverted) {
+		console.log(top, bottom);
+
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
@@ -64,6 +66,13 @@ export function maskNoThresholdData(
 			sectionSort(section, sorter);
 		}
 	} else {
+		for (let i = 0; i < top; i++) {
+			const previous = width * 4 * i;
+
+			const row = data.subarray(previous, previous + width * 4);
+			sectionSort(row, sorter);
+		}
+
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
@@ -73,6 +82,13 @@ export function maskNoThresholdData(
 			const rightSection = data.subarray(previous + right * 4, previous + width * 4);
 			sectionSort(rightSection, sorter);
 		}
+
+		for (let i = bottom; i < height; i++) {
+			const previous = width * 4 * i;
+
+			const row = data.subarray(previous, previous + width * 4);
+			sectionSort(row, sorter);
+		}
 	}
 
 	// return convertedArray;
@@ -81,6 +97,7 @@ export function maskNoThresholdData(
 export function maskThresholdData(
 	data: PixelArray,
 	width: number,
+	height: number,
 	min: number,
 	max: number,
 	thresholdCheck: (pixel: PixelArray, min: number, max: number) => boolean,
@@ -102,6 +119,16 @@ export function maskThresholdData(
 			);
 		}
 	} else {
+		// above
+		for (let i = 0; i < top; i++) {
+			const previous = width * 4 * i;
+
+			const row = data.subarray(previous, previous + width * 4);
+			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
+		}
+
+		// to the sides
+
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
@@ -121,12 +148,20 @@ export function maskThresholdData(
 				sorter
 			);
 		}
+
+		for (let i = bottom; i < height; i++) {
+			const previous = width * 4 * i;
+
+			const row = data.subarray(previous, previous + width * 4);
+			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
+		}
 	}
 }
 
 export function maskRandomData(
 	data: PixelArray,
 	width: number,
+	height: number,
 	min: number,
 	max: number,
 	sorter: (a: PixelArray, b: PixelArray) => number,
@@ -146,6 +181,13 @@ export function maskRandomData(
 			);
 		}
 	} else {
+		for (let i = 0; i < top; i++) {
+			const previous = width * 4 * i;
+
+			const row = data.subarray(previous, previous + width * 4);
+			sortRowWithRandomness(row, min, max, sorter);
+		}
+
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
@@ -157,6 +199,13 @@ export function maskRandomData(
 				max,
 				sorter
 			);
+		}
+
+		for (let i = bottom; i < height; i++) {
+			const previous = width * 4 * i;
+
+			const row = data.subarray(previous, previous + width * 4);
+			sortRowWithRandomness(row, min, max, sorter);
 		}
 	}
 }

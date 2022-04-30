@@ -121,7 +121,7 @@ test("test_pixel_to_hsl", () => {
 });
 
 test("test hsl to pixel", () => {
-	let hsl = new Float32Array([0, 49.8, 50, 0]);
+	let hsl = new Float64Array([0, 49.8, 50, 0]);
 	// something is fcked here conor
 	let result = HSLToRGB(hsl);
 
@@ -270,3 +270,7 @@ test("test masking no thresh", () => {
 		)
 	);
 });
+
+test("to coordinates", () => {
+	
+})

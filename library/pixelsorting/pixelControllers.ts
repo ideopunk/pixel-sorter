@@ -19,7 +19,7 @@ export function hslNoThresholdConversion(
 		internalHeight = width;
 	}
 
-	let hslPixels = new Float32Array(data.length);
+	let hslPixels = new Float64Array(data.length);
 
 	for (let i = 0; i < data.length; i += 4) {
 		const hslPixel = rgbPixeltoHslPixel(data.subarray(i, i + 4));
@@ -75,7 +75,7 @@ export function hslThresholdConversion(
 		internalHeight = width;
 	}
 
-	let hslPixels = new Float32Array(data.length);
+	let hslPixels = new Float64Array(data.length);
 
 	for (let i = 0; i < data.length; i += 4) {
 		const hslPixel = rgbPixeltoHslPixel(data.subarray(i, i + 4));
@@ -87,7 +87,7 @@ export function hslThresholdConversion(
 
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
-		maskThresholdData(hslPixels, width, min, max, thresholdCheck, sorter, mask);
+		maskThresholdData(hslPixels, width, height, min, max, thresholdCheck, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -130,7 +130,7 @@ export function hslRandomConversion(
 		internalHeight = width;
 	}
 
-	let hslPixels = new Float32Array(data.length);
+	let hslPixels = new Float64Array(data.length);
 
 	for (let i = 0; i < data.length; i += 4) {
 		const hslPixel = rgbPixeltoHslPixel(data.subarray(i, i + 4));
@@ -143,7 +143,7 @@ export function hslRandomConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		maskRandomData(hslPixels, width, min, max, sorter, mask);
+		maskRandomData(hslPixels, width, height, min, max, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -226,7 +226,7 @@ export function rgbThresholdConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		maskThresholdData(data, width, min, max, thresholdCheck, sorter, mask);
+		maskThresholdData(data, width, height, min, max, thresholdCheck, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -274,7 +274,7 @@ export function rgbRandomConversion(
 	if (!!mask) {
 		if (columns) mask = rotateCoordinates(mask, width, height);
 
-		maskRandomData(data, width, min, max, sorter, mask);
+		maskRandomData(data, width, height, min, max, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
