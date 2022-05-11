@@ -36,8 +36,8 @@ export function hslNoThresholdConversion(
 	}
 
 	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-		maskNoThresholdData(hslPixels, width, height, sorter, mask);
+		if (columns) mask = rotateCoordinates(mask, width);
+		maskNoThresholdData(hslPixels, internalWidth, internalHeight, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -92,8 +92,17 @@ export function hslThresholdConversion(
 	}
 
 	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
-		maskThresholdData(hslPixels, width, height, min, max, thresholdCheck, sorter, mask);
+		if (columns) mask = rotateCoordinates(mask, width);
+		maskThresholdData(
+			hslPixels,
+			internalWidth,
+			internalHeight,
+			min,
+			max,
+			thresholdCheck,
+			sorter,
+			mask
+		);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -112,7 +121,7 @@ export function hslThresholdConversion(
 	}
 
 	if (columns) {
-		data = rotateClockwise(data, height, width);
+		data = rotateClockwise(data, internalWidth, internalHeight);
 	}
 
 	return new ImageData(data, width, height);
@@ -147,9 +156,9 @@ export function hslRandomConversion(
 	}
 
 	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
+		if (columns) mask = rotateCoordinates(mask, width);
 
-		maskRandomData(hslPixels, width, height, min, max, sorter, mask);
+		maskRandomData(hslPixels, internalWidth, internalHeight, min, max, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -168,7 +177,7 @@ export function hslRandomConversion(
 	}
 
 	if (columns) {
-		data = rotateClockwise(data, height, width);
+		data = rotateClockwise(data, internalWidth, internalHeight);
 	}
 
 	return new ImageData(data, width, height);
@@ -191,7 +200,7 @@ export function rgbNoThresholdConversion(
 	}
 
 	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
+		if (columns) mask = rotateCoordinates(mask, width);
 
 		maskNoThresholdData(data, internalWidth, internalHeight, sorter, mask);
 	} else {
@@ -204,7 +213,7 @@ export function rgbNoThresholdConversion(
 	}
 
 	if (columns) {
-		data = rotateClockwise(data, height, width);
+		data = rotateClockwise(data, internalWidth, internalHeight);
 	}
 
 	return new ImageData(data, width, height);
@@ -223,6 +232,7 @@ export function rgbThresholdConversion(
 ) {
 	let internalWidth = width;
 	let internalHeight = height;
+
 	if (columns) {
 		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
@@ -230,9 +240,18 @@ export function rgbThresholdConversion(
 	}
 
 	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
+		if (columns) mask = rotateCoordinates(mask, width);
 
-		maskThresholdData(data, width, height, min, max, thresholdCheck, sorter, mask);
+		maskThresholdData(
+			data,
+			internalWidth,
+			internalHeight,
+			min,
+			max,
+			thresholdCheck,
+			sorter,
+			mask
+		);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -243,7 +262,7 @@ export function rgbThresholdConversion(
 	}
 
 	if (columns) {
-		data = rotateClockwise(data, height, width);
+		data = rotateClockwise(data, internalWidth, internalHeight);
 	}
 
 	return new ImageData(data, width, height);
@@ -271,6 +290,7 @@ export function rgbRandomConversion(
 ) {
 	let internalWidth = width;
 	let internalHeight = height;
+
 	if (columns) {
 		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
@@ -278,9 +298,9 @@ export function rgbRandomConversion(
 	}
 
 	if (!!mask) {
-		if (columns) mask = rotateCoordinates(mask, width, height);
+		if (columns) mask = rotateCoordinates(mask, width);
 
-		maskRandomData(data, width, height, min, max, sorter, mask);
+		maskRandomData(data, internalWidth, internalHeight, min, max, sorter, mask);
 	} else {
 		for (let i = 0; i < internalHeight; i++) {
 			const previous = internalWidth * 4 * i;
@@ -291,7 +311,7 @@ export function rgbRandomConversion(
 	}
 
 	if (columns) {
-		data = rotateClockwise(data, height, width);
+		data = rotateClockwise(data, internalWidth, internalHeight);
 	}
 
 	return new ImageData(data, width, height);

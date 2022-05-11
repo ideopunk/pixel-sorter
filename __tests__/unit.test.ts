@@ -180,7 +180,6 @@ test("test_threshold_hue_ascending_dummy", () => {
 		false
 	);
 
-	console.log(result.data);
 	expect(
 		arraysEqual(
 			Array.from(result.data),

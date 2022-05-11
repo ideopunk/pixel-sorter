@@ -67,8 +67,6 @@ export function maskNoThresholdData(
 	const { top, bottom, left, right } = mask;
 
 	if (mask.inverted) {
-		console.log(top, bottom);
-
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
@@ -76,6 +74,7 @@ export function maskNoThresholdData(
 			sectionSort(section, sorter);
 		}
 	} else {
+		// above
 		for (let i = 0; i < top; i++) {
 			const previous = width * 4 * i;
 
@@ -83,6 +82,7 @@ export function maskNoThresholdData(
 			sectionSort(row, sorter);
 		}
 
+		// to the sides
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
@@ -93,6 +93,7 @@ export function maskNoThresholdData(
 			sectionSort(rightSection, sorter);
 		}
 
+		// below
 		for (let i = bottom; i < height; i++) {
 			const previous = width * 4 * i;
 
@@ -100,8 +101,6 @@ export function maskNoThresholdData(
 			sectionSort(row, sorter);
 		}
 	}
-
-	// return convertedArray;
 }
 
 export function maskThresholdData(
@@ -159,6 +158,7 @@ export function maskThresholdData(
 			);
 		}
 
+		// bottom
 		for (let i = bottom; i < height; i++) {
 			const previous = width * 4 * i;
 

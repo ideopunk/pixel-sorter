@@ -41,7 +41,6 @@ test("basic integration", () => {
 
 	let result = pixelsort(initial_vec, 3, 2, options);
 
-	console.log(result.data);
 	expect(JSON.stringify(Array.from(result.data))).toBe(
 		JSON.stringify([0, 0, 0, 0, 10, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 20, 0, 0, 0])
 	);
@@ -63,7 +62,6 @@ test("mid-level integration", () => {
 
 	let result = pixelsort(initial_vec, 3, 2, options);
 
-	console.log(result.data);
 	expect(JSON.stringify(Array.from(result.data))).toBe(
 		JSON.stringify([
 			// 1, 0, 2, 1, 2, 0
@@ -92,7 +90,6 @@ test("full integration", () => {
 
 	let result = pixelsort(initial_vec, 4, 2, options);
 
-	console.log(result.data);
 	expect(JSON.stringify(Array.from(result.data))).toBe(
 		JSON.stringify([
 			// row 1: 1, 0, 2, 2
