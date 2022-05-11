@@ -1,6 +1,12 @@
-import { sortRowWithRandomness, sortRowWithThreshold } from "./intervalFunctions";
+import * as group from "./group";
 import { maskNoThresholdData, maskRandomData, maskThresholdData, rotateCoordinates } from "./mask";
-import { columnsToRows, toColumns, sectionSort, rgbPixeltoHslPixel, HSLToRGB } from "./pixelUtils";
+import {
+	rotateClockwise,
+	rotateCounterClockwise,
+	sectionSort,
+	RGBToHSLPixel,
+	HSLToRGBPixel,
+} from "./pixelUtils";
 import { MaskCoordinates, PixelArray } from "../types";
 
 export function hslNoThresholdConversion(
@@ -14,7 +20,7 @@ export function hslNoThresholdConversion(
 	let internalWidth = width;
 	let internalHeight = height;
 	if (columns) {
-		data = toColumns(data, width, height);
+		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
 		internalHeight = width;
 	}
@@ -22,7 +28,7 @@ export function hslNoThresholdConversion(
 	let hslPixels = new Float64Array(data.length);
 
 	for (let i = 0; i < data.length; i += 4) {
-		const hslPixel = rgbPixeltoHslPixel(data.subarray(i, i + 4));
+		const hslPixel = RGBToHSLPixel(data.subarray(i, i + 4));
 		hslPixels[i] = hslPixel[0];
 		hslPixels[i + 1] = hslPixel[1];
 		hslPixels[i + 2] = hslPixel[2];
@@ -42,7 +48,7 @@ export function hslNoThresholdConversion(
 	}
 
 	for (let i = 0; i < data.length; i += 4) {
-		const rgbPixel = HSLToRGB(hslPixels.subarray(i, i + 4));
+		const rgbPixel = HSLToRGBPixel(hslPixels.subarray(i, i + 4));
 		data[i] = rgbPixel[0];
 		data[i + 1] = rgbPixel[1];
 		data[i + 2] = rgbPixel[2];
@@ -50,7 +56,7 @@ export function hslNoThresholdConversion(
 	}
 
 	if (columns) {
-		data = columnsToRows(data, height, width);
+		data = rotateClockwise(data, height, width);
 	}
 
 	return new ImageData(data, width, height);
@@ -70,7 +76,7 @@ export function hslThresholdConversion(
 	let internalWidth = width;
 	let internalHeight = height;
 	if (columns) {
-		data = toColumns(data, width, height);
+		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
 		internalHeight = width;
 	}
@@ -78,7 +84,7 @@ export function hslThresholdConversion(
 	let hslPixels = new Float64Array(data.length);
 
 	for (let i = 0; i < data.length; i += 4) {
-		const hslPixel = rgbPixeltoHslPixel(data.subarray(i, i + 4));
+		const hslPixel = RGBToHSLPixel(data.subarray(i, i + 4));
 		hslPixels[i] = hslPixel[0];
 		hslPixels[i + 1] = hslPixel[1];
 		hslPixels[i + 2] = hslPixel[2];
@@ -93,12 +99,12 @@ export function hslThresholdConversion(
 			const previous = internalWidth * 4 * i;
 
 			const row = hslPixels.subarray(previous, previous + internalWidth * 4);
-			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
+			group.withThreshold(row, min, max, thresholdCheck, sorter);
 		}
 	}
 
 	for (let i = 0; i < data.length; i += 4) {
-		const rgbPixel = HSLToRGB(hslPixels.subarray(i, i + 4));
+		const rgbPixel = HSLToRGBPixel(hslPixels.subarray(i, i + 4));
 		data[i] = rgbPixel[0];
 		data[i + 1] = rgbPixel[1];
 		data[i + 2] = rgbPixel[2];
@@ -106,7 +112,7 @@ export function hslThresholdConversion(
 	}
 
 	if (columns) {
-		data = columnsToRows(data, height, width);
+		data = rotateClockwise(data, height, width);
 	}
 
 	return new ImageData(data, width, height);
@@ -125,7 +131,7 @@ export function hslRandomConversion(
 	let internalWidth = width;
 	let internalHeight = height;
 	if (columns) {
-		data = toColumns(data, width, height);
+		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
 		internalHeight = width;
 	}
@@ -133,7 +139,7 @@ export function hslRandomConversion(
 	let hslPixels = new Float64Array(data.length);
 
 	for (let i = 0; i < data.length; i += 4) {
-		const hslPixel = rgbPixeltoHslPixel(data.subarray(i, i + 4));
+		const hslPixel = RGBToHSLPixel(data.subarray(i, i + 4));
 		hslPixels[i] = hslPixel[0];
 		hslPixels[i + 1] = hslPixel[1];
 		hslPixels[i + 2] = hslPixel[2];
@@ -149,12 +155,12 @@ export function hslRandomConversion(
 			const previous = internalWidth * 4 * i;
 
 			const row = hslPixels.subarray(previous, previous + internalWidth * 4);
-			sortRowWithRandomness(row, min, max, sorter);
+			group.withRandomness(row, min, max, sorter);
 		}
 	}
 
 	for (let i = 0; i < data.length; i += 4) {
-		const rgbPixel = HSLToRGB(hslPixels.subarray(i, i + 4));
+		const rgbPixel = HSLToRGBPixel(hslPixels.subarray(i, i + 4));
 		data[i] = rgbPixel[0];
 		data[i + 1] = rgbPixel[1];
 		data[i + 2] = rgbPixel[2];
@@ -162,7 +168,7 @@ export function hslRandomConversion(
 	}
 
 	if (columns) {
-		data = columnsToRows(data, height, width);
+		data = rotateClockwise(data, height, width);
 	}
 
 	return new ImageData(data, width, height);
@@ -179,7 +185,7 @@ export function rgbNoThresholdConversion(
 	let internalWidth = width;
 	let internalHeight = height;
 	if (columns) {
-		data = toColumns(data, width, height);
+		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
 		internalHeight = width;
 	}
@@ -198,7 +204,7 @@ export function rgbNoThresholdConversion(
 	}
 
 	if (columns) {
-		data = columnsToRows(data, height, width);
+		data = rotateClockwise(data, height, width);
 	}
 
 	return new ImageData(data, width, height);
@@ -218,7 +224,7 @@ export function rgbThresholdConversion(
 	let internalWidth = width;
 	let internalHeight = height;
 	if (columns) {
-		data = toColumns(data, width, height);
+		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
 		internalHeight = width;
 	}
@@ -232,12 +238,12 @@ export function rgbThresholdConversion(
 			const previous = internalWidth * 4 * i;
 
 			const row = data.subarray(previous, previous + internalWidth * 4);
-			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
+			group.withThreshold(row, min, max, thresholdCheck, sorter);
 		}
 	}
 
 	if (columns) {
-		data = columnsToRows(data, height, width);
+		data = rotateClockwise(data, height, width);
 	}
 
 	return new ImageData(data, width, height);
@@ -266,7 +272,7 @@ export function rgbRandomConversion(
 	let internalWidth = width;
 	let internalHeight = height;
 	if (columns) {
-		data = toColumns(data, width, height);
+		data = rotateCounterClockwise(data, width, height);
 		internalWidth = height;
 		internalHeight = width;
 	}
@@ -280,12 +286,12 @@ export function rgbRandomConversion(
 			const previous = internalWidth * 4 * i;
 
 			const row = data.subarray(previous, previous + internalWidth * 4);
-			sortRowWithRandomness(row, min, max, sorter);
+			group.withRandomness(row, min, max, sorter);
 		}
 	}
 
 	if (columns) {
-		data = columnsToRows(data, height, width);
+		data = rotateClockwise(data, height, width);
 	}
 
 	return new ImageData(data, width, height);

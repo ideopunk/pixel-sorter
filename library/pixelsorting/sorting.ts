@@ -23,17 +23,6 @@ export function byRGBAscending(a: PixelArray, b: PixelArray) {
 	return sumA - sumB;
 }
 
-// export function byHueAscending(a: PixelArray, b: PixelArray) {
-// 	return a.h - b.h;
-// }
-
-// export function bySaturationAscending(a: PixelArray, b: PixelArray) {
-// 	return a.s - b.s;
-// }
-
-// export function byLightAscending(a: PixelArray, b: PixelArray) {
-// 	return a.l - b.l;
-// }
 
 // DESCENDING
 export function byRedOrHueDescending(a: PixelArray, b: PixelArray) {
@@ -57,15 +46,3 @@ export function byRGBDescending(a: PixelArray, b: PixelArray) {
 	const sumB = b[0] + b[1] + b[2];
 	return sumB - sumA;
 }
-
-// export function byHueDescending(a: PixelArray, b: PixelArray) {
-// 	return b.h - a.h;
-// }
-
-// export function bySaturationDescending(a: PixelArray, b: PixelArray) {
-// 	return b.s - a.s;
-// }
-
-// export function byLightDescending(a: PixelArray, b: PixelArray) {
-// 	return b.l - a.l;
-// }

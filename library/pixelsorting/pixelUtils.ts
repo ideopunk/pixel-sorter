@@ -1,9 +1,9 @@
 import { PixelArray } from "../types";
 
 /**
- * The big one.
- * @param section
- * @param sorter
+ * Sort a section by the sorter.
+ * @param section a subarray of the image's pixels
+ * @param sorter a function for sorting the pixels
  */
 export function sectionSort(section: PixelArray, sorter: (a: PixelArray, b: PixelArray) => number) {
 	const pixels = [];
@@ -23,49 +23,67 @@ export function sectionSort(section: PixelArray, sorter: (a: PixelArray, b: Pixe
 	}
 }
 
-export function toColumns(data: Uint8ClampedArray, originalWidth: number, originalHeight: number) {
-	let columns = new Uint8ClampedArray(data.length);
-	for (let i = 0; i < originalWidth; i++) {
+/**
+ * Flip an image counter-clockwise
+ * @param data image pixels
+ * @param width current image width in pixels
+ * @param height current image height in pixels
+ * @returns
+ */
+export function rotateCounterClockwise(data: Uint8ClampedArray, width: number, height: number) {
+	let rotatedData = new Uint8ClampedArray(data.length);
+	for (let i = 0; i < width; i++) {
 		// lil optimization
-		const slideIntoColumn = originalWidth - i - 1;
-		for (let j = 0; j < originalHeight; j++) {
-			const columnIndex = (i * originalHeight + j) * 4;
-			const dataIndex = (j * originalWidth + slideIntoColumn) * 4;
+		const slideIntoColumn = width - i - 1;
+		for (let j = 0; j < height; j++) {
+			const columnIndex = (i * height + j) * 4;
+			const dataIndex = (j * width + slideIntoColumn) * 4;
 
-			columns[columnIndex] = data[dataIndex];
-			columns[columnIndex + 1] = data[dataIndex + 1];
-			columns[columnIndex + 2] = data[dataIndex + 2];
-			columns[columnIndex + 3] = data[dataIndex + 3];
+			rotatedData[columnIndex] = data[dataIndex];
+			rotatedData[columnIndex + 1] = data[dataIndex + 1];
+			rotatedData[columnIndex + 2] = data[dataIndex + 2];
+			rotatedData[columnIndex + 3] = data[dataIndex + 3];
 		}
 	}
 
-	return columns;
+	return rotatedData;
 }
 
-export function columnsToRows(
-	columns: ArrayLike<number>,
-	columnWidth: number,
-	columnHeight: number
+/**
+ * Flip an image clockwise
+ * @param data image pixels
+ * @param width current image width in pixels
+ * @param height current image height in pixels
+ * @returns
+ */
+export function rotateClockwise(
+	data: ArrayLike<number>,
+	width: number,
+	height: number
 ): Uint8ClampedArray {
-	let rows = new Uint8ClampedArray(columns.length);
+	let rotatedData = new Uint8ClampedArray(data.length);
 
-	for (let i = 0; i < columnWidth; i++) {
-		for (let j = 0; j < columnHeight; j++) {
-			const rowIndex = (i * columnHeight + j) * 4;
-			const dataIndex = (columnWidth * (columnHeight - j - 1) + i) * 4;
+	for (let i = 0; i < width; i++) {
+		for (let j = 0; j < height; j++) {
+			const rowIndex = (i * height + j) * 4;
+			const dataIndex = (width * (height - j - 1) + i) * 4;
 
-			rows[rowIndex] = columns[dataIndex];
-			rows[rowIndex + 1] = columns[dataIndex + 1];
-			rows[rowIndex + 2] = columns[dataIndex + 2];
-			rows[rowIndex + 3] = columns[dataIndex + 3];
+			rotatedData[rowIndex] = data[dataIndex];
+			rotatedData[rowIndex + 1] = data[dataIndex + 1];
+			rotatedData[rowIndex + 2] = data[dataIndex + 2];
+			rotatedData[rowIndex + 3] = data[dataIndex + 3];
 		}
 	}
 
-	return rows;
+	return rotatedData;
 }
 
-// only [;4] please
-export function HSLToRGB(hsl: Float64Array) {
+/**
+ *
+ * @param hsl array with length of 4 (hsl pixel)
+ * @returns array with length of 4 (rgb pixel)
+ */
+export function HSLToRGBPixel(hsl: Float64Array) {
 	// Must be fractions of 1
 	const h = hsl[0];
 	const s = hsl[1] / 100;
@@ -110,8 +128,12 @@ export function HSLToRGB(hsl: Float64Array) {
 	return new Uint8ClampedArray([r, g, b, a]);
 }
 
-// one pixel at a time please
-export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float64Array => {
+/**
+ *
+ * @param rgb array with length of 4 (rgb pixel)
+ * @returns array with length of 4 (hsl pixel)
+ */
+export function RGBToHSLPixel(rgb: Uint8ClampedArray): Float64Array {
 	let r = rgb[0] / 255;
 	let g = rgb[1] / 255;
 	let b = rgb[2] / 255;
@@ -147,18 +169,4 @@ export const rgbPixeltoHslPixel = (rgb: Uint8ClampedArray): Float64Array => {
 	l = +(l * 100).toFixed(1);
 
 	return new Float64Array([h, s, l, rgb[3] / 255]);
-	// const r = rgb[0] / 255;
-	// const g = rgb[1] / 255;
-	// const b = rgb[2] / 255;
-	// const a = rgb[3] / 255;
-	// const l = Math.max(r, g, b);
-	// const s = l - Math.min(r, g, b);
-	// const h = s ? (l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s) : 0;
-
-	// return new Float64Array([
-	// 	60 * h < 0 ? 60 * h + 360 : 60 * h,
-	// 	100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
-	// 	(100 * (2 * l - s)) / 2,
-	// 	a,
-	// ]);
-};
+}

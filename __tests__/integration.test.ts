@@ -1,9 +1,9 @@
 import {
-	columnsToRows,
-	HSLToRGB,
-	rgbPixeltoHslPixel,
+	rotateClockwise,
+	HSLToRGBPixel,
+	RGBToHSLPixel,
 	sectionSort,
-	toColumns,
+	rotateCounterClockwise,
 } from "../library/pixelsorting/pixelUtils";
 import { maskNoThresholdData, rotateCoordinates } from "../library/pixelsorting/mask";
 import { MaskCoordinates, Options } from "../library/types";
@@ -12,14 +12,14 @@ import {
 	hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbThresholdConversion,
-} from "../library/pixelsorting/pixelControllers";
+} from "../library/pixelsorting/routes";
 import {
 	byBlueOrLightnessDescending,
 	byRedOrHueAscending,
 	byRedOrHueDescending,
 } from "../library/pixelsorting/sorting";
-import { redOrHueWithinThresholdCheck } from "../library/pixelsorting/threshold";
-import { sortRowWithThreshold } from "../library/pixelsorting/intervalFunctions";
+import { redOrHue } from "../library/pixelsorting/thresholdCheck";
+import { withThreshold } from "../library/pixelsorting/group";
 import { pixelsort } from "../library/pixelsorting/pixelsort";
 
 function arraysEqual(a1: any[], a2: any[]) {

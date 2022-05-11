@@ -1,7 +1,10 @@
-import { sortRowWithRandomness, sortRowWithThreshold } from "./intervalFunctions";
+import * as group from "./group";
 import { MaskCoordinates, PixelArray } from "../types";
 import { sectionSort } from "./pixelUtils";
 
+/**
+ * Convert mask x, y, width, and height values into top, left, bottom, and right coordinates.
+ */
 export function toCoordinates(
 	mask: {
 		x: number;
@@ -33,11 +36,10 @@ export function toCoordinates(
 	return coordinates;
 }
 
-export function rotateCoordinates(
-	mask: MaskCoordinates,
-	width: number,
-	height: number
-): MaskCoordinates {
+/**
+ * Rotate mask coordinates counter-clockwise to match image.
+ */
+export function rotateCoordinates(mask: MaskCoordinates, width: number): MaskCoordinates {
 	return {
 		left: mask.top,
 		right: mask.bottom,
@@ -47,6 +49,14 @@ export function rotateCoordinates(
 	};
 }
 
+/**
+ * If inverted, glitch pixels inside the mask coordinates. If regular, glitch pixels outside the mask coordinates.
+ * @param data image
+ * @param width image width in pixels
+ * @param height image height in pixels
+ * @param sorter sorting function
+ * @param mask Coordinates for mask and inversion boolean
+ */
 export function maskNoThresholdData(
 	data: PixelArray,
 	width: number,
@@ -110,7 +120,7 @@ export function maskThresholdData(
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
-			sortRowWithThreshold(
+			group.withThreshold(
 				data.subarray(previous + left * 4, previous + right * 4),
 				min,
 				max,
@@ -124,7 +134,7 @@ export function maskThresholdData(
 			const previous = width * 4 * i;
 
 			const row = data.subarray(previous, previous + width * 4);
-			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
+			group.withThreshold(row, min, max, thresholdCheck, sorter);
 		}
 
 		// to the sides
@@ -132,7 +142,7 @@ export function maskThresholdData(
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
-			sortRowWithThreshold(
+			group.withThreshold(
 				data.subarray(previous, previous + left * 4),
 				min,
 				max,
@@ -140,7 +150,7 @@ export function maskThresholdData(
 				sorter
 			);
 
-			sortRowWithThreshold(
+			group.withThreshold(
 				data.subarray(previous + right * 4, previous + width * 4),
 				min,
 				max,
@@ -153,11 +163,21 @@ export function maskThresholdData(
 			const previous = width * 4 * i;
 
 			const row = data.subarray(previous, previous + width * 4);
-			sortRowWithThreshold(row, min, max, thresholdCheck, sorter);
+			group.withThreshold(row, min, max, thresholdCheck, sorter);
 		}
 	}
 }
 
+/**
+ * If inverted, glitch pixels inside the mask coordinates. If regular, glitch pixels outside the mask coordinates.
+ * @param data image
+ * @param width image width in pixels
+ * @param height image height in pixels
+ * @param min minimum random value
+ * @param max maximum random value
+ * @param sorter sorting function
+ * @param mask Coordinates for mask and inversion boolean
+ */
 export function maskRandomData(
 	data: PixelArray,
 	width: number,
@@ -173,7 +193,7 @@ export function maskRandomData(
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
-			sortRowWithRandomness(
+			group.withRandomness(
 				data.subarray(previous + left * 4, previous + right * 4),
 				min,
 				max,
@@ -185,15 +205,15 @@ export function maskRandomData(
 			const previous = width * 4 * i;
 
 			const row = data.subarray(previous, previous + width * 4);
-			sortRowWithRandomness(row, min, max, sorter);
+			group.withRandomness(row, min, max, sorter);
 		}
 
 		for (let i = top; i < bottom; i++) {
 			const previous = width * 4 * i;
 
-			sortRowWithRandomness(data.subarray(previous, previous + left * 4), min, max, sorter);
+			group.withRandomness(data.subarray(previous, previous + left * 4), min, max, sorter);
 
-			sortRowWithRandomness(
+			group.withRandomness(
 				data.subarray(previous + right * 4, previous + width * 4),
 				min,
 				max,
@@ -205,7 +225,7 @@ export function maskRandomData(
 			const previous = width * 4 * i;
 
 			const row = data.subarray(previous, previous + width * 4);
-			sortRowWithRandomness(row, min, max, sorter);
+			group.withRandomness(row, min, max, sorter);
 		}
 	}
 }

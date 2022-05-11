@@ -1,6 +1,6 @@
 import { Options, PixelArray } from "../types";
 import * as sorting from "./sorting";
-import * as threshold from "./threshold";
+import * as threshold from "./thresholdCheck";
 import {
 	hslNoThresholdConversion,
 	hslRandomConversion,
@@ -8,9 +8,14 @@ import {
 	rgbNoThresholdConversion,
 	rgbRandomConversion,
 	rgbThresholdConversion,
-} from "./pixelControllers";
+} from "./routes";
 import * as maskLib from "./mask";
 
+
+/**
+ * Assign functions and route based on options.
+ * @returns converted image
+ */
 export const pixelsort = (
 	data: Uint8ClampedArray,
 	width: number,
@@ -31,45 +36,45 @@ export const pixelsort = (
 	switch (options.sortingStyle) {
 		case "hue":
 			schema = "hsl";
-			thresholdCheck = threshold.redOrHueWithinThresholdCheck;
+			thresholdCheck = threshold.redOrHue;
 			sortingFunction = downOrRight
 				? sorting.byRedOrHueAscending
 				: sorting.byRedOrHueDescending;
 			break;
 		case "lightness":
 			schema = "hsl";
-			thresholdCheck = threshold.blueOrLightnessWithinThresholdCheck;
+			thresholdCheck = threshold.blueOrLightness;
 			sortingFunction = downOrRight
 				? sorting.byBlueOrLightnessAscending
 				: sorting.byBlueOrLightnessDescending;
 			break;
 		case "saturation":
 			schema = "hsl";
-			thresholdCheck = threshold.greenOrSaturationWithinThresholdCheck;
+			thresholdCheck = threshold.greenOrSaturation;
 			sortingFunction = downOrRight
 				? sorting.byGreenOrSaturationAscending
 				: sorting.byGreenOrSaturationDescending;
 			break;
 		case "red":
-			thresholdCheck = threshold.redOrHueWithinThresholdCheck;
+			thresholdCheck = threshold.redOrHue;
 			sortingFunction = downOrRight
 				? sorting.byRedOrHueAscending
 				: sorting.byRedOrHueDescending;
 			break;
 		case "green":
-			thresholdCheck = threshold.greenOrSaturationWithinThresholdCheck;
+			thresholdCheck = threshold.greenOrSaturation;
 			sortingFunction = downOrRight
 				? sorting.byGreenOrSaturationAscending
 				: sorting.byGreenOrSaturationDescending;
 			break;
 		case "blue":
-			thresholdCheck = threshold.blueOrLightnessWithinThresholdCheck;
+			thresholdCheck = threshold.blueOrLightness;
 			sortingFunction = downOrRight
 				? sorting.byBlueOrLightnessAscending
 				: sorting.byBlueOrLightnessDescending;
 			break;
 		case "intensity":
-			thresholdCheck = threshold.intensityWithinThresholdCheck;
+			thresholdCheck = threshold.intensity;
 			sortingFunction = downOrRight ? sorting.byRGBAscending : sorting.byRGBDescending;
 			break;
 		default:

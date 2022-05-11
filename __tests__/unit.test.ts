@@ -1,9 +1,9 @@
 import {
-	columnsToRows,
-	HSLToRGB,
-	rgbPixeltoHslPixel,
+	rotateClockwise,
+	HSLToRGBPixel,
+	RGBToHSLPixel,
 	sectionSort,
-	toColumns,
+	rotateCounterClockwise,
 } from "../library/pixelsorting/pixelUtils";
 import { maskNoThresholdData, rotateCoordinates } from "../library/pixelsorting/mask";
 import { MaskCoordinates } from "../library/types";
@@ -12,14 +12,14 @@ import {
 	hslThresholdConversion,
 	rgbNoThresholdConversion,
 	rgbThresholdConversion,
-} from "../library/pixelsorting/pixelControllers";
+} from "../library/pixelsorting/routes";
 import {
 	byBlueOrLightnessDescending,
 	byRedOrHueAscending,
 	byRedOrHueDescending,
 } from "../library/pixelsorting/sorting";
-import { redOrHueWithinThresholdCheck } from "../library/pixelsorting/threshold";
-import { sortRowWithThreshold } from "../library/pixelsorting/intervalFunctions";
+import { redOrHue } from "../library/pixelsorting/thresholdCheck";
+import { withThreshold } from "../library/pixelsorting/group";
 
 test("ping", () => expect("pong").toBe("pong"));
 
@@ -78,13 +78,13 @@ test("test no threshold blue descending", () => {
 
 test("threshold row nothing", () => {
 	let inputData = new Uint8ClampedArray([10, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0]);
-	sortRowWithThreshold(inputData, 5, 30, redOrHueWithinThresholdCheck, byRedOrHueAscending);
+	withThreshold(inputData, 5, 30, redOrHue, byRedOrHueAscending);
 	expect(arraysEqual(Array.from(inputData), [10, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0])).toBe(true);
 });
 
 test("threshold row something", () => {
 	let inputData = new Uint8ClampedArray([20, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0]);
-	sortRowWithThreshold(inputData, 5, 30, redOrHueWithinThresholdCheck, byRedOrHueAscending);
+	withThreshold(inputData, 5, 30, redOrHue, byRedOrHueAscending);
 	expect(arraysEqual(Array.from(inputData), [10, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0])).toBe(true);
 });
 
@@ -99,7 +99,7 @@ test("test  threshold red ascending", () => {
 		5,
 		30,
 		byRedOrHueAscending,
-		redOrHueWithinThresholdCheck,
+		redOrHue,
 		false
 	);
 	expect(
@@ -111,7 +111,7 @@ test("test  threshold red ascending", () => {
 });
 
 test("test_pixel_to_hsl", () => {
-	let result = rgbPixeltoHslPixel(new Uint8ClampedArray([191, 64, 64, 0]));
+	let result = RGBToHSLPixel(new Uint8ClampedArray([191, 64, 64, 0]));
 
 	let satch_delta = Math.abs(result[1] - 49.8);
 	let light_delta = Math.abs(result[2] - 50.0);
@@ -123,7 +123,7 @@ test("test_pixel_to_hsl", () => {
 test("hsl to pixel", () => {
 	let hsl = new Float64Array([0, 49.8, 50, 0]);
 	// something is fcked here conor
-	let result = HSLToRGB(hsl);
+	let result = HSLToRGBPixel(hsl);
 
 	expect(result[0]).toBe(191);
 	expect(result[1]).toBe(64);
@@ -132,14 +132,13 @@ test("hsl to pixel", () => {
 });
 
 test("pixel to hsl and back", () => {
-	let hsl = rgbPixeltoHslPixel(new Uint8ClampedArray([191, 64, 64, 0]));
-	let result = HSLToRGB(hsl);
+	let hsl = RGBToHSLPixel(new Uint8ClampedArray([191, 64, 64, 0]));
+	let result = HSLToRGBPixel(hsl);
 	expect(result[0]).toBe(191);
 	expect(result[1]).toBe(64);
 	expect(result[2]).toBe(64);
 	expect(result[3]).toBe(0);
-
-})
+});
 
 // spread operator to accomodate prettier
 test(" test_no_threshold_hue_descending", () => {
@@ -177,7 +176,7 @@ test("test_threshold_hue_ascending_dummy", () => {
 		0,
 		255,
 		byRedOrHueAscending,
-		redOrHueWithinThresholdCheck,
+		redOrHue,
 		false
 	);
 
@@ -204,7 +203,7 @@ test("test_to_columns", () => {
 		// row 4
 		20, 0, 0, 4, 0, 0, 0, 5, 10, 0, 0, 6,
 	]);
-	let result = toColumns(inputData, 3, 4);
+	let result = rotateCounterClockwise(inputData, 3, 4);
 	expect(
 		arraysEqual(
 			Array.from(result),
@@ -224,7 +223,7 @@ test("test_to_rows", () => {
 	let inputData = new Uint8ClampedArray([
 		20, 0, 0, 3, 10, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 5, 10, 0, 0, 1, 20, 0, 0, 4,
 	]);
-	let result = columnsToRows(inputData, 2, 3);
+	let result = rotateClockwise(inputData, 2, 3);
 	expect(
 		arraysEqual(
 			Array.from(result),
@@ -281,6 +280,4 @@ test("test masking no thresh", () => {
 	);
 });
 
-test("to coordinates", () => {
-	
-})
+test("to coordinates", () => {});
