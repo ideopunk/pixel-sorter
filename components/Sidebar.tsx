@@ -19,6 +19,7 @@ import { ArrowsDown, ArrowsLeft, ArrowsRight, ArrowsUp } from "./DirectionOption
 import Dropdown from "./SidebarDropdown";
 import X from "./svgs/XSvg";
 import { IntervalExample, IntervalNone, IntervalRandom, IntervalThreshold } from "./IntervalBars";
+import { SortHue, SortSaturation, SortBlue, SortGreen, SortLightness, SortRed } from "./SortingBars";
 
 export default function Sidebar({
 	waiting,
@@ -121,13 +122,12 @@ export default function Sidebar({
 					value={sortingStyle}
 					setValue={setSortingStyle}
 					options={[
-						{ name: "hue", element: <div /> },
-						{ name: "saturation", element: <div /> },
-						{ name: "lightness", element: <div /> },
-						{ name: "red", element: <div /> },
-						{ name: "green", element: <div className="bg-green-400" /> },
-						{ name: "blue", element: <div /> },
-						{ name: "intensity", element: <div /> },
+						{ name: "hue", element: <SortHue/> },
+						{ name: "saturation", element: <SortSaturation/> },
+						{ name: "lightness", element: <SortLightness /> },
+						{ name: "red", element: <SortRed /> },
+						{ name: "green", element: <SortGreen /> },
+						{ name: "blue", element: <SortBlue /> },
 					]}
 					current={current}
 					toggle={() => handleCurrent("sorting style")}
@@ -141,33 +141,15 @@ export default function Sidebar({
 					options={[
 						{
 							name: "none",
-							element: (
-								<div className="relative flex items-center h-8 justify-center">
-									<div className="absolute scale-75 origin-center">
-										<IntervalNone />
-									</div>
-								</div>
-							),
+							element: <IntervalNone />,
 						},
 						{
 							name: "threshold",
-							element: (
-								<div className="relative flex items-center h-8 justify-center">
-									<div className="absolute scale-75 origin-center">
-										<IntervalThreshold />
-									</div>
-								</div>
-							),
+							element: <IntervalThreshold />,
 						},
 						{
 							name: "random",
-							element: (
-								<div className="relative flex items-center h-8 justify-center">
-									<div className="absolute scale-75 origin-center">
-										<IntervalRandom />
-									</div>
-								</div>
-							),
+							element: <IntervalRandom />,
 						},
 					]}
 					current={current}
