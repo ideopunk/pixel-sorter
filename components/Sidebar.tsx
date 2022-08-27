@@ -17,6 +17,7 @@ import rangeBackgrounds from "../library/rangeBackgrounds";
 import FrameSVG from "./svgs/FrameSVG";
 import Links from "./Links";
 import Chevron from "./svgs/ChevronSVG";
+import Arrow from "./svgs/Arrow";
 
 type Dimensions = { width: number; height: number };
 
@@ -36,6 +37,9 @@ function Dropdown({
 	toggle: () => void;
 }) {
 	const thisCurrent = current === title;
+
+	if (current && !thisCurrent) return <div />;
+
 	return (
 		<div className="mx-2 mt-2 mb-6 ">
 			<div className="flex justify-between items-center">
@@ -53,10 +57,18 @@ function Dropdown({
 			{current && (
 				<div className="pt-2">
 					{options.map((option) => (
-						<div className="my-2" key={option.name}>
+						<button
+							className={`my-2 ${
+								value === option.name
+									? "bg-slate-300"
+									: "bg-slate-100 hover:bg-slate-200"
+							} p-4 rounded-md block w-full`}
+							onClick={() => setValue(option.name)}
+							key={option.name}
+						>
 							<h6 className="font-bold uppercase text-sm ">{option.name}</h6>
 							{option.element}
-						</div>
+						</button>
 					))}
 				</div>
 			)}
@@ -171,10 +183,82 @@ export default function Sidebar({
 					value={direction}
 					setValue={handleDirection}
 					options={[
-						{ name: "up", element: <div /> },
-						{ name: "down", element: <div /> },
-						{ name: "left", element: <div /> },
-						{ name: "right", element: <div /> },
+						{
+							name: "up",
+							element: (
+								<div className="flex flex-col items-center">
+									<div className="flex">
+										<Arrow />
+										<Arrow />
+									</div>
+									<div className="flex">
+										<Arrow />
+										<Arrow />
+									</div>
+								</div>
+							),
+						},
+						{
+							name: "down",
+							element: (
+								<div className="flex flex-col items-center">
+									<div className="flex rotate-180">
+										<Arrow />
+										<Arrow />
+									</div>
+									<div className="flex rotate-180">
+										<Arrow />
+										<Arrow />
+									</div>
+								</div>
+							),
+						},
+						{
+							name: "left",
+							element: (
+								<div className="flex flex-col items-center">
+									<div className="flex">
+										<div className="-rotate-90">
+											<Arrow />
+										</div>
+										<div className="-rotate-90">
+											<Arrow />
+										</div>
+									</div>
+									<div className="flex">
+										<div className="-rotate-90">
+											<Arrow />
+										</div>
+										<div className="-rotate-90">
+											<Arrow />
+										</div>
+									</div>
+								</div>
+							),
+						},
+						{
+							name: "right",
+							element: (
+								<div className="flex flex-col items-center">
+									<div className="flex">
+										<div className="rotate-90">
+											<Arrow />
+										</div>
+										<div className="rotate-90">
+											<Arrow />
+										</div>
+									</div>
+									<div className="flex">
+										<div className="rotate-90">
+											<Arrow />
+										</div>
+										<div className="rotate-90">
+											<Arrow />
+										</div>
+									</div>
+								</div>
+							),
+						},
 					]}
 					current={current}
 					toggle={() => handleCurrent("direction")}
