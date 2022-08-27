@@ -18,7 +18,7 @@ import Links from "./Links";
 import { ArrowsDown, ArrowsLeft, ArrowsRight, ArrowsUp } from "./DirectionOptions";
 import Dropdown from "./SidebarDropdown";
 import X from "./svgs/XSvg";
-import { IntervalExample, IntervalNone, IntervalRandom, IntervalThreshold } from "./IntervalBars";
+import {  IntervalNone, IntervalRandom, IntervalThreshold } from "./IntervalBars";
 import { SortHue, SortSaturation, SortBlue, SortGreen, SortLightness, SortRed } from "./SortingBars";
 
 export default function Sidebar({
@@ -154,7 +154,6 @@ export default function Sidebar({
 					]}
 					current={current}
 					toggle={() => handleCurrent("interval style")}
-					exampleDefault={<IntervalExample />}
 					// {/* THRESHOLD */}
 					bonus={
 						<div className="order-last p-4 lg:px-0 w-full py-4">

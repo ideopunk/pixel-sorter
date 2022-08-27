@@ -1,27 +1,3 @@
-export function IntervalExample() {
-	return (
-		<div className="flex mb-3 mt-3 scale-90 origin-center">
-			<div className="h-4 w-4 bg-red-200" />
-			<div className="h-4 w-4 bg-red-600" />
-			<div className="h-4 w-4 bg-red-300" />
-			<div className="h-4 w-4 bg-red-800" />
-			<div className="h-4 w-4 bg-red-900" />
-			<div className="h-4 w-4 bg-red-300" />
-			<div className="h-4 w-4 bg-red-500" />
-			<div className="h-4 w-4 bg-red-200" />
-			<div className="h-4 w-4 bg-red-600" />
-			<div className="h-4 w-4 bg-red-400" />
-			<div className="h-4 w-4 bg-red-500" />
-			<div className="h-4 w-4 bg-red-100" />
-			<div className="h-4 w-4 bg-red-200" />
-			<div className="h-4 w-4 bg-red-900" />
-			<div className="h-4 w-4 bg-red-300" />
-			<div className="h-4 w-4 bg-red-500" />
-			<div className="h-4 w-4 bg-red-800" />
-			<div className="h-4 w-4 bg-red-400" />
-		</div>
-	);
-}
 
 export function IntervalNone() {
 	return (
