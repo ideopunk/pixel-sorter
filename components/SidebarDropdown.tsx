@@ -26,7 +26,7 @@ export default function Dropdown<T>({
 		<div className="mt-2 mb-6 ">
 			<button
 				onClick={toggle}
-				className="flex hover:bg-slate-200 bg-slate-100 w-full justify-between items-center p-4 rounded-lg"
+				className="flex hover:bg-slate-200 bg-slate-100 dark:bg-neutral-700 dark:hover:bg-neutral-900 w-full justify-between items-center p-4 rounded-lg"
 			>
 				<p className="text-sm">{title.toUpperCase()}</p>
 				<div className="flex items-center">
@@ -44,8 +44,8 @@ export default function Dropdown<T>({
 							<button
 								className={`my-2 ${
 									value === option.name
-										? "bg-slate-300"
-										: "bg-slate-100 hover:bg-slate-200"
+										? "bg-slate-300 dark:bg-black"
+										: "bg-slate-100 dark:bg-neutral-700 dark:hover:bg-neutral-800 hover:bg-slate-200"
 								} p-4 rounded-md block w-full`}
 								onClick={() => {
 									setValue(option.name);

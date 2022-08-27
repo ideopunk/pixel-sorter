@@ -94,8 +94,8 @@ export default function Sidebar({
 	}, [sortingStyle, intervalStyle]);
 
 	return (
-		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between bg-neutral-200 p-4 sm:p-0">
-			<div className=" border-gray-400 lg:p-2 max-w-lg w-full self-center bg-white lg:bg-neutral-200 rounded-lg shadow lg:shadow-none p-6 mb-8 mt-6 lg:mb-0 pb-0 lg:block order-last lg:order-none">
+		<div className="lg:h-screen  w-full lg:w-96 flex flex-col lg:justify-between bg-neutral-200 dark:bg-neutral-800 p-4 sm:p-0">
+			<div className=" border-gray-400 lg:p-2 max-w-lg w-full self-center bg-white lg:bg-neutral-200 dark:bg-black dark:lg:bg-neutral-800 rounded-lg shadow lg:shadow-none p-6 mb-8 mt-6 lg:mb-0 pb-0 lg:block order-last lg:order-none">
 				{/* DIRECTION */}
 				<Dropdown
 					title="direction"
@@ -220,7 +220,7 @@ export default function Sidebar({
 							name: "none",
 							element: (
 								<div className="flex justify-center items-center mt-1">
-									<div className="border-2 w-min self-center justify-self-center rounded-md border-black">
+									<div className="border-2 w-min self-center justify-self-center rounded-md border-black dark:border-white">
 										<div className="flex">
 											<X />
 											<X />
@@ -237,14 +237,14 @@ export default function Sidebar({
 							name: "regular",
 							element: (
 								<div className="flex justify-center items-center mt-1">
-									<div className="border-2 w-min self-center justify-self-center rounded-md border-black">
+									<div className="border-2 w-min self-center justify-self-center rounded-md border-black dark:border-white">
 										<div className="flex">
 											<X />
 											<X />
 										</div>
 										<div className="flex">
 											<X />
-											<div className="border-l border-t border-dashed border-black w-1/2" />
+											<div className="border-l border-t border-dashed border-black dark:border-white w-1/2" />
 										</div>
 									</div>
 								</div>
@@ -254,12 +254,12 @@ export default function Sidebar({
 							name: "inverted",
 							element: (
 								<div className="flex justify-center items-center mt-1">
-									<div className="border-2 w-min self-center justify-self-center rounded-md border-black">
+									<div className="border-2 w-min self-center justify-self-center rounded-md border-black dark:border-white">
 										<div className="flex opacity-0">
 											<X />
 											<X />
 										</div>
-										<div className="border-r border-t border-dashed border-black w-1/2">
+										<div className="border-r border-t border-dashed border-black dark:border-white w-1/2">
 											<X />
 										</div>
 									</div>
