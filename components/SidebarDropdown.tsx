@@ -8,6 +8,7 @@ export default function Dropdown<T>({
 	options,
 	current,
 	toggle,
+	exampleDefault,
 	bonus,
 }: {
 	title: string;
@@ -16,6 +17,7 @@ export default function Dropdown<T>({
 	options: readonly { name: T; element: ReactNode }[];
 	current: string;
 	toggle: () => void;
+	exampleDefault?: ReactNode;
 	bonus?: ReactNode;
 }) {
 	const thisCurrent = current === title;
@@ -35,27 +37,30 @@ export default function Dropdown<T>({
 				</div>
 			</button>
 			{thisCurrent && (
-				<div className="pt-2">
-					{options.map((option) => (
-						<button
-							className={`my-2 ${
-								value === option.name
-									? "bg-slate-300"
-									: "bg-slate-100 hover:bg-slate-200"
-							} p-4 rounded-md block w-full`}
-							onClick={() => {
-								setValue(option.name);
-								toggle();
-							}}
-							key={option.name as unknown as string}
-						>
-							<h6 className="font-bold uppercase text-sm ">{option.name}</h6>
-							{option.element}
-						</button>
-					))}
+				<div>
+					{exampleDefault}
+					<div className="pt-2">
+						{options.map((option) => (
+							<button
+								className={`my-2 ${
+									value === option.name
+										? "bg-slate-300"
+										: "bg-slate-100 hover:bg-slate-200"
+								} p-4 rounded-md block w-full`}
+								onClick={() => {
+									setValue(option.name);
+									toggle();
+								}}
+								key={option.name as unknown as string}
+							>
+								<h6 className="font-bold uppercase text-sm ">{option.name}</h6>
+								{option.element}
+							</button>
+						))}
+					</div>
+					{bonus}
 				</div>
 			)}
-			{thisCurrent && bonus}
 		</div>
 	);
 }

@@ -18,6 +18,7 @@ import Links from "./Links";
 import { ArrowsDown, ArrowsLeft, ArrowsRight, ArrowsUp } from "./DirectionOptions";
 import Dropdown from "./SidebarDropdown";
 import X from "./svgs/XSvg";
+import { IntervalExample, IntervalNone, IntervalRandom, IntervalThreshold } from "./IntervalBars";
 
 export default function Sidebar({
 	waiting,
@@ -138,12 +139,40 @@ export default function Sidebar({
 					value={intervalStyle}
 					setValue={setIntervalStyle}
 					options={[
-						{ name: "none", element: <div /> },
-						{ name: "threshold", element: <div /> },
-						{ name: "random", element: <div /> },
+						{
+							name: "none",
+							element: (
+								<div className="relative flex items-center h-8 justify-center">
+									<div className="absolute scale-75 origin-center">
+										<IntervalNone />
+									</div>
+								</div>
+							),
+						},
+						{
+							name: "threshold",
+							element: (
+								<div className="relative flex items-center h-8 justify-center">
+									<div className="absolute scale-75 origin-center">
+										<IntervalThreshold />
+									</div>
+								</div>
+							),
+						},
+						{
+							name: "random",
+							element: (
+								<div className="relative flex items-center h-8 justify-center">
+									<div className="absolute scale-75 origin-center">
+										<IntervalRandom />
+									</div>
+								</div>
+							),
+						},
 					]}
 					current={current}
 					toggle={() => handleCurrent("interval style")}
+					exampleDefault={<IntervalExample />}
 					// {/* THRESHOLD */}
 					bonus={
 						<div className="order-last p-4 lg:px-0 w-full py-4">
