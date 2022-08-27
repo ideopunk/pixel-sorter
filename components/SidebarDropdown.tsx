@@ -26,7 +26,7 @@ export default function Dropdown<T>({
 		<div className="mt-2 mb-6 ">
 			<button
 				onClick={toggle}
-				className="flex hover:bg-slate-200 w-full justify-between items-center p-4 rounded-full"
+				className="flex hover:bg-slate-200 bg-slate-100 w-full justify-between items-center p-4 rounded-lg"
 			>
 				<p className="text-sm">{title.toUpperCase()}</p>
 				<div className="flex items-center">

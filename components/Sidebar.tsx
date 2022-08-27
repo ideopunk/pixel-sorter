@@ -18,8 +18,15 @@ import Links from "./Links";
 import { ArrowsDown, ArrowsLeft, ArrowsRight, ArrowsUp } from "./DirectionOptions";
 import Dropdown from "./SidebarDropdown";
 import X from "./svgs/XSvg";
-import {  IntervalNone, IntervalRandom, IntervalThreshold } from "./IntervalBars";
-import { SortHue, SortSaturation, SortBlue, SortGreen, SortLightness, SortRed } from "./SortingBars";
+import { IntervalNone, IntervalRandom, IntervalThreshold } from "./IntervalBars";
+import {
+	SortHue,
+	SortSaturation,
+	SortBlue,
+	SortGreen,
+	SortLightness,
+	SortRed,
+} from "./SortingBars";
 
 export default function Sidebar({
 	waiting,
@@ -87,8 +94,8 @@ export default function Sidebar({
 	}, [sortingStyle, intervalStyle]);
 
 	return (
-		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between">
-			<div className=" border-gray-400 lg:p-2 pb-0 flex flex-wrap items-center lg:block">
+		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between bg-neutral-200 p-4 sm:p-0">
+			<div className=" border-gray-400 lg:p-2 max-w-lg w-full self-center bg-white lg:bg-neutral-200 rounded-lg shadow lg:shadow-none p-6 mb-8 mt-6 lg:mb-0 pb-0 lg:block order-last lg:order-none">
 				{/* DIRECTION */}
 				<Dropdown
 					title="direction"
@@ -122,8 +129,8 @@ export default function Sidebar({
 					value={sortingStyle}
 					setValue={setSortingStyle}
 					options={[
-						{ name: "hue", element: <SortHue/> },
-						{ name: "saturation", element: <SortSaturation/> },
+						{ name: "hue", element: <SortHue /> },
+						{ name: "saturation", element: <SortSaturation /> },
 						{ name: "lightness", element: <SortLightness /> },
 						{ name: "red", element: <SortRed /> },
 						{ name: "green", element: <SortGreen /> },
@@ -275,78 +282,82 @@ export default function Sidebar({
 				</label> */}
 			</div>
 
-			<div>
+			<div className="flex-col items-center  flex lg:block">
 				{/* BUTTONS */}
-				{!current && (
-					<div className="p-4 pb-0 order-last lg:order-none">
-						<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 h-12">
-							<label
-								htmlFor="fileinput"
-								className="w-full text-center py-4  font-bold cursor-pointer hover:underline"
-							>
-								Choose image
-							</label>
-							<input
-								id="fileinput"
-								name="fileinput"
-								type="file"
-								accept=".jpg, .jpeg, .png"
-								onChange={(e) => {
-									if (e.target.files) {
-										updateFile(e.target.files[0]);
-									}
-								}}
-								className="hidden"
-							/>
-						</div>
-						<div
-							className={`flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
-								!previous ? "opacity-50" : "opacity-90 cursor-pointer"
-							}`}
+				<div
+					className={`max-w-lg p-4 w-full pb-0 order-last lg:order-none ${
+						current && "lg:hidden"
+					}`}
+				>
+					<div className="flex bg-white text-black dark:bg-black  dark:text-white shadow dark:border-white rounded-full items-center divide-x-2 h-12">
+						<label
+							htmlFor="fileinput"
+							className="w-full text-center py-4  font-bold cursor-pointer hover:underline"
 						>
-							<button
-								className={`${
-									previous && "hover:underline cursor-pointer"
-								} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
-								disabled={!previous}
-								onClick={undo}
-							>
-								Undo
-							</button>
-							<button
-								className={`${
-									previous && "hover:underline cursor-pointer"
-								} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
-								disabled={!previous}
-								onClick={reset}
-							>
-								Reset
-							</button>
-						</div>
-
-						<button
-							className={`border-0 hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-black text-white dark:bg-white  dark:text-black ${
-								waiting && "animate-pulse"
-							}`}
-							disabled={waiting}
-							onClick={sendDraw}
-						>
-							{waiting ? "Glitching..." : "Glitch!"}
-						</button>
-
-						<div className="h-20 flex items-center justify-center">
-							{!newImage && !waiting && window.isSecureContext && (
-								<button
-									className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white"
-									onClick={handleShare}
-								>
-									Share
-								</button>
-							)}
-						</div>
+							Choose image
+						</label>
+						<input
+							id="fileinput"
+							name="fileinput"
+							type="file"
+							accept=".jpg, .jpeg, .png"
+							onChange={(e) => {
+								if (e.target.files) {
+									updateFile(e.target.files[0]);
+								}
+							}}
+							className="hidden"
+						/>
 					</div>
-				)}
-				{!current && <Links />}
+					<div
+						className={`flex bg-white shadow text-black dark:bg-black  dark:text-white  rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
+							!previous ? "opacity-50" : "opacity-90 cursor-pointer"
+						}`}
+					>
+						<button
+							className={`${
+								previous && "hover:underline cursor-pointer"
+							} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
+							disabled={!previous}
+							onClick={undo}
+						>
+							Undo
+						</button>
+						<button
+							className={`${
+								previous && "hover:underline cursor-pointer"
+							} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
+							disabled={!previous}
+							onClick={reset}
+						>
+							Reset
+						</button>
+					</div>
+
+					<button
+						className={`shadow hover:underline p-3 font-bold hover:bg-black transition-color w-full rounded-full cursor-pointer bg-neutral-800 text-white dark:bg-white  dark:text-black ${
+							waiting && "animate-pulse"
+						}`}
+						disabled={waiting}
+						onClick={sendDraw}
+					>
+						{waiting ? "Glitching..." : "Glitch!"}
+					</button>
+
+					<div className="h-20 flex items-center justify-center">
+						{!newImage && !waiting && window.isSecureContext && (
+							<button
+								className="hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-black  dark:text-white shadow dark:border-white"
+								onClick={handleShare}
+							>
+								Share
+							</button>
+						)}
+					</div>
+				</div>
+				<div className={`max-w-lg w-full ${current && "lg:hidden"}`}>
+					<Links />
+				</div>
 			</div>
 		</div>
 	);
