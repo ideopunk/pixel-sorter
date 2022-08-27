@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
 
 import {
@@ -12,104 +12,12 @@ import {
 	Options,
 	SortingStyle,
 } from "../library/types";
-import toTitleCase from "../library/toTitleCase";
 import rangeBackgrounds from "../library/rangeBackgrounds";
 import FrameSVG from "./svgs/FrameSVG";
 import Links from "./Links";
-import Chevron from "./svgs/ChevronSVG";
-import Arrow from "./svgs/Arrow";
-
-type Dimensions = { width: number; height: number };
-
-function Dropdown({
-	title,
-	value,
-	setValue,
-	options,
-	current,
-	toggle,
-}: {
-	title: string;
-	value: string;
-	setValue: (s: string) => void;
-	options: readonly { name: string; element: ReactNode }[];
-	current: string;
-	toggle: () => void;
-}) {
-	const thisCurrent = current === title;
-
-	if (current && !thisCurrent) return <div />;
-
-	return (
-		<div className="mx-2 mt-2 mb-6 ">
-			<div className="flex justify-between items-center">
-				<p className="text-sm tracking-wide">{title.toUpperCase()}</p>
-				<div className="flex items-center">
-					<p className="font-bold">{value.toUpperCase()}</p>
-					<button
-						onClick={toggle}
-						className={`ml-2  ${thisCurrent ? "rotate-180" : "rotate-0"}`}
-					>
-						<Chevron />
-					</button>
-				</div>
-			</div>
-			{current && (
-				<div className="pt-2">
-					{options.map((option) => (
-						<button
-							className={`my-2 ${
-								value === option.name
-									? "bg-slate-300"
-									: "bg-slate-100 hover:bg-slate-200"
-							} p-4 rounded-md block w-full`}
-							onClick={() => setValue(option.name)}
-							key={option.name}
-						>
-							<h6 className="font-bold uppercase text-sm ">{option.name}</h6>
-							{option.element}
-						</button>
-					))}
-				</div>
-			)}
-		</div>
-	);
-}
-
-function Select({
-	title,
-	value,
-	setValue,
-	options,
-	style,
-}: {
-	title: string;
-	value: string;
-	setValue: (s: any) => void;
-	options: readonly string[];
-	style?: string;
-}) {
-	return (
-		<label
-			className={`mb-4 flex p-4 lg:p-0 items-center justify-between font-bold w-1/2 lg:w-full ${style}`}
-		>
-			{title}
-			<select
-				value={value}
-				onChange={(e) => {
-					setValue(e.target.value);
-				}}
-				className="appearance-none block p-1 pr-2 w-24 text-right bg-white dark:bg-black border-black dark:border-white border-2 rounded-md"
-			>
-				{options.map((opt) => (
-					<option key={opt} value={opt}>
-						{toTitleCase(opt)}
-					</option>
-				))}
-			</select>
-		</label>
-	);
-}
+import { ArrowsDown, ArrowsLeft, ArrowsRight, ArrowsUp } from "./DirectionOptions";
+import Dropdown from "./SidebarDropdown";
+import X from "./svgs/XSvg";
 
 export default function Sidebar({
 	waiting,
@@ -134,7 +42,9 @@ export default function Sidebar({
 	updateFile: (f: File) => void;
 	handleShare: () => void;
 }) {
-	const [current, setCurrent] = useState<"" | "direction" | "sorting" | "interval" | "mask">("");
+	const [current, setCurrent] = useState<
+		"" | "direction" | "sorting style" | "interval style" | "masking"
+	>("");
 	const [direction, setDirection] = useState<Direction>("up");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
@@ -152,7 +62,7 @@ export default function Sidebar({
 	const [trackBG, leftBG, rightBG] = rangeBackgrounds(sortingStyle, threshold[0], threshold[1]);
 
 	// we don't yet need an FSM
-	function handleCurrent(s: "direction" | "sorting" | "interval" | "mask") {
+	function handleCurrent(s: "direction" | "sorting style" | "interval style" | "masking") {
 		if (current === s) {
 			setCurrent("");
 		} else {
@@ -176,7 +86,7 @@ export default function Sidebar({
 
 	return (
 		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between">
-			<div className=" border-gray-400 lg:p-4 pb-0 flex flex-wrap items-center lg:block">
+			<div className=" border-gray-400 lg:p-2 pb-0 flex flex-wrap items-center lg:block">
 				{/* DIRECTION */}
 				<Dropdown
 					title="direction"
@@ -185,75 +95,155 @@ export default function Sidebar({
 					options={[
 						{
 							name: "up",
-							element: (
-								<div className="flex flex-col items-center">
-									<div className="flex">
-										<Arrow />
-										<Arrow />
-									</div>
-									<div className="flex">
-										<Arrow />
-										<Arrow />
-									</div>
-								</div>
-							),
+							element: <ArrowsUp />,
 						},
 						{
 							name: "down",
-							element: (
-								<div className="flex flex-col items-center">
-									<div className="flex rotate-180">
-										<Arrow />
-										<Arrow />
-									</div>
-									<div className="flex rotate-180">
-										<Arrow />
-										<Arrow />
-									</div>
-								</div>
-							),
+							element: <ArrowsDown />,
 						},
 						{
 							name: "left",
+							element: <ArrowsLeft />,
+						},
+						{
+							name: "right",
+							element: <ArrowsRight />,
+						},
+					]}
+					current={current}
+					toggle={() => handleCurrent("direction")}
+				/>
+
+				{/* SORTING STYLE */}
+				<Dropdown
+					title="sorting style"
+					value={sortingStyle}
+					setValue={setSortingStyle}
+					options={[
+						{ name: "hue", element: <div /> },
+						{ name: "saturation", element: <div /> },
+						{ name: "lightness", element: <div /> },
+						{ name: "red", element: <div /> },
+						{ name: "green", element: <div className="bg-green-400" /> },
+						{ name: "blue", element: <div /> },
+						{ name: "intensity", element: <div /> },
+					]}
+					current={current}
+					toggle={() => handleCurrent("sorting style")}
+				/>
+
+				{/* INTERVAL STYLE */}
+				<Dropdown
+					title="interval style"
+					value={intervalStyle}
+					setValue={setIntervalStyle}
+					options={[
+						{ name: "none", element: <div /> },
+						{ name: "threshold", element: <div /> },
+						{ name: "random", element: <div /> },
+					]}
+					current={current}
+					toggle={() => handleCurrent("interval style")}
+					// {/* THRESHOLD */}
+					bonus={
+						<div className="order-last p-4 lg:px-0 w-full py-4">
+							{(intervalStyle === "threshold" || intervalStyle === "random") && (
+								<label className="relative font-bold">
+									{intervalStyle === "threshold" ? "Thresholds" : "Band Range"}
+									<Slider.Root
+										className="relative flex items-center w-full h-6 select-none"
+										min={0}
+										max={
+											intervalStyle === "random"
+												? 200
+												: sortingStyle === "red" ||
+												  sortingStyle === "green" ||
+												  sortingStyle === "blue"
+												? 255
+												: sortingStyle === "hue"
+												? 360
+												: 100
+										}
+										value={threshold}
+										onValueChange={([min, max]) => setThreshold([min, max])}
+										minStepsBetweenThumbs={1}
+									>
+										<Slider.Track className="relative flex-grow h-1 bg-gray-200 dark:bg-gray-800 rounded-full outline-none">
+											<Slider.Range
+												style={{ backgroundColor: trackBG }}
+												className="absolute h-full bg-black dark:bg-white rounded-full outline-none"
+											/>
+										</Slider.Track>
+										<Slider.Thumb
+											style={{ backgroundColor: leftBG }}
+											className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border"
+											data-tip="1.0"
+										/>
+										<Slider.Thumb
+											style={{ backgroundColor: rightBG }}
+											className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border "
+											data-tip="1.0"
+										/>
+									</Slider.Root>
+									<span>Min: {threshold[0]}</span> /{" "}
+									<span>Max: {threshold[1]}</span>
+								</label>
+							)}
+						</div>
+					}
+				/>
+
+				{/* MASKING STYLE */}
+				<Dropdown
+					title="masking"
+					value={mask}
+					setValue={setMask}
+					options={[
+						{
+							name: "none",
 							element: (
-								<div className="flex flex-col items-center">
-									<div className="flex">
-										<div className="-rotate-90">
-											<Arrow />
+								<div className="flex justify-center items-center mt-1">
+									<div className="border-2 w-min self-center justify-self-center rounded-md border-black">
+										<div className="flex">
+											<X />
+											<X />
 										</div>
-										<div className="-rotate-90">
-											<Arrow />
-										</div>
-									</div>
-									<div className="flex">
-										<div className="-rotate-90">
-											<Arrow />
-										</div>
-										<div className="-rotate-90">
-											<Arrow />
+										<div className="flex">
+											<X />
+											<X />
 										</div>
 									</div>
 								</div>
 							),
 						},
 						{
-							name: "right",
+							name: "regular",
 							element: (
-								<div className="flex flex-col items-center">
-									<div className="flex">
-										<div className="rotate-90">
-											<Arrow />
+								<div className="flex justify-center items-center mt-1">
+									<div className="border-2 w-min self-center justify-self-center rounded-md border-black">
+										<div className="flex">
+											<X />
+											<X />
 										</div>
-										<div className="rotate-90">
-											<Arrow />
+										<div className="flex">
+											<X />
+											<div className="border-l border-t border-dashed border-black w-1/2" />
 										</div>
 									</div>
-									<div className="flex">
-										<div className="rotate-90">
-											<Arrow />
+								</div>
+							),
+						},
+						{
+							name: "inverted",
+							element: (
+								<div className="flex justify-center items-center mt-1">
+									<div className="border-2 w-min self-center justify-self-center rounded-md border-black">
+										<div className="flex opacity-0">
+											<X />
+											<X />
 										</div>
-										<div className="rotate-90">
-											<Arrow />
+										<div className="border-r border-t border-dashed border-black w-1/2">
+											<X />
 										</div>
 									</div>
 								</div>
@@ -261,83 +251,8 @@ export default function Sidebar({
 						},
 					]}
 					current={current}
-					toggle={() => handleCurrent("direction")}
+					toggle={() => handleCurrent("masking")}
 				/>
-				{/* <Select
-					title="Direction"
-					value={direction}
-					setValue={handleDirection}
-					options={arrayOfDirections}
-				/> */}
-
-				{/* SORTING STYLE */}
-				<Select
-					title="sorting style"
-					value={sortingStyle}
-					setValue={setSortingStyle}
-					options={arrayOfSortingStyles}
-				/>
-
-				{/* INTERVAL STYLE */}
-				<Select
-					title="interval style"
-					value={intervalStyle}
-					setValue={setIntervalStyle}
-					options={arrayOfIntervalStyles}
-				/>
-
-				{/* MASKING STYLE */}
-				<Select
-					title="masking"
-					value={mask}
-					setValue={setMask}
-					options={arrayOfMaskOptions}
-				/>
-
-				{/* THRESHOLD */}
-				<div className="order-last p-4 lg:px-0 w-full py-4">
-					{(intervalStyle === "threshold" || intervalStyle === "random") && (
-						<label className="relative font-bold">
-							Thresholds
-							<Slider.Root
-								className="relative flex items-center w-full h-6 select-none"
-								min={0}
-								max={
-									intervalStyle === "random"
-										? 200
-										: sortingStyle === "red" ||
-										  sortingStyle === "green" ||
-										  sortingStyle === "blue"
-										? 255
-										: sortingStyle === "hue"
-										? 360
-										: 100
-								}
-								value={threshold}
-								onValueChange={([min, max]) => setThreshold([min, max])}
-								minStepsBetweenThumbs={1}
-							>
-								<Slider.Track className="relative flex-grow h-1 bg-gray-200 dark:bg-gray-800 rounded-full outline-none">
-									<Slider.Range
-										style={{ backgroundColor: trackBG }}
-										className="absolute h-full bg-black dark:bg-white rounded-full outline-none"
-									/>
-								</Slider.Track>
-								<Slider.Thumb
-									style={{ backgroundColor: leftBG }}
-									className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border"
-									data-tip="1.0"
-								/>
-								<Slider.Thumb
-									style={{ backgroundColor: rightBG }}
-									className="z-50 block w-4 h-4 font-bold bg-black dark:bg-white rounded-full shadow-xl outline-none ring-gray-400 focus:ring-4 border-gray-400 border "
-									data-tip="1.0"
-								/>
-							</Slider.Root>
-							<span>Min: {threshold[0]}</span> / <span>Max: {threshold[1]}</span>
-						</label>
-					)}
-				</div>
 
 				{/* <label className="font-bold p-4 lg:p-0 lg:pt-3 flex items-baseline w-1/2">
 					Masking{" "}
@@ -350,75 +265,79 @@ export default function Sidebar({
 				</label> */}
 			</div>
 
-			{/* BUTTONS */}
-			<div className="p-4 pb-0 order-last lg:order-none">
-				<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 h-12">
-					<label
-						htmlFor="fileinput"
-						className="w-full text-center py-4  font-bold cursor-pointer hover:underline"
-					>
-						Choose file
-					</label>
-					<input
-						id="fileinput"
-						name="fileinput"
-						type="file"
-						accept=".jpg, .jpeg, .png"
-						onChange={(e) => {
-							if (e.target.files) {
-								updateFile(e.target.files[0]);
-							}
-						}}
-						className="hidden"
-					/>
-				</div>
-				<div
-					className={`flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
-						!previous ? "opacity-50" : "opacity-90 cursor-pointer"
-					}`}
-				>
-					<button
-						className={`${
-							previous && "hover:underline cursor-pointer"
-						} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
-						disabled={!previous}
-						onClick={undo}
-					>
-						Undo
-					</button>
-					<button
-						className={`${
-							previous && "hover:underline cursor-pointer"
-						} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
-						disabled={!previous}
-						onClick={reset}
-					>
-						Reset
-					</button>
-				</div>
-
-				<button
-					className={`border-0 hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-black text-white dark:bg-white  dark:text-black ${
-						waiting && "animate-pulse"
-					}`}
-					disabled={waiting}
-					onClick={sendDraw}
-				>
-					{waiting ? "Glitching..." : "Glitch!"}
-				</button>
-
-				<div className="h-20 flex items-center justify-center">
-					{!newImage && !waiting && window.isSecureContext && (
-						<button
-							className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white"
-							onClick={handleShare}
+			<div>
+				{/* BUTTONS */}
+				{!current && (
+					<div className="p-4 pb-0 order-last lg:order-none">
+						<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 h-12">
+							<label
+								htmlFor="fileinput"
+								className="w-full text-center py-4  font-bold cursor-pointer hover:underline"
+							>
+								Choose image
+							</label>
+							<input
+								id="fileinput"
+								name="fileinput"
+								type="file"
+								accept=".jpg, .jpeg, .png"
+								onChange={(e) => {
+									if (e.target.files) {
+										updateFile(e.target.files[0]);
+									}
+								}}
+								className="hidden"
+							/>
+						</div>
+						<div
+							className={`flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
+								!previous ? "opacity-50" : "opacity-90 cursor-pointer"
+							}`}
 						>
-							Share
+							<button
+								className={`${
+									previous && "hover:underline cursor-pointer"
+								} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
+								disabled={!previous}
+								onClick={undo}
+							>
+								Undo
+							</button>
+							<button
+								className={`${
+									previous && "hover:underline cursor-pointer"
+								} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
+								disabled={!previous}
+								onClick={reset}
+							>
+								Reset
+							</button>
+						</div>
+
+						<button
+							className={`border-0 hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full cursor-pointer bg-black text-white dark:bg-white  dark:text-black ${
+								waiting && "animate-pulse"
+							}`}
+							disabled={waiting}
+							onClick={sendDraw}
+						>
+							{waiting ? "Glitching..." : "Glitch!"}
 						</button>
-					)}
-				</div>
+
+						<div className="h-20 flex items-center justify-center">
+							{!newImage && !waiting && window.isSecureContext && (
+								<button
+									className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white"
+									onClick={handleShare}
+								>
+									Share
+								</button>
+							)}
+						</div>
+					</div>
+				)}
+				{!current && <Links />}
 			</div>
-			<Links />
 		</div>
 	);
 }
