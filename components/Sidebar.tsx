@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import * as Slider from "@radix-ui/react-slider";
 
 import {
@@ -14,10 +14,55 @@ import {
 } from "../library/types";
 import toTitleCase from "../library/toTitleCase";
 import rangeBackgrounds from "../library/rangeBackgrounds";
-import FrameSVG from "./FrameSVG";
+import FrameSVG from "./svgs/FrameSVG";
 import Links from "./Links";
+import Chevron from "./svgs/ChevronSVG";
 
 type Dimensions = { width: number; height: number };
+
+function Dropdown({
+	title,
+	value,
+	setValue,
+	options,
+	current,
+	toggle,
+}: {
+	title: string;
+	value: string;
+	setValue: (s: string) => void;
+	options: readonly { name: string; element: ReactNode }[];
+	current: string;
+	toggle: () => void;
+}) {
+	const thisCurrent = current === title;
+	return (
+		<div className="mx-2 mt-2 mb-6 ">
+			<div className="flex justify-between items-center">
+				<p className="text-sm tracking-wide">{title.toUpperCase()}</p>
+				<div className="flex items-center">
+					<p className="font-bold">{value.toUpperCase()}</p>
+					<button
+						onClick={toggle}
+						className={`ml-2  ${thisCurrent ? "rotate-180" : "rotate-0"}`}
+					>
+						<Chevron />
+					</button>
+				</div>
+			</div>
+			{current && (
+				<div className="pt-2">
+					{options.map((option) => (
+						<div className="my-2" key={option.name}>
+							<h6 className="font-bold uppercase text-sm ">{option.name}</h6>
+							{option.element}
+						</div>
+					))}
+				</div>
+			)}
+		</div>
+	);
+}
 
 function Select({
 	title,
@@ -77,6 +122,7 @@ export default function Sidebar({
 	updateFile: (f: File) => void;
 	handleShare: () => void;
 }) {
+	const [current, setCurrent] = useState<"" | "direction" | "sorting" | "interval" | "mask">("");
 	const [direction, setDirection] = useState<Direction>("up");
 	const [sortingStyle, setSortingStyle] = useState<SortingStyle>("lightness");
 	const [intervalStyle, setIntervalStyle] = useState<IntervalStyle>("threshold");
@@ -92,6 +138,15 @@ export default function Sidebar({
 	}
 
 	const [trackBG, leftBG, rightBG] = rangeBackgrounds(sortingStyle, threshold[0], threshold[1]);
+
+	// we don't yet need an FSM
+	function handleCurrent(s: "direction" | "sorting" | "interval" | "mask") {
+		if (current === s) {
+			setCurrent("");
+		} else {
+			setCurrent(s);
+		}
+	}
 
 	useEffect(() => {
 		if (intervalStyle === "threshold")
@@ -111,16 +166,29 @@ export default function Sidebar({
 		<div className="lg:h-screen border-r-2 w-full lg:w-96 flex flex-col lg:justify-between">
 			<div className=" border-gray-400 lg:p-4 pb-0 flex flex-wrap items-center lg:block">
 				{/* DIRECTION */}
-				<Select
+				<Dropdown
+					title="direction"
+					value={direction}
+					setValue={handleDirection}
+					options={[
+						{ name: "up", element: <div /> },
+						{ name: "down", element: <div /> },
+						{ name: "left", element: <div /> },
+						{ name: "right", element: <div /> },
+					]}
+					current={current}
+					toggle={() => handleCurrent("direction")}
+				/>
+				{/* <Select
 					title="Direction"
 					value={direction}
 					setValue={handleDirection}
 					options={arrayOfDirections}
-				/>
+				/> */}
 
 				{/* SORTING STYLE */}
 				<Select
-					title="Sorting Style"
+					title="sorting style"
 					value={sortingStyle}
 					setValue={setSortingStyle}
 					options={arrayOfSortingStyles}
@@ -128,7 +196,7 @@ export default function Sidebar({
 
 				{/* INTERVAL STYLE */}
 				<Select
-					title="Interval Style"
+					title="interval style"
 					value={intervalStyle}
 					setValue={setIntervalStyle}
 					options={arrayOfIntervalStyles}
@@ -136,7 +204,7 @@ export default function Sidebar({
 
 				{/* MASKING STYLE */}
 				<Select
-					title="Masking"
+					title="masking"
 					value={mask}
 					setValue={setMask}
 					options={arrayOfMaskOptions}
@@ -200,10 +268,10 @@ export default function Sidebar({
 
 			{/* BUTTONS */}
 			<div className="p-4 pb-0 order-last lg:order-none">
-				<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 my-4 h-12">
+				<div className="flex bg-white text-black dark:bg-black  dark:text-white border-2 border-black dark:border-white rounded-full items-center divide-x-2 h-12">
 					<label
 						htmlFor="fileinput"
-						className="w-full text-center  font-bold cursor-pointer hover:underline"
+						className="w-full text-center py-4  font-bold cursor-pointer hover:underline"
 					>
 						Choose file
 					</label>
@@ -226,14 +294,18 @@ export default function Sidebar({
 					}`}
 				>
 					<button
-						className={`hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
+						className={`${
+							previous && "hover:underline cursor-pointer"
+						} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
 						disabled={!previous}
 						onClick={undo}
 					>
 						Undo
 					</button>
 					<button
-						className="  hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 cursor-pointer "
+						className={`${
+							previous && "hover:underline cursor-pointer"
+						} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
 						disabled={!previous}
 						onClick={reset}
 					>

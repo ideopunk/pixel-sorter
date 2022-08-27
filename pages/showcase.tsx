@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 
 import Links from "../components/Links";
-import X from "../components/XSvg";
+import X from "../components/svgs/XSvg";
 
 import botns from "../public/showcase/botns.png";
 import starrynight from "../public/showcase/starrynight.png";

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import SunSvg from "./SunSvg";
-import MoonSvg from "./MoonSVG";
-import QuestionMark from "./QuestionMarkSvg";
-import FrameSVG from "./FrameSVG";
+import SunSvg from "./svgs/SunSvg";
+import MoonSvg from "./svgs/MoonSVG";
+import QuestionMark from "./svgs/QuestionMarkSvg";
+import FrameSVG from "./svgs/FrameSVG";
 import { useRouter } from "next/router";
-import FlashSVG from "./FlashSVG";
+import FlashSVG from "./svgs/FlashSVG";
 import { useEffect, useState } from "react";
 
 export default function Links({ between }: { between?: boolean }) {

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import Links from "../components/Links";
 import Script from "next/script";
-import X from "../components/XSvg";
+import X from "../components/svgs/XSvg";
 
 function Lank(
 	props: DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>
