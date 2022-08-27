@@ -7,7 +7,7 @@ function Wrapper({ children }: { children: ReactNode }) {
 export function SortHue() {
 	return (
 		<Wrapper>
-<div style={{ backgroundColor: "hsl(50, 50%, 50%)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "hsl(50, 50%, 50%)" }} className="h-4 w-4 " />
 			<div style={{ backgroundColor: "hsl(150, 50%, 50%)" }} className="h-4 w-4 " />
 			<div style={{ backgroundColor: "hsl(250, 50%, 50%)" }} className="h-4 w-4 " />
 		</Wrapper>
@@ -26,9 +26,9 @@ export function SortSaturation() {
 export function SortLightness() {
 	return (
 		<Wrapper>
-			<div className="h-4 w-4  bg-neutral-200" />
-			<div className="h-4 w-4  bg-neutral-500" />
-			<div className="h-4 w-4  bg-neutral-800" />
+			<div style={{ backgroundColor: "hsl(50, 0%, 0%)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "hsl(50, 0%, 50%)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "hsl(50, 0%, 100%)" }} className="h-4 w-4 " />
 		</Wrapper>
 	);
 }
@@ -36,19 +36,9 @@ export function SortLightness() {
 export function SortRed() {
 	return (
 		<Wrapper>
-			<div className="h-4 w-4  bg-red-200" />
-			<div className="h-4 w-4  bg-red-500" />
-			<div className="h-4 w-4  bg-red-800" />
-		</Wrapper>
-	);
-}
-
-export function SortBlue() {
-	return (
-		<Wrapper>
-			<div className="h-4 w-4  bg-blue-200" />
-			<div className="h-4 w-4  bg-blue-500" />
-			<div className="h-4 w-4  bg-blue-800" />
+			<div style={{ backgroundColor: "rgb(0, 50, 50)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "rgb(120, 50, 50)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "rgb(255, 50, 50)" }} className="h-4 w-4 " />
 		</Wrapper>
 	);
 }
@@ -56,9 +46,19 @@ export function SortBlue() {
 export function SortGreen() {
 	return (
 		<Wrapper>
-			<div className="h-4 w-4  bg-green-200" />
-			<div className="h-4 w-4  bg-green-500" />
-			<div className="h-4 w-4  bg-green-800" />
+			<div style={{ backgroundColor: "rgb(50, 0, 50)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "rgb(50, 120, 50)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "rgb(50, 255, 50)" }} className="h-4 w-4 " />
+		</Wrapper>
+	);
+}
+
+export function SortBlue() {
+	return (
+		<Wrapper>
+			<div style={{ backgroundColor: "rgb(50, 50, 0)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "rgb(50, 50, 120)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "rgb(50, 50, 255)" }} className="h-4 w-4 " />
 		</Wrapper>
 	);
 }
