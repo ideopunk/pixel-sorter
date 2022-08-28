@@ -7,9 +7,9 @@ function Wrapper({ children }: { children: ReactNode }) {
 export function SortHue() {
 	return (
 		<Wrapper>
-			<div style={{ backgroundColor: "hsl(0, 80%, 45%)" }} className="h-4 w-4 " />
-			<div style={{ backgroundColor: "hsl(150, 80%, 45%)" }} className="h-4 w-4 " />
-			<div style={{ backgroundColor: "hsl(250, 80%, 45%)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "hsl(0, 100%, 45%)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "hsl(150, 100%, 45%)" }} className="h-4 w-4 " />
+			<div style={{ backgroundColor: "hsl(250, 100%, 45%)" }} className="h-4 w-4 " />
 		</Wrapper>
 	);
 }

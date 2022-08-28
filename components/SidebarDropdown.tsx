@@ -23,15 +23,19 @@ export default function Dropdown<T>({
 	const thisCurrent = current === title;
 
 	return (
-		<div className="mt-2 mb-6 ">
+		<div className={`mt-2 mb-6 ${current && !thisCurrent && "lg:hidden"}`}>
 			<button
 				onClick={toggle}
-				className="flex hover:bg-slate-200 bg-slate-100 dark:bg-neutral-700 dark:hover:bg-neutral-900 w-full justify-between items-baseline p-4 rounded-lg"
+				className="flex hover:bg-slate-200 bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-700 w-full justify-between items-baseline p-4 rounded-lg shadow-inner shadow-slate-300 dark:shadow-black"
 			>
 				<p className="text-sm">{title.toUpperCase()}</p>
 				<div className="flex items-center">
 					<p className="font-bold">{(value as unknown as string).toUpperCase()}</p>
-					<div className={`ml-1 relative top-[1px] scale-90  ${thisCurrent ? "rotate-180" : "rotate-0"}`}>
+					<div
+						className={`ml-1 relative top-[1px] scale-90  ${
+							thisCurrent ? "rotate-180" : "rotate-0"
+						}`}
+					>
 						<Chevron />
 					</div>
 				</div>
@@ -45,8 +49,8 @@ export default function Dropdown<T>({
 								className={`my-2 ${
 									value === option.name
 										? "bg-slate-300 dark:bg-black"
-										: "bg-slate-100 dark:bg-neutral-700 dark:hover:bg-neutral-800 hover:bg-slate-200"
-								} p-4 rounded-md block w-full`}
+										: "bg-slate-100 dark:bg-neutral-900 dark:hover:bg-black hover:bg-slate-200"
+								} p-4 rounded-md block w-full shadow-inner shadow-slate-300 dark:shadow-black`}
 								onClick={() => {
 									setValue(option.name);
 									toggle();

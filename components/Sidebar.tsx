@@ -95,7 +95,7 @@ export default function Sidebar({
 
 	return (
 		<div className="lg:h-screen  w-full lg:w-96 flex flex-col lg:justify-between bg-neutral-200 dark:bg-neutral-800 p-4 sm:p-0">
-			<div className=" border-gray-400 lg:p-2 max-w-lg w-full self-center bg-white lg:bg-neutral-200 dark:bg-black dark:lg:bg-neutral-800 rounded-lg shadow lg:shadow-none p-6 mb-8 mt-6 lg:mb-0 pb-0 lg:block order-last lg:order-none">
+			<div className=" border-gray-400 lg:p-2 max-w-lg w-full self-center bg-white lg:bg-neutral-200 dark:bg-neutral-700 dark:lg:bg-neutral-800 rounded-lg shadow lg:shadow-none p-6 mb-8 mt-6 lg:mb-0 pb-0 lg:block order-last lg:order-none">
 				{/* DIRECTION */}
 				<Dropdown
 					title="direction"
@@ -163,12 +163,12 @@ export default function Sidebar({
 					toggle={() => handleCurrent("interval style")}
 					// {/* THRESHOLD */}
 					bonus={
-						<div className="order-last p-4 lg:px-0 w-full py-4">
+						<div className="order-last bg-zinc-300 dark:bg-neutral-600 mt-12 rounded-md p-4 w-full shadow-sm shadow-zinc-400 dark:shadow-neutral-800">
 							{(intervalStyle === "threshold" || intervalStyle === "random") && (
 								<label className="relative font-bold">
 									{intervalStyle === "threshold" ? "Thresholds" : "Band Range"}
 									<Slider.Root
-										className="relative flex items-center w-full h-6 select-none"
+										className="relative flex items-center w-full h-6 select-none mt-3 mb-1"
 										min={0}
 										max={
 											intervalStyle === "random"
@@ -289,7 +289,7 @@ export default function Sidebar({
 						current && "lg:hidden"
 					}`}
 				>
-					<div className="flex bg-white text-black dark:bg-black  dark:text-white shadow dark:border-white rounded-full items-center divide-x-2 h-12">
+					<div className="flex bg-white text-black dark:bg-neutral-700  dark:text-white shadow-sm shadow-slate-400 dark:shadow-black dark:border-white rounded-full items-center divide-x-2 h-12">
 						<label
 							htmlFor="fileinput"
 							className="w-full text-center py-4  font-bold cursor-pointer hover:underline"
@@ -310,7 +310,7 @@ export default function Sidebar({
 						/>
 					</div>
 					<div
-						className={`flex bg-white shadow text-black dark:bg-black  dark:text-white  rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
+						className={`flex bg-white shadow-sm shadow-slate-400 dark:shadow-black text-black dark:bg-neutral-700  dark:text-white  rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
 							!previous ? "opacity-50" : "opacity-90 cursor-pointer"
 						}`}
 					>
@@ -335,7 +335,7 @@ export default function Sidebar({
 					</div>
 
 					<button
-						className={`shadow hover:underline p-3 font-bold hover:bg-black transition-color w-full rounded-full cursor-pointer bg-neutral-800 text-white dark:bg-white  dark:text-black ${
+						className={`shadow shadow-slate-600 dark:shadow-md dark:shadow-black hover:underline p-3 font-bold hover:bg-black transition-color w-full rounded-full cursor-pointer bg-neutral-800 text-white dark:bg-white  dark:text-black ${
 							waiting && "animate-pulse"
 						}`}
 						disabled={waiting}
@@ -347,7 +347,7 @@ export default function Sidebar({
 					<div className="h-20 pt-8 flex items-center justify-center">
 						{!newImage && !waiting && window.isSecureContext && (
 							<button
-								className="hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-black  dark:text-white shadow dark:border-white"
+								className="hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-neutral-600  dark:text-white shadow-sm dark:shadow dark:border-white  shadow-slate-400 dark:shadow-black"
 								onClick={handleShare}
 							>
 								Share
