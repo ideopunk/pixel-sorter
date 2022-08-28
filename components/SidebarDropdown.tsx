@@ -26,12 +26,12 @@ export default function Dropdown<T>({
 		<div className="mt-2 mb-6 ">
 			<button
 				onClick={toggle}
-				className="flex hover:bg-slate-200 bg-slate-100 dark:bg-neutral-700 dark:hover:bg-neutral-900 w-full justify-between items-center p-4 rounded-lg"
+				className="flex hover:bg-slate-200 bg-slate-100 dark:bg-neutral-700 dark:hover:bg-neutral-900 w-full justify-between items-baseline p-4 rounded-lg"
 			>
 				<p className="text-sm">{title.toUpperCase()}</p>
 				<div className="flex items-center">
 					<p className="font-bold">{(value as unknown as string).toUpperCase()}</p>
-					<div className={`ml-1 scale-90  ${thisCurrent ? "rotate-180" : "rotate-0"}`}>
+					<div className={`ml-1 relative top-[1px] scale-90  ${thisCurrent ? "rotate-180" : "rotate-0"}`}>
 						<Chevron />
 					</div>
 				</div>
