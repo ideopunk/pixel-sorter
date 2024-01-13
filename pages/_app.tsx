@@ -4,9 +4,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { DefaultSeo } from "next-seo";
 
-import { withPasswordProtect } from "@storyofams/next-password-protect";
-
-function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<>
 			<Head>
@@ -38,4 +36,3 @@ function MyApp({ Component, pageProps }: AppProps) {
 		</>
 	);
 }
-export default process.env.NODE_ENV !== "production" ? withPasswordProtect(MyApp) : MyApp;

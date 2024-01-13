@@ -11,20 +11,23 @@ import starrynight from "../public/showcase/starrynight.png";
 import wands from "../public/showcase/wands.png";
 import influencer from "../public/showcase/influencer.png";
 import coldmonet from "../public/showcase/coldmonet.png";
+import woomp from "../public/showcase/woomp.png";
 
 function Figure({
 	children,
 	title,
 	creator,
+	maxWidth,
 }: {
 	children: ReactNode;
 	title: string;
 	creator: string;
+	maxWidth?: number;
 }) {
 	return (
-		<figure className="mb-20 flex flex-col items-center">
+		<figure className="mb-20 flex flex-col items-center max-w-lg">
 			{children}
-			<figcaption className="font-bold font-mono text-center text-xl  ">
+			<figcaption style={{ maxWidth }} className="font-bold font-mono text-center text-xl  ">
 				<pre className="whitespace-pre-wrap mt-2">{title}</pre>
 				<pre className="whitespace-pre-wrap mt-4">{creator}</pre>
 			</figcaption>
@@ -58,6 +61,7 @@ export default function Showcase() {
 				<Figure
 					creator="Ideopunk"
 					title="THERE IS NO MAGIC. THERE IS ONLY KNOWLEDGE, MORE OR LESS HIDDEN."
+					maxWidth={677}
 				>
 					<Image src={botns} width={677} height={845} alt="BOOK OF THE NEW SUN" />
 				</Figure>
@@ -79,6 +83,10 @@ export default function Showcase() {
 
 				<Figure creator="Turtle Bear" title="COLD MONET">
 					<Image src={coldmonet} width={720} height={503} alt="COLD MONET" />
+				</Figure>
+
+				<Figure creator="Zafite, JADR" title="WOOMP">
+					<Image src={woomp} width={3000} height={3000} alt="WOOMP" />
 				</Figure>
 				<div className="w-48">
 					<Links between />
