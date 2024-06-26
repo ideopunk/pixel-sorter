@@ -36,23 +36,22 @@ export default function About() {
 					<X />
 				</a>
 			</Link>
-			<div className="mt-12 prose prose-lg prose-li:my-0 max-w-[30ch] dark:text-white dark:prose-headings:text-purple-200">
+			<div className="mt-12 prose prose-lg prose-li:my-0 max-w-[50ch] dark:text-white dark:prose-headings:text-purple-200">
 				<h1>Pixel Sorter</h1>
 
 				<p>This is an interface to create glitch art with pixel sorting.</p>
 
 				<h2>How Does It Work?</h2>
 				<p>
-					Pixel sorting re-orders the pixels in a row (or a column) accoding to some
+					Pixel sorting re-orders the pixels in a row or column according to a
 					parameter. For example, you might sort the pixels in a row based on how red they
 					are.
 				</p>
 				<p>
-					This gets cool when you use thresholds. You might set a threshold to only sort
-					pixels that are somewhat light -- this will ignore pixels that are too light or
-					too dark. This creates natural intervals within a row: a block of pixels within
+					You can filter which pixels this applies to by using thresholds. For example, you might set a threshold to only sort
+					pixels that are above 40% lightness and below 80% lightness. This creates natural sections within a row: a block of pixels within
 					the threshold will be sorted, blocks of pixels outside the threshold will
-					interrupt the sorting. This can create beautiful effects.
+					remain unsorted. This can create beautiful effects.
 				</p>
 				<p>
 					You can take this further by masking. This will set an area for the sorting to
@@ -82,7 +81,7 @@ export default function About() {
 					<Lank href="https://twitter.com/petesanf">Peter Sanfilippo</Lank>.
 				</p>
 				<p>
-					{"If you've created great art with Pixel Sorter, "}
+					{"If you've created art with Pixel Sorter, "}
 					<Lank href="mailto:conorbarnes93@gmail.com" target="_blank" rel="noreferrer">
 						message me
 					</Lank>
@@ -94,26 +93,9 @@ export default function About() {
 				</p>
 				<p className="inline">
 					Pixel Sorter will always be free. All code is executed in your browser, so there
-					are no server costs to pay. If you enjoy Pixel Sorter, you can leave a tip here:{" "}
+					are no server costs to pay. If you enjoy Pixel Sorter, let me know <Lank href="mailto:conorbarnes93@gmail.com" target="_blank" rel="noreferrer">here</Lank>.
 				</p>
-				<div id="donate-button" />
-				<Script
-					id="paypal"
-					src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
-					charSet="UTF-8"
-					onLoad={() => {
-						// @ts-ignore
-						PayPal.Donation.Button({
-							env: "production",
-							hosted_button_id: "ZMA9AS9F39HLE",
-							image: {
-								src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif",
-								alt: "Donate with PayPal button",
-								title: "PayPal!",
-							},
-						}).render("#donate-button");
-					}}
-				/>
+			
 				<div className="w-48">
 					<Links between />
 				</div>
