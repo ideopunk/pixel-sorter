@@ -12,6 +12,7 @@ import wands from "../public/showcase/wands.png";
 import influencer from "../public/showcase/influencer.png";
 import coldmonet from "../public/showcase/coldmonet.png";
 import woomp from "../public/showcase/woomp.png";
+import eternalMemories from "../public/showcase/eternalmemories3.png";
 
 function Figure({
 	children,
@@ -58,12 +59,27 @@ export default function Showcase() {
 					<h1 className="font-bold text-3xl text-center">Pixel Sorter Showcase</h1>
 					<Links />
 				</div>
-				<Figure
-					creator="Ideopunk"
-					title="THERE IS NO MAGIC. THERE IS ONLY KNOWLEDGE, MORE OR LESS HIDDEN."
-					maxWidth={677}
-				>
-					<Image src={botns} width={677} height={845} alt="BOOK OF THE NEW SUN" />
+
+				<Figure creator="Layla Claudia Smith" title="Eternal Memories 3">
+					<Image
+						src={eternalMemories}
+						width={853}
+						height={620}
+						alt="Eternal Memories 3"
+					/>
+				</Figure>
+				<Figure creator="Zafite, JADR" title="WOOMP">
+					<Image src={woomp} width={3000} height={3000} alt="WOOMP" />
+				</Figure>
+				<Figure creator="Turtle Bear" title="COLD MONET">
+					<Image src={coldmonet} width={720} height={503} alt="COLD MONET" />
+				</Figure>
+
+				<Figure creator="Peter Sanfilippo" title="INFLUENCER">
+					<Image src={influencer} width={1920} height={1279} alt="INFLUENCER" />
+				</Figure>
+				<Figure creator="Severian King Comfort" title="ACE OF WANDS">
+					<Image src={wands} width={1052} height={1381} alt="ACE OF WANDS" />
 				</Figure>
 
 				<Figure
@@ -73,21 +89,14 @@ export default function Showcase() {
 					<Image src={starrynight} width={1199} height={950} alt="STARRY NIGHT" />
 				</Figure>
 
-				<Figure creator="Severian King Comfort" title="ACE OF WANDS">
-					<Image src={wands} width={1052} height={1381} alt="ACE OF WANDS" />
+				<Figure
+					creator="Ideopunk"
+					title="THERE IS NO MAGIC. THERE IS ONLY KNOWLEDGE, MORE OR LESS HIDDEN."
+					maxWidth={677}
+				>
+					<Image src={botns} width={677} height={845} alt="BOOK OF THE NEW SUN" />
 				</Figure>
 
-				<Figure creator="Peter Sanfilippo" title="INFLUENCER">
-					<Image src={influencer} width={1920} height={1279} alt="INFLUENCER" />
-				</Figure>
-
-				<Figure creator="Turtle Bear" title="COLD MONET">
-					<Image src={coldmonet} width={720} height={503} alt="COLD MONET" />
-				</Figure>
-
-				<Figure creator="Zafite, JADR" title="WOOMP">
-					<Image src={woomp} width={3000} height={3000} alt="WOOMP" />
-				</Figure>
 				<div className="w-48">
 					<Links between />
 				</div>
