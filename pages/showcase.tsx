@@ -19,18 +19,33 @@ function Figure({
 	title,
 	creator,
 	maxWidth,
+	href,
 }: {
 	children: ReactNode;
 	title: string;
 	creator: string;
 	maxWidth?: number;
+	href?: string;
 }) {
 	return (
 		<figure className="mb-20 flex flex-col items-center max-w-lg">
 			{children}
 			<figcaption style={{ maxWidth }} className="font-bold font-mono text-center text-xl  ">
 				<pre className="whitespace-pre-wrap mt-2">{title}</pre>
-				<pre className="whitespace-pre-wrap mt-4">{creator}</pre>
+				<pre className="whitespace-pre-wrap mt-4">
+					{href ? (
+						<a
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-blue-600 hover:text-black transition-colors"
+							href={href}
+						>
+							{creator}
+						</a>
+					) : (
+						<span>{creator}</span>
+					)}
+				</pre>
 			</figcaption>
 		</figure>
 	);
@@ -60,7 +75,11 @@ export default function Showcase() {
 					<Links />
 				</div>
 
-				<Figure creator="Layla Claudia Smith" title="Eternal Memories 3">
+				<Figure
+					creator="Layla Claudia Smith"
+					title="Eternal Memories 3"
+					href="https://www.instagram.com/laylaclaudia._/"
+				>
 					<Image
 						src={eternalMemories}
 						width={853}
@@ -68,7 +87,11 @@ export default function Showcase() {
 						alt="Eternal Memories 3"
 					/>
 				</Figure>
-				<Figure creator="Zafite, JADR" title="WOOMP">
+				<Figure
+					creator="Zafite, JADR"
+					title="WOOMP"
+					href="https://soundcloud.com/zafite/zafite-jadr-woop"
+				>
 					<Image src={woomp} width={3000} height={3000} alt="WOOMP" />
 				</Figure>
 				<Figure creator="Turtle Bear" title="COLD MONET">
