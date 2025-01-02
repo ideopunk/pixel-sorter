@@ -27,6 +27,7 @@ import {
 	SortLightness,
 	SortRed,
 } from "./SortingBars";
+import { isSafari } from "../library/genericUtils";
 
 export default function Sidebar({
 	waiting,
@@ -37,6 +38,7 @@ export default function Sidebar({
 	reset,
 	undo,
 	previous,
+	downloadURL,
 	updateFile,
 	handleShare,
 }: {
@@ -48,6 +50,7 @@ export default function Sidebar({
 	reset: () => void;
 	undo: () => void;
 	previous: boolean;
+	downloadURL: string;
 	updateFile: (f: File) => void;
 	handleShare: () => void;
 }) {
@@ -345,14 +348,25 @@ export default function Sidebar({
 					</button>
 
 					<div className="h-20 pt-8 flex items-center justify-center">
-						{!newImage && !waiting && window.isSecureContext && (
-							<button
-								className="hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-neutral-600  dark:text-white shadow-sm dark:shadow dark:border-white  shadow-slate-400 dark:shadow-black"
-								onClick={handleShare}
-							>
-								Share
-							</button>
-						)}
+						{!newImage &&
+							!waiting &&
+							window.isSecureContext &&
+							(!isSafari() ? (
+								<button
+									className="hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-neutral-600  dark:text-white shadow-sm dark:shadow dark:border-white  shadow-slate-400 dark:shadow-black"
+									onClick={handleShare}
+								>
+									Share
+								</button>
+							) : (
+								<a
+									href={downloadURL}
+									download="pixel-sorted.png"
+									className="hover:underline p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-full rounded-full  cursor-pointer bg-white text-black dark:bg-neutral-600  dark:text-white shadow-sm dark:shadow dark:border-white  shadow-slate-400 dark:shadow-black safari-download text-center"
+								>
+									Download
+								</a>
+							))}
 					</div>
 				</div>
 				<div className={`max-w-lg w-full ${current && "lg:hidden"}`}>

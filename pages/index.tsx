@@ -18,7 +18,8 @@ export default function Home() {
 	const [toast, setToast] = useState(false);
 
 	const originalRef = useRef<HTMLImageElement>(null);
-	const safariDownloadRef = useRef<HTMLAnchorElement>(null);
+	// const safariDownloadRef = useRef<HTMLAnchorElement>(null);
+	const [downloadUrl, setDownloadUrl] = useState<string>("");
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	// mask stuff
@@ -91,9 +92,8 @@ export default function Home() {
 				if (ctx) {
 					ctx.putImageData(e.data, 0, 0);
 
-					if (isSafari() && safariDownloadRef.current) {
-						const dataUrl = canvasRef.current.toDataURL();
-						safariDownloadRef.current.href = dataUrl;
+					if (isSafari()) {
+						setDownloadUrl(canvasRef.current.toDataURL());
 					}
 				}
 				setWaiting(false);
@@ -229,8 +229,8 @@ export default function Home() {
 			setNewImage(true);
 			if (originalRef.current) {
 				originalRef.current.src = url;
-				if (isSafari() && safariDownloadRef.current) {
-					safariDownloadRef.current.href = url;
+				if (isSafari()) {
+					setDownloadUrl(url);
 				}
 
 				originalRef.current.onload = () => {
@@ -279,8 +279,8 @@ export default function Home() {
 		const ctx = canvasRef.current?.getContext("2d");
 		ctx?.drawImage(originalRef.current, 0, 0);
 
-		if (isSafari() && safariDownloadRef.current) {
-			safariDownloadRef.current.href = originalRef.current.src;
+		if (isSafari()) {
+			setDownloadUrl(originalRef.current.src);
 		}
 	}
 
@@ -294,9 +294,8 @@ export default function Home() {
 			);
 			ctx?.putImageData(imageData, 0, 0);
 
-			if (isSafari() && canvasRef.current && safariDownloadRef.current) {
-				const dataUrl = canvasRef.current.toDataURL();
-				safariDownloadRef.current.href = dataUrl;
+			if (isSafari() && canvasRef.current) {
+				setDownloadUrl(canvasRef.current.toDataURL());
 			}
 		}
 	}
@@ -324,6 +323,7 @@ export default function Home() {
 				setMask={setMask}
 				newImage={newImage}
 				handleShare={handleShare}
+				downloadURL={downloadUrl}
 			/>
 			<main className="z-10 w-full lg:h-full flex justify-center items-center flex-col p-4 ">
 				<div
@@ -345,11 +345,9 @@ export default function Home() {
 							className="object-contain w-full h-full "
 						/>
 						<a
-							ref={safariDownloadRef}
-							href=""
+							href={downloadUrl}
 							download="pixel-sorted.png"
-							id="safari-download"
-							className="object-contain w-full h-full absolute top-0 left-0"
+							className="object-contain w-full h-full absolute top-0 left-0 safari-download"
 						></a>
 						<div
 							ref={draggableRef}
