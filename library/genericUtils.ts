@@ -11,3 +11,7 @@ export function catcher(e: unknown): string {
 		return (e as Error).message;
 	}
 }
+
+export function isSafari() {
+	return CSS.supports("-webkit-hyphens", "none");
+}

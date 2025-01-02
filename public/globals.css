@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 body {
-	
 	overflow: overlay;
 	overflow-x: hidden;
 	-ms-overflow-style: -ms-autohiding-scrollbar;
@@ -56,4 +55,24 @@ li {
 
 ul {
 	margin-left: 3rem;
+}
+
+/* safari only */
+@supports (-webkit-hyphens: none) {
+	canvas {
+		pointer-events: none;
+	}
+}
+
+/* safari only */
+@supports (-webkit-hyphens: none) {
+	canvas {
+		pointer-events: none;
+	}
+}
+
+@supports not (-webkit-hyphens: none) {
+	#safari-download {
+		display: none;
+	}
 }

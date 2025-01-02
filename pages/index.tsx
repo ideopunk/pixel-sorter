@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Rect, Options, SortingStyle, MaskOptions } from "../library/types";
 import { NextSeo } from "next-seo";
+import { isSafari } from "../library/genericUtils";
 // import { ctx } from "../library/pixel.worker";
 
 type Dimensions = { width: number; height: number };
@@ -15,6 +16,10 @@ export default function Home() {
 	// ui stuff
 	const [waiting, setWaiting] = useState(false);
 	const [toast, setToast] = useState(false);
+
+	const originalRef = useRef<HTMLImageElement>(null);
+	const safariDownloadRef = useRef<HTMLAnchorElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	// mask stuff
 	const [mask, setMask] = useState<MaskOptions>("none");
@@ -32,7 +37,6 @@ export default function Home() {
 
 				new Draggable(draggableRef.current, {
 					handle: handleRef.current,
-					// limit: imageRef.current,
 					limit: {
 						x: [0, imageDimensions.width],
 						y: [0, imageDimensions.height],
@@ -82,10 +86,15 @@ export default function Home() {
 		workerRef.current.addEventListener(
 			"message",
 			(e: MessageEvent<ImageData>) => {
-
-				const ctx = canvasRef.current?.getContext("2d");
+				if (!canvasRef.current) return;
+				const ctx = canvasRef.current.getContext("2d");
 				if (ctx) {
 					ctx.putImageData(e.data, 0, 0);
+
+					if (isSafari() && safariDownloadRef.current) {
+						const dataUrl = canvasRef.current.toDataURL();
+						safariDownloadRef.current.href = dataUrl;
+					}
 				}
 				setWaiting(false);
 			},
@@ -109,12 +118,12 @@ export default function Home() {
 
 	const draw = useCallback(
 		({ direction, sortingStyle, intervalStyle, threshold }: Options) => {
-			if (workerRef.current && imageRef.current) {
+			if (workerRef.current && originalRef.current) {
 				setWaiting(true);
 				const ctx = canvasRef.current?.getContext("2d");
 
 				if (newImage) {
-					ctx?.drawImage(imageRef.current, 0, 0); // use this if nothing else!
+					ctx?.drawImage(originalRef.current, 0, 0); // use this if nothing else!
 					setNewImage(false);
 				}
 
@@ -133,18 +142,18 @@ export default function Home() {
 
 				const adjustedY = (flexedY || 0) - (containerY || 0);
 
-				const widthAdjustment = imageDimensions.width / imageRef.current.width;
-				const heightAdjustment = imageDimensions.height / imageRef.current.height;
+				const widthAdjustment = imageDimensions.width / originalRef.current.width;
+				const heightAdjustment = imageDimensions.height / originalRef.current.height;
 
 				const adjustedMaskPosition: Rect | undefined =
 					mask !== "none"
 						? {
 								x:
 									(maskPosition?.x || 0) *
-									(imageDimensions.width / imageRef.current.width),
+									(imageDimensions.width / originalRef.current.width),
 								y:
 									((maskPosition?.y || 0) + adjustedY) *
-									(imageDimensions.height / imageRef.current.height),
+									(imageDimensions.height / originalRef.current.height),
 								width:
 									(maskPosition?.width || 0) *
 									(widthAdjustment < 1 ? 1 : widthAdjustment),
@@ -174,7 +183,7 @@ export default function Home() {
 	);
 
 	async function handleShare() {
-		if (window.isSecureContext) {
+		if (window.isSecureContext && !newImage) {
 			const dataUrl = canvasRef.current?.toDataURL();
 			if (!dataUrl) throw new Error("no data url found");
 			const res = await fetch(dataUrl);
@@ -207,9 +216,6 @@ export default function Home() {
 		}
 	}, [toast]);
 
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const imageRef = useRef<HTMLImageElement>(null);
-
 	// derive canvas dimension
 	useEffect(() => {
 		if (!canvasRef.current) return;
@@ -221,21 +227,27 @@ export default function Home() {
 	const convertUrlToImage = useCallback(
 		(url: string) => {
 			setNewImage(true);
-			if (imageRef.current) {
-				imageRef.current.src = url;
+			if (originalRef.current) {
+				originalRef.current.src = url;
+				if (isSafari() && safariDownloadRef.current) {
+					safariDownloadRef.current.href = url;
+				}
 
-				imageRef.current.onload = () => {
-					if (imageRef.current?.height && imageRef.current.width && canvasRef.current) {
+				originalRef.current.onload = () => {
+					if (
+						originalRef.current?.height &&
+						originalRef.current.width &&
+						canvasRef.current
+					) {
 						canvasRef.current.width = imageDimensions.width;
 						canvasRef.current.height = imageDimensions.height;
-
 						setImageDimensions({
-							height: imageRef.current.naturalHeight || imageRef.current.height,
-							width: imageRef.current.naturalWidth || imageRef.current.width,
+							height: originalRef.current.naturalHeight || originalRef.current.height,
+							width: originalRef.current.naturalWidth || originalRef.current.width,
 						});
 					}
 				};
-				imageRef.current.onerror = (err: any) => {
+				originalRef.current.onerror = (err: any) => {
 					console.error(err);
 				};
 			}
@@ -262,10 +274,14 @@ export default function Home() {
 	}
 
 	function handleReset() {
-		if (!imageRef.current) return;
+		if (!originalRef.current) return;
 
 		const ctx = canvasRef.current?.getContext("2d");
-		ctx?.drawImage(imageRef.current, 0, 0);
+		ctx?.drawImage(originalRef.current, 0, 0);
+
+		if (isSafari() && safariDownloadRef.current) {
+			safariDownloadRef.current.href = originalRef.current.src;
+		}
 	}
 
 	function handleUndo() {
@@ -277,6 +293,11 @@ export default function Home() {
 				imageDimensions.height
 			);
 			ctx?.putImageData(imageData, 0, 0);
+
+			if (isSafari() && canvasRef.current && safariDownloadRef.current) {
+				const dataUrl = canvasRef.current.toDataURL();
+				safariDownloadRef.current.href = dataUrl;
+			}
 		}
 	}
 
@@ -318,11 +339,18 @@ export default function Home() {
 						className="relative max-w-[500px] max-h-[500px] md:max-w-[600px] md:max-h-[600px] lg:max-w-[700px] lg:max-h-[700px]"
 					>
 						<img
-							ref={imageRef}
-							alt="test-image"
+							ref={originalRef}
+							alt="original-image"
 							src=""
-							className="object-contain w-full h-full"
+							className="object-contain w-full h-full "
 						/>
+						<a
+							ref={safariDownloadRef}
+							href=""
+							download="pixel-sorted.png"
+							id="safari-download"
+							className="object-contain w-full h-full absolute top-0 left-0"
+						></a>
 						<div
 							ref={draggableRef}
 							draggable
@@ -335,6 +363,7 @@ export default function Home() {
 					</div>
 
 					<canvas
+						id="canvas"
 						onClick={handleShare}
 						ref={canvasRef}
 						style={
@@ -342,7 +371,7 @@ export default function Home() {
 								? { maxWidth: "100%" }
 								: { maxHeight: "100%" }
 						}
-						className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px]  top-0 left-0 absolute object-contain"
+						className="w-[500px] h-[500px] md:w-[600px] md:h-[600px] lg:w-[700px] lg:h-[700px] absolute top-0 left-0 object-contain"
 					/>
 				</div>
 

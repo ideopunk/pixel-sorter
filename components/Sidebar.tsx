@@ -311,23 +311,23 @@ export default function Sidebar({
 					</div>
 					<div
 						className={`flex bg-white shadow-sm shadow-slate-400 dark:shadow-black text-black dark:bg-neutral-700  dark:text-white  rounded-full items-center divide-x-2 my-4 h-12 divide-black dark:divide-white ${
-							!previous ? "opacity-50" : "opacity-90 cursor-pointer"
+							newImage || waiting ? "opacity-50" : "opacity-90 cursor-pointer"
 						}`}
 					>
 						<button
 							className={`${
-								previous && "hover:underline cursor-pointer"
+								(newImage || waiting) && "hover:underline cursor-pointer"
 							} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
-							disabled={!previous}
+							disabled={newImage || waiting}
 							onClick={undo}
 						>
 							Undo
 						</button>
 						<button
 							className={`${
-								previous && "hover:underline cursor-pointer"
+								(newImage || waiting) && "hover:underline cursor-pointer"
 							} p-3 font-bold opacity-90 hover:opacity-100 transition-opacity w-1/2 `}
-							disabled={!previous}
+							disabled={newImage || waiting}
 							onClick={reset}
 						>
 							Reset
