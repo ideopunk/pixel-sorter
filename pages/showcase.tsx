@@ -87,19 +87,6 @@ export default function Showcase() {
 						alt="Eternal Memories 3"
 					/>
 				</Figure>
-				
-				<Figure
-					creator="Layla Claudia Smith"
-					title="Eternal Memories 3"
-					href="https://www.instagram.com/laylaclaudia._/"
-				>
-					<Image
-						src={eternalMemories}
-						width={853}
-						height={620}
-						alt="Eternal Memories 3"
-					/>
-				</Figure>
 				<Figure
 					creator="Zafite, JADR"
 					title="WOOMP"
