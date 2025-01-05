@@ -13,6 +13,10 @@ import influencer from "../public/showcase/influencer.png";
 import coldmonet from "../public/showcase/coldmonet.png";
 import woomp from "../public/showcase/woomp.png";
 import eternalMemories from "../public/showcase/eternalmemories3.png";
+import praterpark from "../public/showcase/praterpark.png";
+import splashfountain from "../public/showcase/splashfountain.png";
+import unwelcome from "../public/showcase/unwelcome.png";
+import leave from "../public/showcase/leave.png";
 
 function Figure({
 	children,
@@ -28,7 +32,7 @@ function Figure({
 	href?: string;
 }) {
 	return (
-		<figure className="mb-20 flex flex-col items-center max-w-lg">
+		<figure className="mb-20 flex flex-col items-center max-w-lg lg:max-w-xl">
 			{children}
 			<figcaption style={{ maxWidth }} className="font-bold font-mono text-center text-xl  ">
 				<pre className="whitespace-pre-wrap mt-2">{title}</pre>
@@ -69,11 +73,65 @@ export default function Showcase() {
 					url: "https://pixel-sorter.com/showcase",
 				}}
 			/>
-			<div className="w-3/5 flex flex-col items-center py-10">
+			<div className="w-3/5 lg:w-4/5 flex flex-col items-center py-10">
 				<div className="pb-12">
 					<h1 className="font-bold text-3xl text-center">Pixel Sorter Showcase</h1>
 					<Links />
 				</div>
+
+				<Figure
+					creator="Yourong Frank Wang"
+					title="Splash Fountain, Napier New Zealand"
+					href="https://fwphys.com/LUX/"
+				>
+					<Image
+						src={splashfountain}
+						width={640}
+						height={427}
+						alt="Splash Fountain, Napier New Zealand"
+					/>
+				</Figure>
+
+				<Figure
+					creator="Yourong Frank Wang"
+					title="Prater Park Ferris Wheel, Vienna Austria"
+					href="https://fwphys.com/LUX/"
+				>
+					<Image
+						src={praterpark}
+						width={640}
+						height={640}
+						alt="Prater Park Ferris Wheel, Vienna Austria"
+					/>
+				</Figure>
+
+				<Figure
+					creator="SP4C3C0R3"
+					title="Leave"
+					href=""
+				>
+					<Image
+						src={leave}
+						width={5716}
+						height={3811}
+						alt="Leave"
+					/>
+				</Figure>
+
+	
+				<Figure
+					creator="SP4C3C0R3"
+					title="Unwelcome"
+					href=""
+				>
+					<Image
+						src={unwelcome}
+						width={5752}
+						height={3835}
+						alt="Unwelcome"
+					/>
+				</Figure>
+		
 
 				<Figure
 					creator="Layla Claudia Smith"
